@@ -128,7 +128,8 @@
         let routes = [];
         let stops = {};
         let routeStops = {};
-
+        let originalRoutes = []; // 存儲原始路線數據
+        
         // DOM 元素
         const loadingMessage = document.getElementById('loadingMessage');
         const mainContent = document.getElementById('mainContent');
@@ -151,6 +152,7 @@
                 await loadStops();
                 await loadRouteStops();
                 
+                originalRoutes = [...routes]; // 保存原始路線數據
                 populateRouteSelect();
                 setupEventListeners();
                 
@@ -205,49 +207,12 @@
             });
         }
 
-        // 填充路線選擇框
-        // function populateRouteSelect() {
-        //     routeSelect.innerHTML = '<option value="">請選擇路線...</option>';
-        //     const sortedRoutes = routes.sort((a, b) => {
-        //         const aIsNum = /^\d+$/.test(a.route);
-        //         const bIsNum = /^\d+$/.test(b.route);
-                
-        //         if (aIsNum && bIsNum) {
-        //             return parseInt(a.route) - parseInt(b.route);
-        //         }
-        //         if (aIsNum && !bIsNum) return -1;
-        //         if (!aIsNum && bIsNum) return 1;
-        //         return a.route.localeCompare(b.route);
-        //     });
+        function reinitRoute()
+        {
+            route = [...originalRoutes];
+            populateRouteSelect();
+        }
 
-        //     const routeOptions = {};
-        //     sortedRoutes.forEach(route => {
-        //         const key = route.route;
-        //         if (!routeOptions[key]) {
-        //             routeOptions[key] = [];
-        //         }
-        //         routeOptions[key].push(route);
-        //     });
-
-        //     Object.keys(routeOptions).forEach(routeNum => {
-        //         const routeVariants = routeOptions[routeNum];
-        //         if (routeVariants.length === 1) {
-        //             const route = routeVariants[0];
-        //             const option = document.createElement('option');
-        //             option.value = `${route.route}-${route.bound}-${route.service_type}`;
-        //             option.textContent = `${route.route} (${route.orig_tc} → ${route.dest_tc})`;
-        //             routeSelect.appendChild(option);
-        //         } else {
-        //             routeVariants.forEach(route => {
-        //                 const option = document.createElement('option');
-        //                 option.value = `${route.route}-${route.bound}-${route.service_type}`;
-        //                 const direction = route.bound === 'O' ? '往' : '回';
-        //                 option.textContent = `${route.route} ${direction} (${route.orig_tc} → ${route.dest_tc})`;
-        //                 routeSelect.appendChild(option);
-        //             });
-        //         }
-        //     });
-        // }
         // 填充路線選擇框
         function populateRouteSelect() {
             routeSelect.innerHTML = '<option value="">請選擇路線...</option>';
@@ -289,15 +254,17 @@
             routeSelect.addEventListener('change', onRouteChange);
             stopSelect.addEventListener('change', onStopChange);
             refreshBtn.addEventListener('click', refreshETA);
-            //routeSearch.addEventListener('input', filterRoutes);
             let timeout;
             routeSearch.addEventListener('keyup', () => {
+                
                 clearTimeout(timeout);
-                timeout = setTimeout(filterRoutes, 300);
+                timeout = setTimeout(() =>
+                {
+                    reinitRoute();
+                    timeout = setTimeout(filterRoutes, 300);
+                }, 500);
+                
             });
-            //routeSelect.addEventListener('focus', filterRoutes);
-
-
         }
 
         // 路線改變事件
@@ -334,7 +301,6 @@
 
         // 巴士站改變事件
         function onStopChange() {
-            console.log('on stop change')
             const selectedStop = stopSelect.value;
             if (!selectedStop) {
                 hideETASection();
@@ -358,7 +324,7 @@
                     break; // Exit the loop once found
                 }
             }
-            
+
             if (!selectedRoute || !selectedStop) return;
 
             const [route, bound, serviceType] = selectedRoute.split('-');
@@ -422,7 +388,6 @@
                         minute: '2-digit' 
                     });
                     
-                    // Include the bound information
                     const boundText = eta.dir === 'O' ? '往' : '回';
                     
                     etaDiv.innerHTML = `
@@ -510,19 +475,9 @@
         }
 
         // 路線搜尋過濾
-        // function filterRoutes() {
-        //     const query = routeSearch.value.toLowerCase();
-        //     const options = Array.from(routeSelect.options);
-
-        //     options.forEach(option => {
-        //         if (option.value) {
-        //             const text = option.text.toLowerCase();
-        //             option.style.display = text.includes(query) ? 'block' : 'none';
-        //         }
-        //     });
-        // }
-
         function filterRoutes() {
+            
+            //alert(`顯示的選項: ${shouldDisplay.join(', ')}`);
             const query = routeSearch.value.toLowerCase();
             const options = Array.from(routeSelect.options);
             const shouldDisplay = [];
