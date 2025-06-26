@@ -56,7 +56,7 @@
             color: red;
             font-size: 0.8rem; /* Smaller font size */
             font-weight: bold;
-            margin-left: 0px; /* Optional: Add some space between the ETA and the delete button */
+            margin-left: auto; /* Optional: Add some space between the ETA and the delete button */
         }
 
         .add-favorite {
@@ -64,7 +64,7 @@
             color: rgb(72, 255, 0);
             font-size: 0.8rem; /* Smaller font size */
             font-weight: bold;
-            margin-left: 0px; /* Optional: Add some space between the ETA and the delete button */
+            margin-left: auto; /* Optional: Add some space between the ETA and the delete button */
         }
     </style>
 </head>
@@ -120,7 +120,7 @@
 
             <!-- Favorites Section -->
             <div id="favoritesSection" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">我的最愛</h3>
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">⭐ 我的最愛</h3>
                 <ul id="favoritesList" class="space-y-2">
                     <!-- Favorite routes will be displayed here -->
                 </ul>
@@ -365,17 +365,86 @@
             }
         }
 
+    //     function displayETA(fav, etaData, bfav = false) {
+    //         const etaDiv = document.createElement('div');
+            
+    //         const [route, bound, serviceType] = fav.route.split('-');
+            
+    //         // Create a unique ID for this ETA entry
+    //         const etaDivId = `eta-${route}-${fav.stop}`;
+    //         etaDiv.id = etaDivId; // Set the ID for the ETA div
+            
+            
+            
+    //          etaDiv.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 fade-in flex justify-between items-start'; // Use flex for layout
+    //          // //etaDiv.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 fade-in';
+    //         etaDiv.innerHTML = `<h4 class="font-semibold text-gray-900 dark:text-white">${bfav ? `🚌` : ``} ${route} - ${stops[fav.stop]?.name_tc || '未知站點'}</h4>`;
+            
+    //         const arrivalTimes = etaData.map(eta => {
+    //             if (bound !== eta.dir) {
+    //                 return null;
+    //             }
+    //             const etaTime = new Date(eta.eta);
+    //             const now = new Date();
+    //             const diffMinutes = Math.round((etaTime - now) / 60000);
+    //             return diffMinutes <= 0 ? '即將到站' : `${diffMinutes} 分鐘`;
+    //         }).filter(time => time !== null).join(', ');
+            
+    //         // Add arrival time in a new line
+    // const   arrivalTimeDiv = document.createElement('div');
+    //         arrivalTimeDiv.className = 'arrival-time text-gray-900 dark:text-white';
+    //         arrivalTimeDiv.innerHTML = `到站時間 : ${arrivalTimes || '暫無資料'}`;
+    //         etaDiv.appendChild(arrivalTimeDiv); // Append arrival time to the div
+    //         // Use Tailwind classes for text color based on theme
+    //         //etaDiv.innerHTML += `<p class="arrival-time text-gray-900 dark:text-white">${`到站時間 : ${arrivalTimes}` || '暫無資料'}</p>`;
+            
+    //         // Check for duplicates before appending
+    //         if (!document.getElementById(etaDivId)) {
+    //             if (!bfav) {
+    //                 const addFavBtn = document.createElement('span');
+    //                 addFavBtn.textContent = '⭐ 加入最愛';
+    //                 addFavBtn.className = 'add-favorite';
+    //                 addFavBtn.onclick = () => {
+    //                     addToFavorites();
+    //                 };
+    //                 etaDiv.appendChild(addFavBtn);
+    //             } else {
+    //                 // Add delete button
+    //                 const deleteBtn = document.createElement('span');
+    //                 deleteBtn.textContent = '❌ 刪除';
+    //                 deleteBtn.className = 'delete-favorite';
+    //                 deleteBtn.onclick = () => {
+    //                     deleteFavorite(fav);
+    //                 };
+    //                 etaDiv.appendChild(deleteBtn);
+    //             }
+                
+    //             etaList.appendChild(etaDiv); // Append only if not a duplicate
+    //         }
+    //     }
+
         function displayETA(fav, etaData, bfav = false) {
             const etaDiv = document.createElement('div');
-            
+
             const [route, bound, serviceType] = fav.route.split('-');
-            
+
             // Create a unique ID for this ETA entry
             const etaDivId = `eta-${route}-${fav.stop}`;
             etaDiv.id = etaDivId; // Set the ID for the ETA div
 
             etaDiv.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 fade-in';
-            etaDiv.innerHTML = `<h4 class="font-semibold text-gray-900 dark:text-white">${route} - ${stops[fav.stop]?.name_tc || '未知站點'}</h4>`;
+
+            if (bfav)
+            {
+                const routeText = Array.from(routeSelect.options).find(option => option.value === fav.route)?.text || '未知路線';
+                const[_route, dummy, _start, _dir, _des] = routeText.split(' ');
+                etaDiv.innerHTML = `<h4 class="font-semibold text-gray-900 dark:text-white">${bfav ? `🚌` : ``} ${route + ' ' + _dir + ` ` +  _des} - ${stops[fav.stop]?.name_tc || '未知站點'}</h4>`;
+            }
+            else
+            {
+                // Route header   
+                etaDiv.innerHTML = `<h4 class="font-semibold text-gray-900 dark:text-white">${bfav ? `🚌` : ``} ${route} - ${stops[fav.stop]?.name_tc || '未知站點'}</h4>`;
+            }
             
             const arrivalTimes = etaData.map(eta => {
                 if (bound !== eta.dir) {
@@ -387,11 +456,18 @@
                 return diffMinutes <= 0 ? '即將到站' : `${diffMinutes} 分鐘`;
             }).filter(time => time !== null).join(', ');
 
-            // Use Tailwind classes for text color based on theme
-            etaDiv.innerHTML += `<p class="arrival-time text-gray-900 dark:text-white">${`到站時間 : ${arrivalTimes}` || '暫無資料'}</p>`;
-            
+            // Arrival time display
+            const arrivalTimeDiv = document.createElement('div');
+            arrivalTimeDiv.className = 'arrival-time text-gray-900 dark:text-white mt-2'; // Add margin-top for spacing
+            arrivalTimeDiv.innerHTML = `到站時間 : ${arrivalTimes || '暫無資料'}`;
+            etaDiv.appendChild(arrivalTimeDiv); // Append arrival time to the div
+
             // Check for duplicates before appending
             if (!document.getElementById(etaDivId)) {
+                // Create a container for buttons
+                const buttonContainer = document.createElement('div');
+                buttonContainer.className = 'flex justify-end mt-2'; // Flexbox to align buttons to the right
+
                 if (!bfav) {
                     const addFavBtn = document.createElement('span');
                     addFavBtn.textContent = '⭐ 加入最愛';
@@ -399,18 +475,19 @@
                     addFavBtn.onclick = () => {
                         addToFavorites();
                     };
-                    etaDiv.appendChild(addFavBtn);
+                    buttonContainer.appendChild(addFavBtn);
                 } else {
                     // Add delete button
                     const deleteBtn = document.createElement('span');
                     deleteBtn.textContent = '❌ 刪除';
-                    deleteBtn.className = 'delete-favorite';
+                    deleteBtn.className = 'delete-favorite ml-2'; // Optional margin for spacing
                     deleteBtn.onclick = () => {
                         deleteFavorite(fav);
                     };
-                    etaDiv.appendChild(deleteBtn);
+                    buttonContainer.appendChild(deleteBtn);
                 }
-                
+
+                etaDiv.appendChild(buttonContainer); // Append the button container
                 etaList.appendChild(etaDiv); // Append only if not a duplicate
             }
         }
