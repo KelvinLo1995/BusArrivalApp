@@ -295,7 +295,6 @@
 
         // Clear all favorites
         function clearFavorites() {
-            console.log('clearFavorites');
             favorites = [];
             localStorage.removeItem('favorites');
             displayFavorites();
@@ -305,15 +304,8 @@
         // Route change event
         function onRouteChange() {
             const selectedRoute = routeSelect.value;
-            if (!selectedRoute) {
-                hideStopSection();
-                hideETASection();
-                return;
-            }
-
             populateStopSelect(selectedRoute);
             showStopSection();
-            hideETASection();
         }
 
         // Populate stop selection
@@ -347,17 +339,6 @@
             
             etaList.innerHTML = ''; // Clear previous ETA display
 
-            if (selectedRoute && selectedStop) {
-                const [route, bound, serviceType] = selectedRoute.split('-');
-                try {
-                    const response = await fetch(`${API_BASE}/eta/${selectedStop}/${route}/${serviceType}`);
-                    const data = await response.json();
-                    displayETA({ route: selectedRoute, stop: selectedStop }, data.data || []);
-                } catch (error) {
-                    console.error('載入到站時間失敗:', error);
-                }
-            }
-
             // Load ETA for favorites
             for (const fav of favorites) {
                 if (!fav.route || !fav.stop) continue; // Ensure both route and stop exist
@@ -371,20 +352,33 @@
                     console.error('載入到站時間失敗:', error);
                 }
             }
+
+            if (selectedRoute && selectedStop) {
+                const [route, bound, serviceType] = selectedRoute.split('-');
+                try {
+                    const response = await fetch(`${API_BASE}/eta/${selectedStop}/${route}/${serviceType}`);
+                    const data = await response.json();
+                    displayETA({ route: selectedRoute, stop: selectedStop }, data.data || []);
+                } catch (error) {
+                    console.error('載入到站時間失敗:', error);
+                }
+            }
         }
 
-        // Display ETA for a specific favorite
         function displayETA(fav, etaData, bfav = false) {
             const etaDiv = document.createElement('div');
             
             const [route, bound, serviceType] = fav.route.split('-');
+            
+            // Create a unique ID for this ETA entry
+            const etaDivId = `eta-${route}-${fav.stop}`;
+            etaDiv.id = etaDivId; // Set the ID for the ETA div
+
             etaDiv.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 fade-in';
             etaDiv.innerHTML = `<h4 class="font-semibold text-gray-900 dark:text-white">${route} - ${stops[fav.stop]?.name_tc || '未知站點'}</h4>`;
-            console.log(`selected route -> ${fav.route}`);
+            
             const arrivalTimes = etaData.map(eta => {
-                console.log(`${bound} vs ${eta.dir}`);
-                if (bound !== eta.dir) 
-                {
+                if (bound !== eta.dir) {
                     return null;
                 }
                 const etaTime = new Date(eta.eta);
@@ -395,31 +389,31 @@
 
             etaDiv.innerHTML += `<p class="arrival-time">${`到站時間 : ${arrivalTimes}` || '暫無資料'}</p>`;
             
-            if (!bfav)
-            {
-                const addFavBtn = document.createElement('span');
-                addFavBtn.textContent = '⭐ 加入最愛';
-                addFavBtn.className = 'add-favorite';
-                addFavBtn.onclick = () => {
-                    addToFavorites();
-                };
-                etaDiv.appendChild(addFavBtn);
+            // Check for duplicates before appending
+            if (!document.getElementById(etaDivId)) {
+                if (!bfav) {
+                    const addFavBtn = document.createElement('span');
+                    addFavBtn.textContent = '⭐ 加入最愛';
+                    addFavBtn.className = 'add-favorite';
+                    addFavBtn.onclick = () => {
+                        addToFavorites();
+                    };
+                    etaDiv.appendChild(addFavBtn);
+                } else {
+                    // Add delete button
+                    const deleteBtn = document.createElement('span');
+                    deleteBtn.textContent = '❌ 刪除';
+                    deleteBtn.className = 'delete-favorite';
+                    deleteBtn.onclick = () => {
+                        deleteFavorite(fav);
+                    };
+                    etaDiv.appendChild(deleteBtn);
+                }
+                
+                etaList.appendChild(etaDiv); // Append only if not a duplicate
             }
-            else
-            {
-                // Add delete button
-                const deleteBtn = document.createElement('span');
-                deleteBtn.textContent = '刪除';
-                deleteBtn.className = 'delete-favorite';
-                deleteBtn.onclick = () => {
-                    deleteFavorite(fav);
-                };
-                etaDiv.appendChild(deleteBtn);
-            }
-            
-            etaList.appendChild(etaDiv);
         }
-
+        
         // Delete a specific favorite
         function deleteFavorite(favToDelete) {
             favorites = favorites.filter(fav => !(fav.route === favToDelete.route && fav.stop === favToDelete.stop));
@@ -447,8 +441,6 @@
 
         // Display favorites
         function displayFavorites() {
-
-            console.log('displayFavorites');
             favoritesList.innerHTML = '';
             favorites.forEach(fav => {
                 const listItem = document.createElement('li');
@@ -462,7 +454,6 @@
 
         // Refresh ETA
         function refreshETA() {
-            console.log('refreshETA');
             loadETAForSelectedRoute();
         }
 
@@ -518,7 +509,6 @@
 
         // Filter routes
         function filterRoutes() {
-            console.log('filter');
             const query = routeSearch.value.toLowerCase();
             const options = Array.from(routeSelect.options);
             routeSelect.innerHTML = '<option value="">請選擇路線...</option>'; // Reset options
