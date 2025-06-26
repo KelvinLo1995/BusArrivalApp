@@ -45,6 +45,27 @@
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
+
+        .arrival-time {
+            color: white; /* Make arrival time text white */
+            font-weight: bold;
+        }
+
+        .delete-favorite {
+            cursor: pointer;
+            color: red;
+            font-size: 0.8rem; /* Smaller font size */
+            font-weight: bold;
+            margin-left: 0px; /* Optional: Add some space between the ETA and the delete button */
+        }
+
+        .add-favorite {
+            cursor: pointer;
+            color: rgb(72, 255, 0);
+            font-size: 0.8rem; /* Smaller font size */
+            font-weight: bold;
+            margin-left: 0px; /* Optional: Add some space between the ETA and the delete button */
+        }
     </style>
 </head>
 <body class="bg-white dark:bg-gray-900 min-h-screen transition-colors duration-300">
@@ -75,8 +96,7 @@
                 <select id="routeSelect" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">請選擇路線...</option>
                 </select>
-                <button id="addFavoriteBtn" class="mt-2 px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">⭐ 加入最愛</button>
-            </div>
+                </div>
 
             <!-- Bus Stop Selection -->
             <div id="stopSection" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 hidden">
@@ -84,15 +104,7 @@
                 <select id="stopSelect" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">請選擇巴士站...</option>
                 </select>
-            </div>
-
-            <!-- Favorites Section -->
-            <div id="favoritesSection" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">我的最愛</h3>
-                <ul id="favoritesList" class="space-y-2">
-                    <!-- Favorite routes will be displayed here -->
-                </ul>
-                <button id="clearFavoritesBtn" class="mt-2 px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-500 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400">清除所有最愛</button>
+                <!-- <button id="addFavoriteBtn" class="mt-2 px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">⭐ 加入最愛</button> -->
             </div>
 
             <!-- ETA Section -->
@@ -104,6 +116,15 @@
                 <div id="etaList" class="space-y-3">
                     <!-- ETA will be displayed here -->
                 </div>
+            </div>
+
+            <!-- Favorites Section -->
+            <div id="favoritesSection" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">我的最愛</h3>
+                <ul id="favoritesList" class="space-y-2">
+                    <!-- Favorite routes will be displayed here -->
+                </ul>
+                <button id="clearFavoritesBtn" class="mt-2 px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-500 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400">清除所有最愛</button>
             </div>
         </div>
 
@@ -172,7 +193,7 @@
                     try {
                         const response = await fetch(`${API_BASE}/eta/${fav.stop}/${route}/${serviceType}`);
                         const data = await response.json();
-                        displayETA(fav, data.data || []);
+                        displayETA(fav, data.data || [], true);
                     } catch (error) {
                         console.error('載入到站時間失敗:', error);
                     }
@@ -256,7 +277,7 @@
             routeSelect.addEventListener('change', onRouteChange);
             stopSelect.addEventListener('change', onStopChange);
             refreshBtn.addEventListener('click', refreshETA);
-            addFavoriteBtn.addEventListener('click', addToFavorites);
+            // addFavoriteBtn.addEventListener('click', addToFavorites);
             clearFavoritesBtn.addEventListener('click', clearFavorites);
             //routeSearch.addEventListener('keyup', filterRoutes);
             let timeout;
@@ -274,6 +295,7 @@
 
         // Clear all favorites
         function clearFavorites() {
+            console.log('clearFavorites');
             favorites = [];
             localStorage.removeItem('favorites');
             displayFavorites();
@@ -344,7 +366,7 @@
                 try {
                     const response = await fetch(`${API_BASE}/eta/${fav.stop}/${route}/${serviceType}`);
                     const data = await response.json();
-                    displayETA(fav, data.data || []);
+                    displayETA(fav, data.data || [], true);
                 } catch (error) {
                     console.error('載入到站時間失敗:', error);
                 }
@@ -352,7 +374,7 @@
         }
 
         // Display ETA for a specific favorite
-        function displayETA(fav, etaData) {
+        function displayETA(fav, etaData, bfav = false) {
             const etaDiv = document.createElement('div');
             
             const [route, bound, serviceType] = fav.route.split('-');
@@ -371,8 +393,40 @@
                 return diffMinutes <= 0 ? '即將到站' : `${diffMinutes} 分鐘`;
             }).filter(time => time !== null).join(', ');
 
-            etaDiv.innerHTML += `<p class="text-gray-600 dark:text-gray-400">到站時間: ${arrivalTimes || '暫無資料'}</p>`;
+            etaDiv.innerHTML += `<p class="arrival-time">${`到站時間 : ${arrivalTimes}` || '暫無資料'}</p>`;
+            
+            if (!bfav)
+            {
+                const addFavBtn = document.createElement('span');
+                addFavBtn.textContent = '⭐ 加入最愛';
+                addFavBtn.className = 'add-favorite';
+                addFavBtn.onclick = () => {
+                    addToFavorites();
+                };
+                etaDiv.appendChild(addFavBtn);
+            }
+            else
+            {
+                // Add delete button
+                const deleteBtn = document.createElement('span');
+                deleteBtn.textContent = '刪除';
+                deleteBtn.className = 'delete-favorite';
+                deleteBtn.onclick = () => {
+                    deleteFavorite(fav);
+                };
+                etaDiv.appendChild(deleteBtn);
+            }
+            
             etaList.appendChild(etaDiv);
+        }
+
+        // Delete a specific favorite
+        function deleteFavorite(favToDelete) {
+            favorites = favorites.filter(fav => !(fav.route === favToDelete.route && fav.stop === favToDelete.stop));
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            displayFavorites();
+            etaList.innerHTML = ''; // Clear ETA display
+            loadETAForSelectedRoute(); // Reload ETA for current selections
         }
 
         // Add to favorites
@@ -393,7 +447,8 @@
 
         // Display favorites
         function displayFavorites() {
-            console.log('display fav');
+
+            console.log('displayFavorites');
             favoritesList.innerHTML = '';
             favorites.forEach(fav => {
                 const listItem = document.createElement('li');
@@ -402,16 +457,12 @@
 
                 listItem.textContent = `${routeText} - ${stopText}`;
                 favoritesList.appendChild(listItem);
-                listItem.addEventListener('click', () => {
-                    routeSelect.value = fav.route;
-                    stopSelect.value = fav.stop;
-                    onRouteChange();
-                });
             });
         }
 
         // Refresh ETA
         function refreshETA() {
+            console.log('refreshETA');
             loadETAForSelectedRoute();
         }
 
