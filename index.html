@@ -49,70 +49,70 @@
 </head>
 <body class="bg-white dark:bg-gray-900 min-h-screen transition-colors duration-300">
     <div class="container mx-auto px-4 py-6 max-w-4xl">
-        <!-- 標題 -->
+        <!-- Title -->
         <header class="text-center mb-8">
             <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2">🚌 九巴到站時間查詢</h1>
             <p class="text-gray-600 dark:text-gray-400">查詢香港九龍巴士即時到站時間</p>
         </header>
 
-        <!-- 載入狀態 -->
+        <!-- Loading State -->
         <div id="loadingMessage" class="text-center py-8">
             <div class="loading-spinner mx-auto mb-4"></div>
             <p class="text-gray-600 dark:text-gray-400">正在載入巴士路線資料...</p>
         </div>
 
-        <!-- 主要內容 -->
+        <!-- Main Content -->
         <div id="mainContent" class="hidden space-y-6">
-            <!-- 路線搜尋框 -->
+            <!-- Route Search Box -->
             <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                <label for="routeSearch" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    搜尋巴士路線
-                </label>
+                <label for="routeSearch" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">搜尋巴士路線</label>
                 <input type="text" id="routeSearch" placeholder="輸入路線號碼..." class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
             </div>
 
-            <!-- 路線選擇 -->
+            <!-- Route Selection -->
             <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
-                <label for="routeSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    選擇巴士路線
-                </label>
+                <label for="routeSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">選擇巴士路線</label>
                 <select id="routeSelect" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">請選擇路線...</option>
                 </select>
+                <button id="addFavoriteBtn" class="mt-2 px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">⭐ 加入最愛</button>
             </div>
 
-            <!-- 巴士站選擇 -->
+            <!-- Bus Stop Selection -->
             <div id="stopSection" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 hidden">
-                <label for="stopSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
-                    選擇巴士站
-                </label>
+                <label for="stopSelect" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">選擇巴士站</label>
                 <select id="stopSelect" class="w-full px-3 py-2 text-base border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary bg-white dark:bg-gray-700 text-gray-900 dark:text-white">
                     <option value="">請選擇巴士站...</option>
                 </select>
             </div>
 
-            <!-- 到站時間顯示 -->
+            <!-- Favorites Section -->
+            <div id="favoritesSection" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                <h3 class="text-lg font-semibold text-gray-900 dark:text-white">我的最愛</h3>
+                <ul id="favoritesList" class="space-y-2">
+                    <!-- Favorite routes will be displayed here -->
+                </ul>
+                <button id="clearFavoritesBtn" class="mt-2 px-3 py-1 text-sm bg-red-600 text-white rounded-md hover:bg-red-500 transition-colors focus:outline-none focus:ring-2 focus:ring-red-400">清除所有最愛</button>
+            </div>
+
+            <!-- ETA Section -->
             <div id="etaSection" class="bg-gray-50 dark:bg-gray-800 rounded-lg p-6 hidden">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-900 dark:text-white">到站時間</h3>
-                    <button id="refreshBtn" class="px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">
-                        🔄 重新整理
-                    </button>
+                    <button id="refreshBtn" class="px-3 py-1 text-sm bg-primary text-white rounded-md hover:bg-primary/90 transition-colors focus:outline-none focus:ring-2 focus:ring-primary/50">🔄 重新整理</button>
                 </div>
                 <div id="etaList" class="space-y-3">
-                    <!-- 到站時間會在這裡顯示 -->
+                    <!-- ETA will be displayed here -->
                 </div>
             </div>
         </div>
 
-        <!-- 錯誤訊息 -->
-        <div id="errorMessage" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-400 text-center">
-            載入資料時發生錯誤，請稍後再試。
-        </div>
+        <!-- Error Message -->
+        <div id="errorMessage" class="hidden bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-red-700 dark:text-red-400 text-center">載入資料時發生錯誤，請稍後再試。</div>
     </div>
 
     <script>
-        // 暗黑模式支援
+        // Dark mode support
         if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
             document.documentElement.classList.add('dark');
         }
@@ -124,13 +124,14 @@
             }
         });
 
-        // 全域變數
+        // Global variables
         let routes = [];
         let stops = {};
         let routeStops = {};
-        let originalRoutes = []; // 存儲原始路線數據
-        
-        // DOM 元素
+        let originalRoutes = [];
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+        // DOM elements
         const loadingMessage = document.getElementById('loadingMessage');
         const mainContent = document.getElementById('mainContent');
         const errorMessage = document.getElementById('errorMessage');
@@ -141,23 +142,42 @@
         const etaList = document.getElementById('etaList');
         const refreshBtn = document.getElementById('refreshBtn');
         const routeSearch = document.getElementById('routeSearch');
+        const favoritesList = document.getElementById('favoritesList');
+        const addFavoriteBtn = document.getElementById('addFavoriteBtn');
+        const clearFavoritesBtn = document.getElementById('clearFavoritesBtn');
 
-        // API 基礎 URL
+        // API base URL
         const API_BASE = 'https://data.etabus.gov.hk/v1/transport/kmb';
 
-        // 初始化應用程式
+        // Initialize application
         async function initApp() {
             try {
                 await loadRoutes();
                 await loadStops();
                 await loadRouteStops();
-                
-                originalRoutes = [...routes]; // 保存原始路線數據
+
+                originalRoutes = [...routes];
                 populateRouteSelect();
                 setupEventListeners();
-                
+                displayFavorites();
+
                 hideLoading();
                 showMainContent();
+
+                // Load ETA for favorites
+                for (const fav of favorites) {
+                    if (!fav.route || !fav.stop) continue; // Ensure both route and stop exist
+
+                    const [route, bound, serviceType] = fav.route.split('-');
+                    try {
+                        const response = await fetch(`${API_BASE}/eta/${fav.stop}/${route}/${serviceType}`);
+                        const data = await response.json();
+                        displayETA(fav, data.data || []);
+                    } catch (error) {
+                        console.error('載入到站時間失敗:', error);
+                    }
+                    showETASection();
+                }
             } catch (error) {
                 console.error('初始化失敗:', error);
                 hideLoading();
@@ -165,33 +185,29 @@
             }
         }
 
-        // 載入所有路線
+        // Load all routes
         async function loadRoutes() {
             const response = await fetch(`${API_BASE}/route/`);
             const data = await response.json();
             routes = data.data || [];
         }
 
-        // 載入所有巴士站
+        // Load all bus stops
         async function loadStops() {
             const response = await fetch(`${API_BASE}/stop/`);
             const data = await response.json();
             const stopsArray = data.data || [];
-            
-            // 轉換為以 stop_id 為鍵的物件
             stops = {};
             stopsArray.forEach(stop => {
                 stops[stop.stop] = stop;
             });
         }
 
-        // 載入路線-巴士站關係
+        // Load route-stop relationships
         async function loadRouteStops() {
             const response = await fetch(`${API_BASE}/route-stop/`);
             const data = await response.json();
             const routeStopsArray = data.data || [];
-            
-            // 按路線分組
             routeStops = {};
             routeStopsArray.forEach(rs => {
                 const key = `${rs.route}-${rs.bound}-${rs.service_type}`;
@@ -201,7 +217,6 @@
                 routeStops[key].push(rs);
             });
 
-            // 按序號排序
             Object.keys(routeStops).forEach(key => {
                 routeStops[key].sort((a, b) => a.seq - b.seq);
             });
@@ -212,8 +227,7 @@
             route = [...originalRoutes];
             populateRouteSelect();
         }
-
-        // 填充路線選擇框
+        // Populate route selection
         function populateRouteSelect() {
             routeSelect.innerHTML = '<option value="">請選擇路線...</option>';
             const sortedRoutes = routes.sort((a, b) => {
@@ -228,32 +242,23 @@
                 return a.route.localeCompare(b.route);
             });
 
-            const routeOptions = {};
             sortedRoutes.forEach(route => {
-                const key = route.route;
-                if (!routeOptions[key]) {
-                    routeOptions[key] = [];
-                }
-                routeOptions[key].push(route);
-            });
-
-            Object.keys(routeOptions).forEach(routeNum => {
-                const routeVariants = routeOptions[routeNum];
-                routeVariants.forEach(route => {
-                    const option = document.createElement('option');
-                    option.value = `${route.route}-${route.bound}-${route.service_type}`;
-                    const directionText = route.bound === 'O' ? '往' : '回';
-                    option.textContent = `${route.route} ( ${route.orig_tc} ${directionText} ${route.dest_tc} )`;
-                    routeSelect.appendChild(option);
-                });
+                const option = document.createElement('option');
+                option.value = `${route.route}-${route.bound}-${route.service_type}`;
+                const directionText = route.bound === 'O' ? '往' : '回';
+                option.textContent = `${route.route} ( ${route.orig_tc} ${directionText} ${route.dest_tc} )`;
+                routeSelect.appendChild(option);
             });
         }
 
-        // 設定事件監聽器
+        // Setup event listeners
         function setupEventListeners() {
             routeSelect.addEventListener('change', onRouteChange);
             stopSelect.addEventListener('change', onStopChange);
             refreshBtn.addEventListener('click', refreshETA);
+            addFavoriteBtn.addEventListener('click', addToFavorites);
+            clearFavoritesBtn.addEventListener('click', clearFavorites);
+            //routeSearch.addEventListener('keyup', filterRoutes);
             let timeout;
             routeSearch.addEventListener('keyup', () => {
                 
@@ -267,7 +272,15 @@
             });
         }
 
-        // 路線改變事件
+        // Clear all favorites
+        function clearFavorites() {
+            favorites = [];
+            localStorage.removeItem('favorites');
+            displayFavorites();
+            etaList.innerHTML = ''; // Clear ETA display
+        }
+
+        // Route change event
         function onRouteChange() {
             const selectedRoute = routeSelect.value;
             if (!selectedRoute) {
@@ -281,7 +294,7 @@
             hideETASection();
         }
 
-        // 填充巴士站選擇框
+        // Populate stop selection
         function populateStopSelect(routeKey) {
             stopSelect.innerHTML = '<option value="">請選擇巴士站...</option>';
             const stopsForRoute = routeStops[routeKey] || [];
@@ -289,7 +302,7 @@
             
             stopsForRoute.forEach(rs => {
                 const stop = stops[rs.stop];
-                if (stop && !addedStops.has(rs.stop)) { // Check if the stop has already been added
+                if (stop && !addedStops.has(rs.stop)) {
                     addedStops.add(rs.stop);
                     const option = document.createElement('option');
                     option.value = rs.stop;
@@ -299,132 +312,110 @@
             });
         }
 
-        // 巴士站改變事件
+        // Bus stop change event
         function onStopChange() {
-            const selectedStop = stopSelect.value;
-            if (!selectedStop) {
-                hideETASection();
-                return;
-            }
-
             showETASection();
-            loadETA();
+            loadETAForSelectedRoute();
         }
 
-        // 載入到站時間
-        async function loadETA() {
+        // Load ETA for selected route and favorites
+        async function loadETAForSelectedRoute() {
+            const selectedRoute = routeSelect.value;
+            const selectedStop = stopSelect.value;
+            
+            etaList.innerHTML = ''; // Clear previous ETA display
+
+            if (selectedRoute && selectedStop) {
+                const [route, bound, serviceType] = selectedRoute.split('-');
+                try {
+                    const response = await fetch(`${API_BASE}/eta/${selectedStop}/${route}/${serviceType}`);
+                    const data = await response.json();
+                    displayETA({ route: selectedRoute, stop: selectedStop }, data.data || []);
+                } catch (error) {
+                    console.error('載入到站時間失敗:', error);
+                }
+            }
+
+            // Load ETA for favorites
+            for (const fav of favorites) {
+                if (!fav.route || !fav.stop) continue; // Ensure both route and stop exist
+
+                const [route, bound, serviceType] = fav.route.split('-');
+                try {
+                    const response = await fetch(`${API_BASE}/eta/${fav.stop}/${route}/${serviceType}`);
+                    const data = await response.json();
+                    displayETA(fav, data.data || []);
+                } catch (error) {
+                    console.error('載入到站時間失敗:', error);
+                }
+            }
+        }
+
+        // Display ETA for a specific favorite
+        function displayETA(fav, etaData) {
+            const etaDiv = document.createElement('div');
+            
+            const [route, bound, serviceType] = fav.route.split('-');
+            etaDiv.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 fade-in';
+            etaDiv.innerHTML = `<h4 class="font-semibold text-gray-900 dark:text-white">${route} - ${stops[fav.stop]?.name_tc || '未知站點'}</h4>`;
+            console.log(`selected route -> ${fav.route}`);
+            const arrivalTimes = etaData.map(eta => {
+                console.log(`${bound} vs ${eta.dir}`);
+                if (bound !== eta.dir) 
+                {
+                    return null;
+                }
+                const etaTime = new Date(eta.eta);
+                const now = new Date();
+                const diffMinutes = Math.round((etaTime - now) / 60000);
+                return diffMinutes <= 0 ? '即將到站' : `${diffMinutes} 分鐘`;
+            }).filter(time => time !== null).join(', ');
+
+            etaDiv.innerHTML += `<p class="text-gray-600 dark:text-gray-400">到站時間: ${arrivalTimes || '暫無資料'}</p>`;
+            etaList.appendChild(etaDiv);
+        }
+
+        // Add to favorites
+        function addToFavorites() {
             const selectedRoute = routeSelect.value;
             const selectedStop = stopSelect.value;
 
-            // Get the displayed text for the selected route
-            let selectedText = '';
-            for (let option of routeSelect.options) {
-                if (option.value === selectedRoute) {
-                    selectedText = option.text; // Get the displayed text
-                    break; // Exit the loop once found
-                }
+            if (!selectedRoute || !selectedStop || favorites.some(fav => fav.route === selectedRoute && fav.stop === selectedStop)) {
+                return; // Prevent duplicates
             }
 
-            if (!selectedRoute || !selectedStop) return;
-
-            const [route, bound, serviceType] = selectedRoute.split('-');
-            
-            try {
-                showETALoading();
-                const response = await fetch(`${API_BASE}/eta/${selectedStop}/${route}/${serviceType}`);
-                const data = await response.json();
-                
-                displayETA(selectedText, data.data || []);
-            } catch (error) {
-                console.error('載入到站時間失敗:', error);
-                showETAError();
-            }
+            const favorite = { route: selectedRoute, stop: selectedStop };
+            favorites.push(favorite);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            displayFavorites();
+            loadETAForSelectedRoute(); // Load ETA for new favorite
         }
 
-        // 顯示到站時間
-        function displayETA(route, etaData) {
-            etaList.innerHTML = '';
-            
-            if (etaData.length === 0) {
-                etaList.innerHTML = '<p class="text-gray-500 dark:text-gray-400 text-center py-4">暫無到站時間資料</p>';
-                return;
-            }
+        // Display favorites
+        function displayFavorites() {
+            console.log('display fav');
+            favoritesList.innerHTML = '';
+            favorites.forEach(fav => {
+                const listItem = document.createElement('li');
+                const routeText = Array.from(routeSelect.options).find(option => option.value === fav.route)?.text || '未知路線';
+                const stopText = stops[fav.stop]?.name_tc || '未知站點';
 
-            etaData.forEach((eta, index) => {
-                
-                if (route.includes("往") && eta.dir !== 'O') 
-                {
-                    return;
-                } 
-                else if (route.includes("回") && eta.dir != 'I')
-                {
-                    return;
-                }
-                
-                const etaDiv = document.createElement('div');
-                etaDiv.className = 'bg-white dark:bg-gray-700 p-4 rounded-lg border border-gray-200 dark:border-gray-600 fade-in';
-                
-                let timeDisplay = '';
-                let statusClass = '';
-                
-                if (eta.eta) {
-                    const etaTime = new Date(eta.eta);
-                    const now = new Date();
-                    const diffMinutes = Math.round((etaTime - now) / 60000);
-                    
-                    if (diffMinutes <= 0) {
-                        timeDisplay = '即將到站';
-                        statusClass = 'text-red-600 dark:text-red-400';
-                    } else if (diffMinutes <= 2) {
-                        timeDisplay = `${diffMinutes} 分鐘`;
-                        statusClass = 'text-orange-600 dark:text-orange-400';
-                    } else {
-                        timeDisplay = `${diffMinutes} 分鐘`;
-                        statusClass = 'text-green-600 dark:text-green-400';
-                    }
-                    
-                    const etaTimeStr = etaTime.toLocaleTimeString('zh-HK', { 
-                        hour: '2-digit', 
-                        minute: '2-digit' 
-                    });
-                    
-                    const boundText = eta.dir === 'O' ? '往' : '回';
-                    
-                    etaDiv.innerHTML = `
-                        <div class="flex justify-between items-center">
-                            <div>
-                                <div class="font-semibold text-gray-900 dark:text-white">
-                                    第 ${index + 1} 班車 (${boundText})
-                                </div>
-                                <div class="text-sm text-gray-600 dark:text-gray-400">
-                                    預計到站: ${etaTimeStr}
-                                </div>
-                            </div>
-                            <div class="text-right">
-                                <div class="text-lg font-bold ${statusClass}">
-                                    ${timeDisplay}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    etaDiv.innerHTML = `
-                        <div class="text-center text-gray-500 dark:text-gray-400">
-                            第 ${index + 1} 班車 - 暫無資料
-                        </div>
-                    `;
-                }
-                
-                etaList.appendChild(etaDiv);
+                listItem.textContent = `${routeText} - ${stopText}`;
+                favoritesList.appendChild(listItem);
+                listItem.addEventListener('click', () => {
+                    routeSelect.value = fav.route;
+                    stopSelect.value = fav.stop;
+                    onRouteChange();
+                });
             });
         }
 
-        // 重新整理到站時間
+        // Refresh ETA
         function refreshETA() {
-            loadETA();
+            loadETAForSelectedRoute();
         }
 
-        // 顯示到站時間載入狀態
+        // Show loading
         function showETALoading() {
             etaList.innerHTML = `
                 <div class="text-center py-4">
@@ -434,93 +425,61 @@
             `;
         }
 
-        // 顯示到站時間錯誤
+        // Show error
         function showETAError() {
-            etaList.innerHTML = `
-                <div class="text-center py-4 text-red-600 dark:text-red-400">
-                    載入到站時間失敗，請稍後再試
-                </div>
-            `;
+            etaList.innerHTML = `<div class="text-center py-4 text-red-600 dark:text-red-400">載入到站時間失敗，請稍後再試</div>`;
         }
 
-        // UI 控制函數
+        // Hide loading
         function hideLoading() {
             loadingMessage.classList.add('hidden');
         }
 
+        // Show main content
         function showMainContent() {
             mainContent.classList.remove('hidden');
         }
 
+        // Show error
         function showError() {
             errorMessage.classList.remove('hidden');
         }
 
+        // Show stop section
         function showStopSection() {
             stopSection.classList.remove('hidden');
-            stopSection.classList.add('fade-in');
         }
 
+        // Hide stop section
         function hideStopSection() {
             stopSection.classList.add('hidden');
         }
 
+        // Show ETA section
         function showETASection() {
             etaSection.classList.remove('hidden');
-            etaSection.classList.add('fade-in');
         }
 
+        // Hide ETA section
         function hideETASection() {
             etaSection.classList.add('hidden');
         }
 
-        // 路線搜尋過濾
+        // Filter routes
         function filterRoutes() {
-            
-            //alert(`顯示的選項: ${shouldDisplay.join(', ')}`);
+            console.log('filter');
             const query = routeSearch.value.toLowerCase();
             const options = Array.from(routeSelect.options);
-            const shouldDisplay = [];
-
-            // 清空選項
-            routeSelect.innerHTML = '';
-
-            // 添加“請選擇路線...”選項
-            const defaultOption = document.createElement('option');
-            defaultOption.value = '';
-            defaultOption.textContent = '請選擇路線...';
-            routeSelect.appendChild(defaultOption);
+            routeSelect.innerHTML = '<option value="">請選擇路線...</option>'; // Reset options
 
             options.forEach(option => {
-                const display = option.value && option.text.toLowerCase().includes(query);
-                
-                if (display) {
-                    // 將符合條件的選項添加到下拉框
-                    const newOption = document.createElement('option');
-                    newOption.value = option.value;
-                    newOption.textContent = option.text;
-                    routeSelect.appendChild(newOption);
-                    shouldDisplay.push(option.text);
+                if (option.value && option.text.toLowerCase().includes(query)) {
+                    routeSelect.appendChild(option.cloneNode(true));
                 }
             });
-
-            // 如果沒有匹配的選項，重置選擇
-            //if (shouldDisplay.length === 0) {
-                routeSelect.selectedIndex = 0;
-            //     // 自動選擇第一個匹配的選項
-            //     routeSelect.selectedIndex = 1; // 1因為0是默認選項
-            // }
-
-            // 使用 setTimeout 來延遲添加事件監聽器
-            // setTimeout(() => {
-            //     setupEventListeners();
-            // }, 0);
-
-            // 彈出消息顯示應顯示的選項
-            //alert(`顯示的選項: ${shouldDisplay.join(', ')}`);
         }
 
-        // 啟動應用程式
+        // Start application
         document.addEventListener('DOMContentLoaded', initApp);
     </script>
 </body>
