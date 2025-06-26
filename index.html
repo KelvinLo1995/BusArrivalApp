@@ -150,6 +150,7 @@
         let stops = {};
         let routeStops = {};
         let originalRoutes = [];
+        let allRoutes = [];
         let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
         // DOM elements
@@ -176,6 +177,8 @@
                 await loadRoutes();
                 await loadStops();
                 await loadRouteStops();
+                
+
 
                 originalRoutes = [...routes];
                 populateRouteSelect();
@@ -184,6 +187,8 @@
 
                 hideLoading();
                 showMainContent();
+
+                allRoutes = Array.from(routeSelect.options);
 
                 // Load ETA for favorites
                 for (const fav of favorites) {
@@ -436,7 +441,7 @@
 
             if (bfav)
             {
-                const routeText = Array.from(routeSelect.options).find(option => option.value === fav.route)?.text || '未知路線';
+                const routeText = allRoutes.find(option => option.value === fav.route)?.text || '未知路線';
                 const[_route, dummy, _start, _dir, _des] = routeText.split(' ');
                 etaDiv.innerHTML = `<h4 class="font-semibold text-gray-900 dark:text-white">${bfav ? `🚌` : ``} ${route + ' ' + _dir + ` ` +  _des} - ${stops[fav.stop]?.name_tc || '未知站點'}</h4>`;
             }
