@@ -387,7 +387,8 @@
                 return diffMinutes <= 0 ? '即將到站' : `${diffMinutes} 分鐘`;
             }).filter(time => time !== null).join(', ');
 
-            etaDiv.innerHTML += `<p class="arrival-time">${`到站時間 : ${arrivalTimes}` || '暫無資料'}</p>`;
+            // Use Tailwind classes for text color based on theme
+            etaDiv.innerHTML += `<p class="arrival-time text-gray-900 dark:text-white">${`到站時間 : ${arrivalTimes}` || '暫無資料'}</p>`;
             
             // Check for duplicates before appending
             if (!document.getElementById(etaDivId)) {
