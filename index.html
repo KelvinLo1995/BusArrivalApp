@@ -1,339 +1,193 @@
 <!doctype html>
 <html lang="zh-Hant-HK">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0d13">
-<title>HK Transit ETA</title>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070910"><title>HK Transit ETA</title>
 <style>
-:root{--bg:#070910;--line:rgba(255,255,255,.12);--text:#f8fbff;--sub:#9aa8bf;--blue:#0a84ff;--green:#30d158;--red:#ff453a;--shadow:0 24px 70px rgba(0,0,0,.38)}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 18% -8%,#24365c 0,#0d1321 34%,#070910 76%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif}button,input,select{font:inherit}.app{width:min(430px,100%);min-height:100svh;margin:0 auto;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}.top{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 16px}.brand{display:flex;align-items:center;gap:12px}.icon{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#36a3ff,#6d5cff);display:grid;place-items:center;font-size:25px;box-shadow:0 14px 36px rgba(10,132,255,.35)}h1{font-size:28px;letter-spacing:-.8px;margin:0;line-height:1}.subtitle{font-size:12px;color:#b2c7e9;margin-top:2px}.circle{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-size:20px;box-shadow:var(--shadow)}.glass{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.045));border-radius:30px;box-shadow:var(--shadow);overflow:hidden}.pad{padding:14px}.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:rgba(0,0,0,.24);padding:5px;border-radius:22px}.seg button{border:0;border-radius:17px;color:var(--sub);background:transparent;padding:12px 8px;font-weight:900}.seg button.on{color:white;background:linear-gradient(135deg,#0a84ff,#5e5ce6)}.display{margin:12px 0 10px;border-radius:28px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);padding:14px}.routeInput{width:100%;border:0;outline:0;background:transparent;color:white;text-align:center;font-size:46px;font-weight:950;letter-spacing:1px;text-transform:uppercase;padding:4px 0}.routeInput::placeholder{color:rgba(255,255,255,.20);font-size:34px}.hint{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.pill{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--sub);font-size:11px;font-weight:700;border-radius:999px;padding:6px 8px}
-/* aligned keypad: every key same size, no spanning */
-.keyboard{display:grid;grid-template-columns:1fr 1.28fr;gap:10px;align-items:stretch}.keyBox{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:9px;display:flex;flex-direction:column}.keyTitle{text-align:center;color:#aab4c8;font-size:10px;font-weight:950;letter-spacing:.7px;margin-bottom:8px}.numPad,.charPad{display:grid;gap:7px}.numPad{grid-template-columns:repeat(3,minmax(0,1fr))}.charPad{grid-template-columns:repeat(4,minmax(0,1fr))}.key{width:100%;height:42px;min-width:0;border-radius:15px;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));color:white;font-size:17px;font-weight:950;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);padding:0;text-align:center}.key:active{transform:scale(.96);filter:brightness(1.25)}.key.back{background:linear-gradient(180deg,#1d8cff,#0761c7)}.key.clear{background:linear-gradient(180deg,#ff5b70,#b3203f)}
+:root{--bg:#070910;--line:rgba(255,255,255,.12);--text:#f8fbff;--sub:#9aa8bf;--green:#30d158;--red:#ff453a;--shadow:0 24px 70px rgba(0,0,0,.38)}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 18% -8%,#24365c 0,#0d1321 34%,#070910 76%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif}button,input,select{font:inherit}.app{width:min(430px,100%);min-height:100svh;margin:0 auto;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}.top{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 16px}.brand{display:flex;align-items:center;gap:12px}.icon{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#36a3ff,#6d5cff);display:grid;place-items:center;font-size:25px;box-shadow:0 14px 36px rgba(10,132,255,.35)}h1{font-size:28px;letter-spacing:-.8px;margin:0;line-height:1}.subtitle{font-size:12px;color:#b2c7e9;margin-top:2px}.circle{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-size:20px;box-shadow:var(--shadow)}.glass{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.045));border-radius:30px;box-shadow:var(--shadow);overflow:hidden}.pad{padding:14px}.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:rgba(0,0,0,.24);padding:5px;border-radius:22px}.seg button{border:0;border-radius:17px;color:var(--sub);background:transparent;padding:12px 8px;font-weight:900}.seg button.on{color:white;background:linear-gradient(135deg,#0a84ff,#5e5ce6)}.display{margin:12px 0 10px;border-radius:28px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);padding:14px}.routeInput{width:100%;border:0;outline:0;background:transparent;color:white;text-align:center;font-size:46px;font-weight:950;letter-spacing:1px;text-transform:uppercase;padding:4px 0}.routeInput::placeholder{color:rgba(255,255,255,.20);font-size:34px}.hint{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.pill{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--sub);font-size:11px;font-weight:700;border-radius:999px;padding:6px 8px}
+.keyboard{display:grid;grid-template-columns:1fr 1.28fr;gap:10px;align-items:stretch}.keyBox{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:9px;display:flex;flex-direction:column}.keyTitle{text-align:center;color:#aab4c8;font-size:10px;font-weight:950;letter-spacing:.7px;margin-bottom:8px}.numPad,.charPad{display:grid;gap:7px}.numPad{grid-template-columns:repeat(3,minmax(0,1fr))}.charPad{grid-template-columns:repeat(4,minmax(0,1fr))}.key{width:100%;height:42px;min-width:0;border-radius:15px;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));color:white;font-size:17px;font-weight:950;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);padding:0}.key:active{transform:scale(.96);filter:brightness(1.25)}.key.back{background:linear-gradient(180deg,#1d8cff,#0761c7)}.key.clear{background:linear-gradient(180deg,#ff5b70,#b3203f)}
 .titleRow{display:flex;align-items:end;justify-content:space-between;margin:18px 4px 10px}.titleRow b{font-size:20px}.count{font-size:12px;color:var(--sub)}.routes{display:flex;flex-direction:column;gap:10px}.routeCard{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border-radius:24px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.routeCard:active{transform:scale(.985)}.rno{font-size:28px;font-weight:950;letter-spacing:-.4px}.meta{font-size:12px;color:var(--sub);line-height:1.35}.tag{border-radius:999px;padding:6px 9px;font-size:11px;font-weight:950;border:1px solid var(--line);white-space:nowrap}.kmb{background:rgba(255,159,10,.20);color:#ffd49e}.ctb{background:rgba(10,132,255,.22);color:#a9d3ff}.gmb{background:rgba(48,209,88,.18);color:#aaffc4}.empty{border:1px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.035);border-radius:24px;padding:24px 15px;text-align:center;color:var(--sub);font-size:14px;line-height:1.45}.status{margin-top:14px;border:1px solid rgba(255,255,255,.09);background:rgba(0,0,0,.18);border-radius:22px;padding:12px 13px;color:var(--sub);font-size:12px;line-height:1.45}.ok{color:var(--green)}.err{color:#ff8a82}.hidden{display:none!important}.bottomTabs{position:sticky;bottom:8px;z-index:4;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;padding:7px;border:1px solid var(--line);border-radius:24px;background:rgba(7,9,16,.84);backdrop-filter:blur(22px);box-shadow:var(--shadow)}.bottomTabs button{border:0;border-radius:18px;background:transparent;color:var(--sub);padding:11px 4px;font-weight:950;font-size:13px}.bottomTabs button.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.miniBtn{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.08);color:white;padding:10px 12px;font-weight:900}.miniBtn.danger{background:rgba(255,69,58,.18);color:#ffb0aa}.miniBtn.ok{background:rgba(48,209,88,.16);color:#b8ffd0}.rowBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.optBlock{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:24px;padding:14px;margin-bottom:12px}.optBlock h3{margin:0 0 8px;font-size:17px}.saveAction{margin-top:9px;width:100%;border:1px solid var(--line);border-radius:21px;padding:13px;background:rgba(48,209,88,.16);color:#c8ffd7;font-size:15px;font-weight:950}
 .sheet{position:fixed;left:50%;bottom:0;width:min(430px,100vw);max-height:88svh;overflow:auto;transform:translateX(-50%) translateY(110%);transition:.25s cubic-bezier(.2,.8,.2,1);z-index:9;padding:10px 14px calc(16px + env(safe-area-inset-bottom));border-radius:34px 34px 0 0;border:1px solid var(--line);border-bottom:0;background:rgba(14,18,27,.96);backdrop-filter:blur(30px);box-shadow:0 -30px 90px rgba(0,0,0,.55)}.sheet.show{transform:translateX(-50%) translateY(0)}.grab{width:44px;height:5px;background:rgba(255,255,255,.28);border-radius:99px;margin:4px auto 12px}.sheetHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.close{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.10);color:white;font-size:20px}.selectBox{margin-top:12px}.selectBox label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}select{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:19px;padding:14px;font-size:15px;outline:0}option{background:#111520}.primary{width:100%;margin-top:13px;border:0;border-radius:21px;padding:15px;background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white;font-size:16px;font-weight:950}.eta{margin-top:12px}.etaRow{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.075);border-radius:22px;padding:14px;margin-bottom:9px}.etaMin{font-size:35px;font-weight:950;color:var(--green);letter-spacing:-1px}.etaMin small{font-size:13px;color:var(--sub)}
-.groupBar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 0 8px}.groupChip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.07);color:var(--sub);padding:9px 13px;font-weight:950}.groupChip.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.savedMonitorCard{position:relative;display:grid;grid-template-columns:1fr 126px;gap:10px;align-items:center;width:100%;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border-radius:26px;padding:14px 40px 24px 14px;min-height:112px}.savedRouteTitle{font-size:19px;font-weight:950;line-height:1.05;letter-spacing:-.2px;margin-bottom:7px}.savedPair{font-size:14px;line-height:1.42;color:#c8d4ea;font-weight:750}.savedPair .label{color:#8fa0bb;font-weight:900}.savedEta{display:flex;flex-direction:row;gap:8px;align-items:baseline;justify-content:flex-end;white-space:nowrap}.etaChip{text-align:right}.etaChip .min{font-size:13px;font-weight:950;color:var(--green)}.etaChip.first .min{font-size:27px}.etaChip.emptyEta{font-size:12px;color:var(--sub)}.savedMore{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-weight:950;line-height:1}.savedMenu{position:absolute;top:42px;right:10px;z-index:20;display:none;flex-direction:column;gap:6px;min-width:130px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(11,15,24,.96);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.savedMenu.show{display:flex}.savedMenu button{border:0;border-radius:13px;padding:10px 12px;text-align:left;background:rgba(255,255,255,.08);color:white;font-weight:900}.savedMenu button.danger{background:rgba(255,69,58,.20);color:#ffb0aa}.savedUpdated{position:absolute;right:14px;bottom:7px;font-size:10px;color:var(--sub)}.groupPicker{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(12px);z-index:30;width:min(400px,calc(100vw - 28px));display:none;gap:8px;overflow-x:auto;padding:10px;border:1px solid var(--line);border-radius:22px;background:rgba(9,12,20,.96);box-shadow:var(--shadow);backdrop-filter:blur(22px)}.groupPicker.show{display:flex;transform:translateX(-50%) translateY(0)}
+.groupBar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 0 8px}.groupChip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.07);color:var(--sub);padding:9px 13px;font-weight:950}.groupChip.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.saveHeader{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px}.editHint{font-size:12px;color:var(--sub)}.savedMonitorCard{position:relative;display:grid;grid-template-columns:1fr 126px;gap:10px;align-items:center;width:100%;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border-radius:26px;padding:14px 40px 24px 14px;min-height:112px;touch-action:pan-y}.savedMonitorCard.dragging{opacity:.55;transform:scale(.98)}.savedMonitorCard.dropBefore{box-shadow:0 -3px 0 #0a84ff inset}.savedMonitorCard.editing{animation:jiggle .18s infinite alternate;cursor:grab}.savedMonitorCard.editing:active{cursor:grabbing}.dragGrip{display:none;position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#9aa8bf;font-size:18px;font-weight:900}.editing .dragGrip{display:block}.savedMonitorCard.editing{padding-left:34px}.savedRouteTitle{font-size:19px;font-weight:950;line-height:1.05;letter-spacing:-.2px;margin-bottom:7px}.savedPair{font-size:14px;line-height:1.42;color:#c8d4ea;font-weight:750}.savedPair .label{color:#8fa0bb;font-weight:900}.savedTrip{font-size:12px;line-height:1.35;margin-top:3px;color:#b7d6ff;font-weight:850}.savedTrip .label{color:#8fa0bb;font-weight:900}.savedTrip.warn{color:#ffd49e}.savedEta{display:flex;flex-direction:row;gap:8px;align-items:baseline;justify-content:flex-end;white-space:nowrap}.etaChip{text-align:right}.etaChip .min{font-size:13px;font-weight:950;color:var(--green)}.etaChip.first .min{font-size:27px}.etaChip.emptyEta{font-size:12px;color:var(--sub)}.savedMore{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-weight:950;line-height:1}.savedMenu{position:absolute;top:42px;right:10px;z-index:20;display:none;flex-direction:column;gap:6px;min-width:130px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(11,15,24,.96);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.savedMenu.show{display:flex}.savedMenu button{border:0;border-radius:13px;padding:10px 12px;text-align:left;background:rgba(255,255,255,.08);color:white;font-weight:900}.savedMenu button.danger{background:rgba(255,69,58,.20);color:#ffb0aa}.savedUpdated{position:absolute;right:14px;bottom:7px;font-size:10px;color:var(--sub)}.groupPicker{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(12px);z-index:30;width:min(400px,calc(100vw - 28px));display:none;gap:8px;overflow-x:auto;padding:10px;border:1px solid var(--line);border-radius:22px;background:rgba(9,12,20,.96);box-shadow:var(--shadow);backdrop-filter:blur(22px)}.groupPicker.show{display:flex;transform:translateX(-50%) translateY(0)}@keyframes jiggle{from{transform:rotate(-.35deg)}to{transform:rotate(.35deg)}}
+.modalOverlay{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.48);backdrop-filter:blur(10px);padding:14px}.modalOverlay.show{display:flex}.modalCard{width:min(430px,100%);border:1px solid var(--line);border-radius:30px;background:rgba(14,18,27,.97);box-shadow:var(--shadow);padding:16px}.modalTitle{font-size:22px;font-weight:950;margin:0 0 4px}.modalSub{color:var(--sub);font-size:12px;line-height:1.4;margin-bottom:14px}.field{margin-top:12px}.field label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}.modalInput,.modalSelect,.modalTextArea{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:18px;padding:13px 14px;outline:0;font-size:15px}.modalTextArea{min-height:220px;resize:vertical;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;font-size:12px;line-height:1.35}.modalActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.modalBtn{border:0;border-radius:19px;padding:14px;font-size:15px;font-weight:950;color:white;background:rgba(255,255,255,.10)}.modalBtn.primary{background:linear-gradient(135deg,#0a84ff,#5e5ce6)}
 @media(max-width:370px){.keyboard{grid-template-columns:1fr}.routeInput{font-size:40px}.savedMonitorCard{grid-template-columns:1fr 112px}.savedRouteTitle{font-size:18px}.savedPair{font-size:13px}.etaChip.first .min{font-size:24px}.etaChip .min{font-size:12px}}
-
-/* save ETA custom modal */
-.modalOverlay{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.48);backdrop-filter:blur(10px);padding:14px}.modalOverlay.show{display:flex}.modalCard{width:min(430px,100%);border:1px solid var(--line);border-radius:30px;background:rgba(14,18,27,.97);box-shadow:var(--shadow);padding:16px}.modalTitle{font-size:22px;font-weight:950;margin:0 0 4px}.modalSub{color:var(--sub);font-size:12px;line-height:1.4;margin-bottom:14px}.field{margin-top:12px}.field label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}.modalInput,.modalSelect{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:18px;padding:13px 14px;outline:0;font-size:15px}.modalActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.modalBtn{border:0;border-radius:19px;padding:14px;font-size:15px;font-weight:950;color:white;background:rgba(255,255,255,.10)}.modalBtn.primary{background:linear-gradient(135deg,#0a84ff,#5e5ce6)}
-.savedTrip{font-size:12px;line-height:1.35;margin-top:3px;color:#b7d6ff;font-weight:850}.savedTrip .label{color:#8fa0bb;font-weight:900}.savedTrip.warn{color:#ffd49e}</style>
-</head>
-<body>
-<main class="app">
-<header class="top"><div class="brand"><div class="icon">🚌</div><div><h1>Transit</h1><div class="subtitle">Single HTML · Bus + Mini Bus</div></div></div><button class="circle" id="gpsBtn">⌖</button></header>
-<section class="glass pad" id="searchPanel"><div class="seg"><button id="busBtn" class="on">Bus</button><button id="gmbBtn">Mini Bus</button></div><div class="display"><input id="routeInput" class="routeInput" placeholder="ROUTE" autocomplete="off" inputmode="none"><div class="hint"><span class="pill">Left numbers</span><span class="pill">Right letters</span></div></div><div class="keyboard" id="keyboard"></div></section>
-<div class="titleRow" id="searchTitle"><b>Routes</b><span id="count" class="count">Loading routes...</span></div>
-<section id="routes" class="routes"><div class="empty">Loading official route data...</div></section>
-<section id="savedView" class="routes hidden"><div class="empty">No saved ETA monitor yet.</div></section>
-<section id="optionView" class="hidden"><div class="optBlock"><h3>Save groups</h3><div class="meta">Create custom save tabs to organise ETA monitors.</div><div class="rowBtns"><button id="addGroupBtn" class="miniBtn ok">Add save tab</button><button id="renameGroupBtn" class="miniBtn">Rename current tab</button><button id="deleteGroupBtn" class="miniBtn danger">Delete current tab</button></div></div><div class="optBlock"><h3>Route data</h3><div class="rowBtns"><button id="refetchBtn" class="miniBtn ok">Re-fetch route data</button><button id="clearHistoryBtn" class="miniBtn danger">Clear ETA history</button></div></div><div class="optBlock"><h3>Route detail cache</h3><div class="rowBtns"><button id="clearAllCacheBtn" class="miniBtn danger">Remove all cache</button></div><div id="cacheList" class="routes" style="margin-top:12px"></div></div></section>
-<nav class="bottomTabs"><button id="tabSearch" class="on">SEARCH</button><button id="tabSave">SAVE</button><button id="tabOption">OPTION</button></nav>
-<div id="status" class="status">Ready.</div>
-</main>
-<div id="groupPicker" class="groupPicker"></div>
-<div id="saveModal" class="modalOverlay">
-  <div class="modalCard">
-    <div class="modalTitle">Save ETA Monitor</div>
-    <div class="modalSub" id="saveModalSub">Choose a name and save group for this From / To ETA monitor.</div>
-    <div class="field"><label>Display name</label><input id="saveNameInput" class="modalInput" autocomplete="off"></div>
-    <div class="field"><label>Save group</label><select id="saveGroupSelect" class="modalSelect"></select></div>
-    <div class="field hidden" id="newGroupField"><label>New group name</label><input id="newGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div>
-    <div class="modalActions"><button id="saveCancelBtn" class="modalBtn">Cancel</button><button id="saveConfirmBtn" class="modalBtn primary">Save</button></div>
-  </div>
-</div>
-<div id="appModal" class="modalOverlay">
-  <div class="modalCard">
-    <div class="modalTitle" id="appModalTitle">Action</div>
-    <div class="modalSub" id="appModalSub"></div>
-    <div class="field" id="appTextField"><label id="appTextLabel">Input</label><input id="appTextInput" class="modalInput" autocomplete="off"></div>
-    <div class="field hidden" id="appSelectField"><label id="appSelectLabel">Select</label><select id="appSelectInput" class="modalSelect"></select></div>
-    <div class="field hidden" id="appNewGroupField"><label>New group name</label><input id="appNewGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div>
-    <div class="modalActions"><button id="appModalCancel" class="modalBtn">Cancel</button><button id="appModalOk" class="modalBtn primary">OK</button></div>
-  </div>
-</div>
-<section class="sheet" id="sheet"><div class="grab"></div><div class="sheetHead"><div><div id="sheetRoute" class="rno">Route</div><div id="sheetMeta" class="meta">Loading stops...</div></div><button id="close" class="close">×</button></div><div class="selectBox"><label>From stop</label><select id="fromStop"></select></div><div class="selectBox"><label>To stop</label><select id="toStop"></select></div><button id="etaBtn" class="primary">Show ETA</button><button id="saveBtn" class="saveAction">Save ETA Monitor</button><div id="eta" class="eta"><div class="empty">Select From / To.</div></div></section>
+</style></head><body><main class="app"><header class="top"><div class="brand"><div class="icon">🚌</div><div><h1>Transit</h1><div class="subtitle">Single HTML · Bus + Mini Bus</div></div></div><button class="circle" id="gpsBtn">⌖</button></header><section class="glass pad" id="searchPanel"><div class="seg"><button id="busBtn" class="on">Bus</button><button id="gmbBtn">Mini Bus</button></div><div class="display"><input id="routeInput" class="routeInput" placeholder="ROUTE" autocomplete="off" inputmode="none"><div class="hint"><span class="pill">Left numbers</span><span class="pill">Right letters</span></div></div><div class="keyboard" id="keyboard"></div></section><div class="titleRow" id="searchTitle"><b>Routes</b><span id="count" class="count">Loading routes...</span></div><section id="routes" class="routes"><div class="empty">Loading official route data...</div></section><section id="savedView" class="routes hidden"><div class="empty">No saved ETA monitor yet.</div></section><section id="optionView" class="hidden"><div class="optBlock"><h3>Save groups</h3><div class="meta">Create custom save tabs to organise ETA monitors.</div><div class="rowBtns"><button id="addGroupBtn" class="miniBtn ok">Add save tab</button><button id="renameGroupBtn" class="miniBtn">Rename current tab</button><button id="deleteGroupBtn" class="miniBtn danger">Delete current tab</button></div></div><div class="optBlock"><h3>Share config</h3><div class="meta">Export / combine-import saved ETA monitors, groups, order, names, selected group and ETA history.</div><div class="rowBtns"><button id="exportJsonBtn" class="miniBtn ok">Export JSON file</button><button id="importJsonBtn" class="miniBtn">Import JSON file</button><button id="exportTextBtn" class="miniBtn ok">Export text</button><button id="importTextBtn" class="miniBtn">Import text</button><input id="importFileInput" type="file" accept="application/json,.json" class="hidden"></div></div><div class="optBlock"><h3>Route data</h3><div class="rowBtns"><button id="refetchBtn" class="miniBtn ok">Re-fetch route data</button><button id="clearHistoryBtn" class="miniBtn danger">Clear ETA history</button></div></div><div class="optBlock"><h3>Route detail cache</h3><div class="rowBtns"><button id="clearAllCacheBtn" class="miniBtn danger">Remove all cache</button></div><div id="cacheList" class="routes" style="margin-top:12px"></div></div></section><nav class="bottomTabs"><button id="tabSearch" class="on">SEARCH</button><button id="tabSave">SAVE</button><button id="tabOption">OPTION</button></nav><div id="status" class="status">Ready.</div></main><div id="groupPicker" class="groupPicker"></div><div id="saveModal" class="modalOverlay"><div class="modalCard"><div class="modalTitle">Save ETA Monitor</div><div class="modalSub" id="saveModalSub">Choose a name and save group.</div><div class="field"><label>Display name</label><input id="saveNameInput" class="modalInput" autocomplete="off"></div><div class="field"><label>Save group</label><select id="saveGroupSelect" class="modalSelect"></select></div><div class="field hidden" id="newGroupField"><label>New group name</label><input id="newGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div><div class="modalActions"><button id="saveCancelBtn" class="modalBtn">Cancel</button><button id="saveConfirmBtn" class="modalBtn primary">Save</button></div></div></div><div id="appModal" class="modalOverlay"><div class="modalCard"><div class="modalTitle" id="appModalTitle">Action</div><div class="modalSub" id="appModalSub"></div><div class="field" id="appTextField"><label id="appTextLabel">Input</label><input id="appTextInput" class="modalInput" autocomplete="off"></div><div class="field hidden" id="appSelectField"><label id="appSelectLabel">Select</label><select id="appSelectInput" class="modalSelect"></select></div><div class="field hidden" id="appNewGroupField"><label>New group name</label><input id="appNewGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div><div class="modalActions"><button id="appModalCancel" class="modalBtn">Cancel</button><button id="appModalOk" class="modalBtn primary">OK</button></div></div></div><div id="configModal" class="modalOverlay"><div class="modalCard"><div class="modalTitle" id="configModalTitle">Config</div><div class="modalSub" id="configModalSub"></div><div class="field"><label id="configTextLabel">Config text</label><textarea id="configTextArea" class="modalTextArea" autocomplete="off" spellcheck="false"></textarea></div><div class="modalActions"><button id="configCancelBtn" class="modalBtn">Cancel</button><button id="configActionBtn" class="modalBtn primary">OK</button></div></div></div><section class="sheet" id="sheet"><div class="grab"></div><div class="sheetHead"><div><div id="sheetRoute" class="rno">Route</div><div id="sheetMeta" class="meta">Loading stops...</div></div><button id="close" class="close">×</button></div><div class="selectBox"><label>From stop</label><select id="fromStop"></select></div><div class="selectBox"><label>To stop</label><select id="toStop"></select></div><button id="etaBtn" class="primary">Show ETA</button><button id="saveBtn" class="saveAction">Save ETA Monitor</button><div id="eta" class="eta"><div class="empty">Select From / To.</div></div></section>
 <script>
 'use strict';
 const API={KMB:'https://data.etabus.gov.hk/v1/transport/kmb',CTB:'https://rt.data.gov.hk/v2/transport/citybus',GMB:'https://data.etagmb.gov.hk',HKBUS:'https://data.hkbus.app/routeFareList.min.json'};
 const $=id=>document.getElementById(id), routeInput=$('routeInput');
-let mode='BUS',busRoutes=[],gmbRoutes=[],active=[],currentStops=[],currentRoute=null,pos=null,hkbDb=null,activeGroupId='default',saveRefreshTimer=null,saveHoldTimer=null,appModalOkCb=null;const cache=new Map();
+let mode='BUS',busRoutes=[],gmbRoutes=[],active=[],currentStops=[],currentRoute=null,pos=null,hkbDb=null,activeGroupId='default',saveRefreshTimer=null,saveHoldTimer=null,appModalOkCb=null,editMode=false,dragKey=null;const cache=new Map();
 const LS_ROUTE_CACHE='hkTransit_routeDetailCache_v3',LS_SAVED='hkTransit_savedRoutes_v2',LS_GROUPS='hkTransit_savedGroups_v1',LS_ACTIVE_GROUP='hkTransit_activeGroup_v1',LS_ETA_HISTORY='hkTransit_savedEtaHistory_v2',LS_JT_HISTORY='hkTransit_journeyTimeHistory_v1';
-const numKeys=['1','2','3','4','5','6','7','8','9','0','⌫','CLR'];
-const charKeys=['A','B','C','D','E','F','H','K','M','N','P','R','S','T','W','X'];
-function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function toText(v){if(v==null)return '';if(typeof v==='string'||typeof v==='number')return String(v);if(Array.isArray(v))return toText(v.find(x=>toText(x))||v[0]);if(typeof v==='object')return toText(v.zh||v.tc||v.name_tc||v.name_zh||v.en||v.name_en||v.name||v.value||v.text||Object.values(v).find(x=>toText(x)));return String(v)}
-function stopIdOf(v){if(v==null)return '';if(typeof v==='string'||typeof v==='number')return String(v);if(Array.isArray(v))return stopIdOf(v[0]);if(typeof v==='object')return stopIdOf(v.stop_id||v.stopId||v.stop||v.id||v.gmb||v.value||v.code||v.gtfs_stop_id||v.gtfsStopId||v.stopID||v[0]);return String(v)}
-function status(s,c=''){$('status').innerHTML='<span class="'+c+'">'+esc(s)+'</span>'}
-async function fetchJsonOnce(url){let r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(r.status+' '+r.statusText);return await r.json()}
-async function json(url,ttl=300000){let n=Date.now(),c=cache.get(url);if(c&&n-c.t<ttl)return c.v;let lastErr=null;const urls=[url];if(url.includes('data.etagmb.gov.hk/eta/')){urls.push('https://corsproxy.io/?'+encodeURIComponent(url));urls.push('https://api.allorigins.win/raw?url='+encodeURIComponent(url));}for(const u of urls){const attempts=url.includes('data.etagmb.gov.hk/eta/')?2:1;for(let i=0;i<attempts;i++){try{let v=await fetchJsonOnce(u);cache.set(url,{t:n,v});return v}catch(e){lastErr=e;if(i<attempts-1)await new Promise(r=>setTimeout(r,450));}}}throw lastErr||new Error('Fetch failed')}
-function readLS(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}}function writeLS(k,v){localStorage.setItem(k,JSON.stringify(v))}
+const numKeys=['1','2','3','4','5','6','7','8','9','0','⌫','CLR'];const charKeys=['A','B','C','D','E','F','H','K','M','N','P','R','S','T','W','X'];
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}function toText(v){if(v==null)return '';if(typeof v==='string'||typeof v==='number')return String(v);if(Array.isArray(v))return toText(v.find(x=>toText(x))||v[0]);if(typeof v==='object')return toText(v.zh||v.tc||v.name_tc||v.name_zh||v.en||v.name_en||v.name||v.value||v.text||Object.values(v).find(x=>toText(x)));return String(v)}function stopIdOf(v){if(v==null)return '';if(typeof v==='string'||typeof v==='number')return String(v);if(Array.isArray(v))return stopIdOf(v[0]);if(typeof v==='object')return stopIdOf(v.stop_id||v.stopId||v.stop||v.id||v.gmb||v.value||v.code||v.gtfs_stop_id||v.gtfsStopId||v.stopID||v[0]);return String(v)}function status(s,c=''){$('status').innerHTML='<span class="'+c+'">'+esc(s)+'</span>'}async function fetchJsonOnce(url){let r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(r.status+' '+r.statusText);return await r.json()}async function json(url,ttl=300000){let n=Date.now(),c=cache.get(url);if(c&&n-c.t<ttl)return c.v;let lastErr=null;const urls=[url];if(url.includes('data.etagmb.gov.hk/eta/')){urls.push('https://corsproxy.io/?'+encodeURIComponent(url));urls.push('https://api.allorigins.win/raw?url='+encodeURIComponent(url));}for(const u of urls){const attempts=url.includes('data.etagmb.gov.hk/eta/')?2:1;for(let i=0;i<attempts;i++){try{let v=await fetchJsonOnce(u);cache.set(url,{t:n,v});return v}catch(e){lastErr=e;if(i<attempts-1)await new Promise(r=>setTimeout(r,450));}}}throw lastErr||new Error('Fetch failed')}function readLS(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}}function writeLS(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function getGroups(){let g=readLS(LS_GROUPS,null);if(!g||!g.length)g=[{id:'default',name:'Default'}];return g}function setGroups(g){writeLS(LS_GROUPS,g)}function setActiveGroup(id){activeGroupId=id;writeLS(LS_ACTIVE_GROUP,id);updateSaveTabText()}function getSaved(){return readLS(LS_SAVED,[])}function setSaved(v){writeLS(LS_SAVED,v)}function getEtaHistory(){return readLS(LS_ETA_HISTORY,{})}function setEtaHistoryForKey(k,d){let h=getEtaHistory();h[k]={...d,ts:Date.now()};writeLS(LS_ETA_HISTORY,h)}function getEtaHistoryForKey(k){return getEtaHistory()[k]||null}function getJtHistory(){return readLS(LS_JT_HISTORY,{})}function setJtHistoryForKey(k,d){let h=getJtHistory();h[k]={...d,ts:Date.now()};writeLS(LS_JT_HISTORY,h)}function getJtHistoryForKey(k){return getJtHistory()[k]||null}
 function routeKey(r){return [r.type,r.route,r.bound||'',r.service_type||'',r.hkbusId||'',r.gtfs_id||'',r.region||''].join('|')}function savedKey(route,from,to){return [routeKey(route),stopIdOf(from&&from.stop),stopIdOf(to&&to.stop)].join('||')}function routeTitle(r){return `${r.type} ${r.route}`}function routeMeta(r){return r.type==='GMB'?(r.desc_tc||r.desc_en||r.region||''):`${r.orig_tc||r.orig_en||''} → ${r.dest_tc||r.dest_en||''}`}function name(s){return toText(s.name_tc||s.stop_name_tc||s.name_zh||s.name_en||s.stop_name_en||s.name||s.stop||'')}function etaMin(x){let d=new Date(x);if(isNaN(d))return null;return Math.max(0,Math.round((d-Date.now())/60000))}function time(x){try{return new Date(x).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'})}catch{return ''}}
 function buildKb(){const kb=$('keyboard');kb.innerHTML='';const make=k=>{let b=document.createElement('button');b.textContent=k;b.className='key '+(k==='⌫'?'back ':'')+(k==='CLR'?'clear ':'');b.onclick=()=>{let v=routeInput.value.toUpperCase();if(k==='CLR')v='';else if(k==='⌫')v=v.slice(0,-1);else v+=k;routeInput.value=v;filter()};return b};let l=document.createElement('div'),r=document.createElement('div');l.className=r.className='keyBox';l.innerHTML='<div class="keyTitle">NUMBER PAD</div><div class="numPad"></div>';r.innerHTML='<div class="keyTitle">CHARACTER PAD</div><div class="charPad"></div>';numKeys.forEach(k=>l.querySelector('.numPad').appendChild(make(k)));charKeys.forEach(k=>r.querySelector('.charPad').appendChild(make(k)));kb.append(l,r)}
 async function boot(){activeGroupId=readLS(LS_ACTIVE_GROUP,'default');buildKb();wireEvents();ensureActiveGroup();try{await loadRoutes();setMode('BUS');let hasCache=getSaved().length>0||Object.keys(getEtaHistory()).length>0;setMainTab(hasCache?'SAVE':'SEARCH');status('Ready. Route list loaded.','ok')}catch(e){status('Route list failed: '+e.message,'err');setMainTab(getSaved().length?'SAVE':'SEARCH')}}
-function wireEvents(){routeInput.oninput=()=>{routeInput.value=routeInput.value.toUpperCase().replace(/[^0-9A-Z]/g,'');filter()};$('busBtn').onclick=()=>setMode('BUS');$('gmbBtn').onclick=()=>setMode('GMB');$('close').onclick=()=>$('sheet').classList.remove('show');$('etaBtn').onclick=eta;$('saveBtn').onclick=saveCurrentRoute;$('saveCancelBtn').onclick=closeSaveModal;$('saveConfirmBtn').onclick=confirmSaveMonitor;$('saveGroupSelect').onchange=()=>{$('newGroupField').classList.toggle('hidden',$('saveGroupSelect').value!=='__new__')};$('appModalCancel').onclick=closeAppModal;$('appModalOk').onclick=confirmAppModal;$('appSelectInput').onchange=()=>{$('appNewGroupField').classList.toggle('hidden',$('appSelectInput').value!=='__new__')};$('tabSearch').onclick=()=>setMainTab('SEARCH');$('tabOption').onclick=()=>setMainTab('OPTION');$('tabSave').onclick=()=>setMainTab('SAVE');$('tabSave').addEventListener('pointerdown',()=>{saveHoldTimer=setTimeout(showGroupPicker,420)});['pointerup','pointerleave','pointercancel'].forEach(ev=>$('tabSave').addEventListener(ev,()=>{clearTimeout(saveHoldTimer)}));$('refetchBtn').onclick=refetchRouteData;$('clearHistoryBtn').onclick=()=>{writeLS(LS_ETA_HISTORY,{});renderSaved();status('ETA history cleared.','ok')};$('clearAllCacheBtn').onclick=()=>{writeLS(LS_ROUTE_CACHE,{});renderOptions();status('Route detail cache removed.','ok')};$('addGroupBtn').onclick=addGroup;$('renameGroupBtn').onclick=renameGroup;$('deleteGroupBtn').onclick=deleteGroup;$('gpsBtn').onclick=gps;document.addEventListener('click',e=>{if(!e.target.closest('#groupPicker')&&!e.target.closest('#tabSave'))hideGroupPicker();if(e.target.id==='saveModal')closeSaveModal();if(e.target.id==='appModal')closeAppModal()})}
+function wireEvents(){routeInput.oninput=()=>{routeInput.value=routeInput.value.toUpperCase().replace(/[^0-9A-Z]/g,'');filter()};$('busBtn').onclick=()=>setMode('BUS');$('gmbBtn').onclick=()=>setMode('GMB');$('close').onclick=()=>$('sheet').classList.remove('show');$('etaBtn').onclick=eta;$('saveBtn').onclick=saveCurrentRoute;$('saveCancelBtn').onclick=closeSaveModal;$('saveConfirmBtn').onclick=confirmSaveMonitor;$('saveGroupSelect').onchange=()=>{$('newGroupField').classList.toggle('hidden',$('saveGroupSelect').value!=='__new__')};$('appModalCancel').onclick=closeAppModal;$('appModalOk').onclick=confirmAppModal;$('appSelectInput').onchange=()=>{$('appNewGroupField').classList.toggle('hidden',$('appSelectInput').value!=='__new__')};$('tabSearch').onclick=()=>setMainTab('SEARCH');$('tabOption').onclick=()=>setMainTab('OPTION');$('tabSave').onclick=()=>setMainTab('SAVE');$('tabSave').addEventListener('pointerdown',()=>{saveHoldTimer=setTimeout(showGroupPicker,420)});['pointerup','pointerleave','pointercancel'].forEach(ev=>$('tabSave').addEventListener(ev,()=>{clearTimeout(saveHoldTimer)}));$('refetchBtn').onclick=refetchRouteData;$('exportJsonBtn').onclick=exportConfigJson;$('importJsonBtn').onclick=()=>$('importFileInput').click();$('importFileInput').onchange=importConfigJsonFile;$('exportTextBtn').onclick=exportConfigText;$('importTextBtn').onclick=importConfigText;$('configCancelBtn').onclick=closeConfigModal;$('configActionBtn').onclick=confirmConfigModal;$('clearHistoryBtn').onclick=()=>{writeLS(LS_ETA_HISTORY,{});renderSaved();status('ETA history cleared.','ok')};$('clearAllCacheBtn').onclick=()=>{writeLS(LS_ROUTE_CACHE,{});renderOptions();status('Route detail cache removed.','ok')};$('addGroupBtn').onclick=addGroup;$('renameGroupBtn').onclick=renameGroup;$('deleteGroupBtn').onclick=deleteGroup;$('gpsBtn').onclick=gps;document.addEventListener('click',e=>{if(!e.target.closest('#groupPicker')&&!e.target.closest('#tabSave'))hideGroupPicker();if(e.target.id==='saveModal')closeSaveModal();if(e.target.id==='appModal')closeAppModal();if(e.target.id==='configModal')closeConfigModal()})}
 function ensureActiveGroup(){let groups=getGroups();if(!groups.find(g=>g.id===activeGroupId))activeGroupId=groups[0].id;writeLS(LS_ACTIVE_GROUP,activeGroupId);updateSaveTabText()}function updateSaveTabText(){let g=getGroups().find(x=>x.id===activeGroupId);$('tabSave').textContent=g?g.name:'SAVE'}
 async function loadRoutes(){busRoutes=[];gmbRoutes=[];const kmbP=json(API.KMB+'/route/').then(k=>(k.data||[]).forEach(x=>busRoutes.push({type:'KMB',route:String(x.route).toUpperCase(),bound:x.bound,service_type:x.service_type||1,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));const ctbP=json(API.CTB+'/route/ctb').then(c=>(c.data||[]).forEach(x=>busRoutes.push({type:'CTB',route:String(x.route).toUpperCase(),bound:x.bound,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));const hkbP=json(API.HKBUS,86400000).then(db=>addGmbFromHkbusDb(db));const res=await Promise.allSettled([kmbP,ctbP,hkbP]);let fail=res.filter(x=>x.status==='rejected').map(x=>x.reason.message);if(!busRoutes.length&&fail.length)throw new Error(fail.join(' | '));}
 function addGmbFromHkbusDb(db){hkbDb=db;Object.entries(db.routeList||{}).forEach(([id,e])=>{if(!e||!e.route||!e.stops||!e.stops.gmb)return;const route=String(e.route).toUpperCase(),dest=e.dest||{},orig=e.orig||{},bound=(e.bound&&e.bound.gmb)||'';gmbRoutes.push({type:'GMB',route,hkbusId:id,gtfs_id:e.gtfsId||e.gtfs_id||e.gtfsID,bound,route_seq:bound==='I'?2:1,stops:e.stops.gmb,desc_tc:(orig.zh||orig.tc||'')+(dest.zh||dest.tc?' → '+(dest.zh||dest.tc):''),desc_en:(orig.en||'')+(dest.en?' → '+dest.en:''),raw:e})})}
 function setMode(m){mode=m;$('busBtn').classList.toggle('on',m==='BUS');$('gmbBtn').classList.toggle('on',m==='GMB');active=m==='BUS'?busRoutes:gmbRoutes;filter()}function filter(){let q=routeInput.value.trim().toUpperCase();let data=active.filter(x=>!q||String(x.route).toUpperCase().startsWith(q)).sort((a,b)=>String(a.route).localeCompare(String(b.route),undefined,{numeric:true,sensitivity:'base'}));$('count').textContent=q?data.length+' prefix match(es)':active.length+' routes';renderRoutes(data.slice(0,q?120:25))}function renderRoutes(items){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}items.forEach(x=>{let d=document.createElement('div');d.className='routeCard';d.innerHTML='<div><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div></div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRoute(x);box.appendChild(d)})}
 async function openRoute(r){currentRoute=r;currentStops=[];$('fromStop').innerHTML='';$('toStop').innerHTML='';$('sheet').classList.add('show');$('sheetRoute').textContent=routeTitle(r);$('sheetMeta').textContent='Loading stops...';$('eta').innerHTML='<div class="empty">Loading stops...</div>';const key=routeKey(r),rc=readLS(LS_ROUTE_CACHE,{}),cached=rc[key];try{if(cached&&Array.isArray(cached.stops)){currentStops=cached.stops;fillStops();$('sheetMeta').textContent=(cached.meta||routeMeta(r))+' · cached';return}currentStops=r.type==='KMB'?await kmbStops(r):r.type==='CTB'?await ctbStops(r):await gmbStops(r);rc[key]={route:r,stops:currentStops,meta:routeMeta(r),ts:Date.now()};writeLS(LS_ROUTE_CACHE,rc);fillStops();$('sheetMeta').textContent=routeMeta(r);status('Stops loaded and cached.','ok')}catch(e){$('eta').innerHTML='<div class="empty err">Cannot load stops: '+esc(e.message)+'</div>';status('Cannot load stops. '+e.message,'err')}}
-async function kmbStops(r){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];let svcs=[String(r.service_type||1),'1','2','3'].filter((v,i,a)=>a.indexOf(v)===i);let err=null;for(const dir of dirs)for(const svc of svcs){try{let rs=await json(`${API.KMB}/route-stop/${r.route}/${dir}/${svc}`),arr=rs.data||[];if(!arr.length)continue;let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.KMB}/stop/${x.stop}`)).data||{};return {...x,type:'KMB',route:r.route,bound:boundCode,service_type:svc,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('KMB stops not found')}
-async function ctbStops(r){let dirs=[r.bound,'outbound','inbound'].filter((v,i,a)=>v&&a.indexOf(v)===i);let err=null;for(const b of dirs){try{let rs=await json(`${API.CTB}/route-stop/ctb/${r.route}/${b}`),arr=rs.data||[];if(!arr.length)continue;return Promise.all(arr.map(async x=>{let s=(await json(`${API.CTB}/stop/${x.stop}`)).data||{};return {...x,type:'CTB',route:r.route,bound:b,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('Citybus stops not found')}
-function hkbusStopInfo(stopId){stopId=stopIdOf(stopId);if(!hkbDb)return{};let s=(hkbDb.stopList||{})[stopId]||(hkbDb.stopMap||{})[stopId]||{};if(Array.isArray(s))s=s[0]||{};if(typeof s==='string')return{name_tc:s,name_en:s};if(s.gmb)s=s.gmb;return{name_tc:toText(s.name_tc||s.name_zh||s.zh||s.tc||s.name),name_en:toText(s.name_en||s.en),lat:+(s.lat||s.latitude||s.y||''),long:+(s.long||s.lng||s.longitude||s.x||'')}}
-async function gmbStops(r){if(r.hkbusId&&hkbDb&&hkbDb.routeList&&hkbDb.routeList[r.hkbusId]){let e=hkbDb.routeList[r.hkbusId],ids=(e.stops&&e.stops.gmb)||[],bound=(e.bound&&e.bound.gmb)||r.bound||'O',routeSeq=bound==='I'?2:1,gtfs=e.gtfsId||e.gtfs_id||e.gtfsID||r.gtfs_id;return ids.map((raw,i)=>{let id=stopIdOf(raw),si=hkbusStopInfo(id),nm=toText(si.name_tc)||toText(si.name_en)||id;return{type:'GMB',route:r.route,gtfs_id:gtfs,route_id:gtfs,route_seq:routeSeq,bound,stop:id,stop_seq:i+1,seq:i+1,name_tc:nm,name_en:toText(si.name_en)||'',lat:si.lat,long:si.long}}).filter(x=>x.stop)}throw new Error('GMB route mapping missing')}
+async function kmbStops(r){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];let svcs=[String(r.service_type||1),'1','2','3'].filter((v,i,a)=>a.indexOf(v)===i);let err=null;for(const dir of dirs)for(const svc of svcs){try{let rs=await json(`${API.KMB}/route-stop/${r.route}/${dir}/${svc}`),arr=rs.data||[];if(!arr.length)continue;let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.KMB}/stop/${x.stop}`)).data||{};return {...x,type:'KMB',route:r.route,bound:boundCode,service_type:svc,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('KMB stops not found')}async function ctbStops(r){let dirs=[r.bound,'outbound','inbound'].filter((v,i,a)=>v&&a.indexOf(v)===i);let err=null;for(const b of dirs){try{let rs=await json(`${API.CTB}/route-stop/ctb/${r.route}/${b}`),arr=rs.data||[];if(!arr.length)continue;return Promise.all(arr.map(async x=>{let s=(await json(`${API.CTB}/stop/${x.stop}`)).data||{};return {...x,type:'CTB',route:r.route,bound:b,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('Citybus stops not found')}
+function hkbusStopInfo(stopId){stopId=stopIdOf(stopId);if(!hkbDb)return{};let s=(hkbDb.stopList||{})[stopId]||(hkbDb.stopMap||{})[stopId]||{};if(Array.isArray(s))s=s[0]||{};if(typeof s==='string')return{name_tc:s,name_en:s};if(s.gmb)s=s.gmb;return{name_tc:toText(s.name_tc||s.name_zh||s.zh||s.tc||s.name),name_en:toText(s.name_en||s.en),lat:+(s.lat||s.latitude||s.y||''),long:+(s.long||s.lng||s.longitude||s.x||'')}}async function gmbStops(r){if(r.hkbusId&&hkbDb&&hkbDb.routeList&&hkbDb.routeList[r.hkbusId]){let e=hkbDb.routeList[r.hkbusId],ids=(e.stops&&e.stops.gmb)||[],bound=(e.bound&&e.bound.gmb)||r.bound||'O',routeSeq=bound==='I'?2:1,gtfs=e.gtfsId||e.gtfs_id||e.gtfsID||r.gtfs_id;return ids.map((raw,i)=>{let id=stopIdOf(raw),si=hkbusStopInfo(id),nm=toText(si.name_tc)||toText(si.name_en)||id;return{type:'GMB',route:r.route,gtfs_id:gtfs,route_id:gtfs,route_seq:routeSeq,bound,stop:id,stop_seq:i+1,seq:i+1,name_tc:nm,name_en:toText(si.name_en)||'',lat:si.lat,long:si.long}}).filter(x=>x.stop)}throw new Error('GMB route mapping missing')}
 function fillStops(){let f=$('fromStop'),t=$('toStop');f.innerHTML='';t.innerHTML='';currentStops.forEach((s,i)=>{let txt=(s.seq||i+1)+'. '+name(s);f.add(new Option(txt,i));t.add(new Option(txt,i))});f.value=0;t.value=Math.min(currentStops.length-1,1);$('eta').innerHTML='<div class="empty">From and To loaded. Tap Show ETA.</div>'}
-function etaUrlForStop(s){const sid=encodeURIComponent(stopIdOf(s.stop)),gid=encodeURIComponent(stopIdOf(s.gtfs_id||s.route_id));if(s.type==='KMB')return `${API.KMB}/eta/${sid}/${s.route}/${s.service_type||1}`;if(s.type==='CTB')return `${API.CTB}/eta/ctb/${sid}/${s.route}`;return `${API.GMB}/eta/route-stop/${gid}/${sid}`}
-async function fetchEtaRows(s,force=false){let url=etaUrlForStop(s);if(force)cache.delete(url);let d=await json(url,25000),rows=[];if(s.type==='GMB'){let raw=d.data||[];if(Array.isArray(raw)){let match=raw.filter(e=>(!s.route_seq||String(e.route_seq)===String(s.route_seq))&&(!s.stop_seq||String(e.stop_seq)===String(s.stop_seq)));if(!match.length)match=raw;rows=match.flatMap(e=>(e.eta||[]).map(a=>({eta:a.timestamp||a.eta,rmk_tc:a.remarks_tc||a.rmk_tc||'',diff:a.diff})))}}else rows=(d.data||[]).filter(x=>!s.bound||!x.dir||x.dir===s.bound);return{rows,url}}
-async function eta(){let s=currentStops[+$('fromStop').value];if(!s)return;$('eta').innerHTML='<div class="empty">Loading ETA...</div>';try{let res=await fetchEtaRows(s,true);showEta(res.rows,res.url)}catch(e){$('eta').innerHTML='<div class="empty err">ETA failed: '+esc(e.message)+'</div>'}}function showEta(rows,url){if(!rows.length){$('eta').innerHTML='<div class="empty">No ETA now.</div>';return}$('eta').innerHTML=rows.slice(0,3).map(r=>{let iso=r.eta||r.timestamp,m=etaMin(iso),txt=m==null?'--':m===0?'Now':m;return '<div class="etaRow"><div><div class="etaMin">'+esc(txt)+' <small>'+(m===0?'':'min')+'</small></div><div class="meta">'+esc(time(iso)+' '+(r.rmk_tc||r.diff||''))+'</div></div><span class="tag">ETA</span></div>'}).join('')+'<div class="status">'+esc(url)+'</div>'}
-function saveCurrentRoute(){
-  if(!currentRoute||!currentStops.length){status('Open a route and load stops first.','err');return}
-  const f=currentStops[+$('fromStop').value], t=currentStops[+$('toStop').value];
-  if(!f||!t){status('Select From and To first.','err');return}
-  openSaveModal(f,t);
-}
-function populateSaveGroupSelect(){
-  const sel=$('saveGroupSelect');
-  sel.innerHTML='';
-  getGroups().forEach(g=>sel.add(new Option(g.name,g.id)));
-  sel.add(new Option('+ create new group','__new__'));
-  sel.value=getGroups().find(g=>g.id===activeGroupId)?activeGroupId:'default';
-  $('newGroupField').classList.add('hidden');
-  $('newGroupInput').value='';
-}
-function openSaveModal(f,t){
-  $('saveNameInput').value=routeTitle(currentRoute);
-  $('saveModalSub').textContent='From: '+name(f)+'  •  To: '+name(t);
-  populateSaveGroupSelect();
-  $('saveModal').classList.add('show');
-  setTimeout(()=>$('saveNameInput').focus(),60);
-}
-function closeSaveModal(){
-  $('saveModal').classList.remove('show');
-}
-function confirmSaveMonitor(){
-  const f=currentStops[+$('fromStop').value], t=currentStops[+$('toStop').value];
-  if(!currentRoute||!f||!t){closeSaveModal();status('Route/stop selection missing.','err');return}
-  let customName=$('saveNameInput').value.trim()||routeTitle(currentRoute);
-  let groups=getGroups();
-  let groupId=$('saveGroupSelect').value;
-  let group=null;
-  if(groupId==='__new__'){
-    const newName=$('newGroupInput').value.trim();
-    if(!newName){status('Please enter new group name.','err');$('newGroupInput').focus();return}
-    group=groups.find(g=>g.name===newName);
-    if(!group){group={id:'g'+Date.now(),name:newName};groups.push(group);setGroups(groups)}
-  }else{
-    group=groups.find(g=>g.id===groupId)||groups[0];
-  }
-  const key=savedKey(currentRoute,f,t);
-  const list=getSaved();
-  const item={key,route:currentRoute,from:f,to:t,customName,groupId:group.id,ts:Date.now()};
-  const idx=list.findIndex(x=>x.key===key);
-  if(idx>=0)list[idx]=item;else list.unshift(item);
-  setSaved(list);
-  setActiveGroup(group.id);
-  closeSaveModal();
-  status('ETA monitor saved to '+group.name+'.','ok');
-  renderSaved();
-  setMainTab('SAVE');
-}
+function etaUrlForStop(s){const sid=encodeURIComponent(stopIdOf(s.stop)),gid=encodeURIComponent(stopIdOf(s.gtfs_id||s.route_id));if(s.type==='KMB')return `${API.KMB}/eta/${sid}/${s.route}/${s.service_type||1}`;if(s.type==='CTB')return `${API.CTB}/eta/ctb/${sid}/${s.route}`;return `${API.GMB}/eta/route-stop/${gid}/${sid}`}async function fetchEtaRows(s,force=false){let url=etaUrlForStop(s);if(force)cache.delete(url);let d=await json(url,25000),rows=[];if(s.type==='GMB'){let raw=d.data||[];if(Array.isArray(raw)){let match=raw.filter(e=>(!s.route_seq||String(e.route_seq)===String(s.route_seq))&&(!s.stop_seq||String(e.stop_seq)===String(s.stop_seq)));if(!match.length)match=raw;rows=match.flatMap(e=>(e.eta||[]).map(a=>({eta:a.timestamp||a.eta,rmk_tc:a.remarks_tc||a.rmk_tc||'',diff:a.diff})))}}else rows=(d.data||[]).filter(x=>!s.bound||!x.dir||x.dir===s.bound);return{rows,url}}async function eta(){let s=currentStops[+$('fromStop').value];if(!s)return;$('eta').innerHTML='<div class="empty">Loading ETA...</div>';try{let res=await fetchEtaRows(s,true);showEta(res.rows,res.url)}catch(e){$('eta').innerHTML='<div class="empty err">ETA failed: '+esc(e.message)+'</div>'}}function showEta(rows,url){if(!rows.length){$('eta').innerHTML='<div class="empty">No ETA now.</div>';return}$('eta').innerHTML=rows.slice(0,3).map(r=>{let iso=r.eta||r.timestamp,m=etaMin(iso),txt=m==null?'--':m===0?'Now':m;return '<div class="etaRow"><div><div class="etaMin">'+esc(txt)+' <small>'+(m===0?'':'min')+'</small></div><div class="meta">'+esc(time(iso)+' '+(r.rmk_tc||r.diff||''))+'</div></div><span class="tag">ETA</span></div>'}).join('')+'<div class="status">'+esc(url)+'</div>'}
+function saveCurrentRoute(){if(!currentRoute||!currentStops.length){status('Open a route and load stops first.','err');return}const f=currentStops[+$('fromStop').value],t=currentStops[+$('toStop').value];if(!f||!t){status('Select From and To first.','err');return}openSaveModal(f,t)}function populateSaveGroupSelect(){const sel=$('saveGroupSelect');sel.innerHTML='';getGroups().forEach(g=>sel.add(new Option(g.name,g.id)));sel.add(new Option('+ create new group','__new__'));sel.value=getGroups().find(g=>g.id===activeGroupId)?activeGroupId:'default';$('newGroupField').classList.add('hidden');$('newGroupInput').value=''}function openSaveModal(f,t){$('saveNameInput').value=routeTitle(currentRoute);$('saveModalSub').textContent='From: '+name(f)+'  •  To: '+name(t);populateSaveGroupSelect();$('saveModal').classList.add('show');setTimeout(()=>$('saveNameInput').focus(),60)}function closeSaveModal(){$('saveModal').classList.remove('show')}function confirmSaveMonitor(){const f=currentStops[+$('fromStop').value],t=currentStops[+$('toStop').value];if(!currentRoute||!f||!t){closeSaveModal();status('Route/stop selection missing.','err');return}let customName=$('saveNameInput').value.trim()||routeTitle(currentRoute),groups=getGroups(),groupId=$('saveGroupSelect').value,group=null;if(groupId==='__new__'){const newName=$('newGroupInput').value.trim();if(!newName){status('Please enter new group name.','err');$('newGroupInput').focus();return}group=groups.find(g=>g.name===newName);if(!group){group={id:'g'+Date.now(),name:newName};groups.push(group);setGroups(groups)}}else group=groups.find(g=>g.id===groupId)||groups[0];const key=savedKey(currentRoute,f,t),list=getSaved(),item={key,route:currentRoute,from:f,to:t,customName,groupId:group.id,ts:Date.now()};const idx=list.findIndex(x=>x.key===key);if(idx>=0)list[idx]=item;else list.unshift(item);setSaved(list);setActiveGroup(group.id);closeSaveModal();status('ETA monitor saved to '+group.name+'.','ok');renderSaved();setMainTab('SAVE')}
 function renderGroupBar(){let groups=getGroups();ensureActiveGroup();return '<div class="groupBar">'+groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋</button></div>'}
-function renderSaved(){let box=$('savedView'),list=getSaved().filter(x=>(x.groupId||'default')===activeGroupId);box.innerHTML=renderGroupBar();box.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);renderSaved()});let add=box.querySelector('[data-add]');if(add)add.onclick=addGroup;if(!list.length){box.insertAdjacentHTML('beforeend','<div class="empty">No ETA monitor in this group.</div>');return}list.forEach((x,idx)=>{let r=x.route||{},f=x.from||{},t=x.to||{},title=x.customName||routeTitle(r);let d=document.createElement('div');d.className='savedMonitorCard';d.innerHTML='<div class="savedMain"><div class="savedRouteTitle">'+esc(title)+'</div><div class="savedPair"><span class="label">From:</span> '+esc(name(f))+'<br><span class="label">To:</span> '+esc(name(t))+'<div class="savedTrip" id="savedTrip'+idx+'"><span class="label">Trip:</span> calculating...</div></div></div><div class="savedEta" id="savedEta'+idx+'"><div class="etaChip emptyEta">Loading</div></div><button class="savedMore" id="savedMore'+idx+'">...</button><div class="savedMenu" id="savedMenu'+idx+'"><button data-act="open">Open</button><button data-act="refresh">Refresh</button><button data-act="rename">Rename</button><button data-act="move">Move group</button><button class="danger" data-act="remove">Remove</button></div><div class="savedUpdated" id="savedUpdated'+idx+'">--</div>';d.querySelector('#savedMore'+idx).onclick=e=>{e.stopPropagation();toggleSavedMenu(idx)};d.querySelector('[data-act="open"]').onclick=e=>{e.stopPropagation();openSavedMonitor(x)};d.querySelector('[data-act="refresh"]').onclick=e=>{e.stopPropagation();loadSavedEta(x,idx,true);loadJourneyTime(x,idx,true)};d.querySelector('[data-act="rename"]').onclick=e=>{e.stopPropagation();renameSaved(x.key)};d.querySelector('[data-act="move"]').onclick=e=>{e.stopPropagation();moveSaved(x.key)};d.querySelector('[data-act="remove"]').onclick=e=>{e.stopPropagation();removeSaved(x.key)};box.appendChild(d);renderSavedEtaHistory(x,idx);renderJourneyTimeHistory(x,idx);loadSavedEta(x,idx,false);loadJourneyTime(x,idx,false)})}
-function openTextModal(title, sub, label, value, okText, cb){
-  appModalOkCb=()=>cb($('appTextInput').value.trim());
-  $('appModalTitle').textContent=title;
-  $('appModalSub').textContent=sub||'';
-  $('appTextLabel').textContent=label||'Input';
-  $('appTextInput').value=value||'';
-  $('appTextField').classList.remove('hidden');
-  $('appSelectField').classList.add('hidden');
-  $('appNewGroupField').classList.add('hidden');
-  $('appModalOk').textContent=okText||'OK';
-  $('appModal').classList.add('show');
-  setTimeout(()=>$('appTextInput').focus(),60);
-}
-function openSelectModal(title, sub, label, options, selected, okText, cb){
-  appModalOkCb=()=>{
-    let val=$('appSelectInput').value;
-    let newName=$('appNewGroupInput').value.trim();
-    cb(val,newName);
+function renderSaved(){let box=$('savedView'),list=getSaved().filter(x=>(x.groupId||'default')===activeGroupId);box.classList.toggle('editing',editMode);box.innerHTML='<div class="saveHeader"><div class="editHint">'+(editMode?'Drag cards to reorder current group':'Hold SAVE tab to choose group')+'</div><button id="editSavedBtn" class="miniBtn '+(editMode?'ok':'')+'">'+(editMode?'Done':'Edit')+'</button></div>'+renderGroupBar();$('editSavedBtn').onclick=()=>{editMode=!editMode;renderSaved()};box.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);editMode=false;renderSaved()});let add=box.querySelector('[data-add]');if(add)add.onclick=addGroup;if(!list.length){box.insertAdjacentHTML('beforeend','<div class="empty">No ETA monitor in this group.</div>');return}list.forEach((x,idx)=>{let r=x.route||{},f=x.from||{},t=x.to||{},title=x.customName||routeTitle(r);let d=document.createElement('div');d.className='savedMonitorCard '+(editMode?'editing':'');d.dataset.key=x.key;d.draggable=editMode;d.innerHTML='<div class="dragGrip">☰</div><div class="savedMain"><div class="savedRouteTitle">'+esc(title)+'</div><div class="savedPair"><span class="label">From:</span> '+esc(name(f))+'<br><span class="label">To:</span> '+esc(name(t))+'<div class="savedTrip" id="savedTrip'+idx+'"><span class="label">Trip:</span> calculating...</div></div></div><div class="savedEta" id="savedEta'+idx+'"><div class="etaChip emptyEta">Loading</div></div><button class="savedMore" id="savedMore'+idx+'">...</button><div class="savedMenu" id="savedMenu'+idx+'"><button data-act="open">Open</button><button data-act="refresh">Refresh</button><button data-act="rename">Rename</button><button data-act="move">Move group</button><button class="danger" data-act="remove">Remove</button></div><div class="savedUpdated" id="savedUpdated'+idx+'">--</div>';d.querySelector('#savedMore'+idx).onclick=e=>{e.stopPropagation();if(!editMode)toggleSavedMenu(idx)};d.querySelector('[data-act="open"]').onclick=e=>{e.stopPropagation();openSavedMonitor(x)};d.querySelector('[data-act="refresh"]').onclick=e=>{e.stopPropagation();loadSavedEta(x,idx,true);loadJourneyTime(x,idx,true)};d.querySelector('[data-act="rename"]').onclick=e=>{e.stopPropagation();renameSaved(x.key)};d.querySelector('[data-act="move"]').onclick=e=>{e.stopPropagation();moveSaved(x.key)};d.querySelector('[data-act="remove"]').onclick=e=>{e.stopPropagation();removeSaved(x.key)};d.addEventListener('dragstart',ev=>{if(!editMode)return;dragKey=x.key;d.classList.add('dragging');ev.dataTransfer.effectAllowed='move'});d.addEventListener('dragend',()=>{d.classList.remove('dragging');document.querySelectorAll('.dropBefore').forEach(el=>el.classList.remove('dropBefore'));dragKey=null});d.addEventListener('dragover',ev=>{if(!editMode||!dragKey||dragKey===x.key)return;ev.preventDefault();d.classList.add('dropBefore')});d.addEventListener('dragleave',()=>d.classList.remove('dropBefore'));d.addEventListener('drop',ev=>{ev.preventDefault();d.classList.remove('dropBefore');if(dragKey&&dragKey!==x.key)reorderSavedInGroup(dragKey,x.key)});box.appendChild(d);renderSavedEtaHistory(x,idx);renderJourneyTimeHistory(x,idx);if(!editMode){loadSavedEta(x,idx,false);loadJourneyTime(x,idx,false)}})}
+function reorderSavedInGroup(fromKey,toKey){let all=getSaved();let groupItems=all.filter(x=>(x.groupId||'default')===activeGroupId);let other=all.filter(x=>(x.groupId||'default')!==activeGroupId);let from=groupItems.findIndex(x=>x.key===fromKey),to=groupItems.findIndex(x=>x.key===toKey);if(from<0||to<0)return;let [m]=groupItems.splice(from,1);groupItems.splice(to,0,m);setSaved([...groupItems,...other]);renderSaved();status('Order updated.','ok')}
+function openTextModal(title,sub,label,value,okText,cb){appModalOkCb=()=>cb($('appTextInput').value.trim());$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appTextLabel').textContent=label||'Input';$('appTextInput').value=value||'';$('appTextField').classList.remove('hidden');$('appSelectField').classList.add('hidden');$('appNewGroupField').classList.add('hidden');$('appModalOk').textContent=okText||'OK';$('appModal').classList.add('show');setTimeout(()=>$('appTextInput').focus(),60)}function openSelectModal(title,sub,label,options,selected,okText,cb){appModalOkCb=()=>cb($('appSelectInput').value,$('appNewGroupInput').value.trim());$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appSelectLabel').textContent=label||'Select';const sel=$('appSelectInput');sel.innerHTML='';options.forEach(o=>sel.add(new Option(o.text,o.value)));if(selected)sel.value=selected;$('appTextField').classList.add('hidden');$('appSelectField').classList.remove('hidden');$('appNewGroupField').classList.toggle('hidden',sel.value!=='__new__');$('appModalOk').textContent=okText||'OK';$('appModal').classList.add('show')}function openConfirmModal(title,sub,okText,cb){appModalOkCb=cb;$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appTextField').classList.add('hidden');$('appSelectField').classList.add('hidden');$('appNewGroupField').classList.add('hidden');$('appModalOk').textContent=okText||'Confirm';$('appModal').classList.add('show')}function closeAppModal(){$('appModal').classList.remove('show');appModalOkCb=null}function confirmAppModal(){if(appModalOkCb){let cb=appModalOkCb;cb()}}
+function toggleSavedMenu(idx){document.querySelectorAll('.savedMenu').forEach((m,i)=>{if(i!==idx)m.classList.remove('show')});let m=$('savedMenu'+idx);if(m)m.classList.toggle('show')}function renameSaved(key){let list=getSaved(),it=list.find(x=>x.key===key);if(!it)return;openTextModal('Rename ETA Monitor','Set a friendly name for this saved ETA.','Display name',it.customName||routeTitle(it.route),'Save',v=>{if(!v){status('Name cannot be empty.','err');return}it.customName=v;setSaved(list);closeAppModal();renderSaved();status('ETA monitor renamed.','ok')})}function moveSaved(key){let groups=getGroups(),it=getSaved().find(x=>x.key===key);if(!it)return;let opts=groups.map(g=>({text:g.name,value:g.id}));opts.push({text:'+ create new group',value:'__new__'});openSelectModal('Move ETA Monitor','Choose a group for this saved ETA monitor.','Group',opts,it.groupId||activeGroupId,'Move',(val,newName)=>{let group=null;if(val==='__new__'){if(!newName){status('Please enter new group name.','err');$('appNewGroupInput').focus();return}group=groups.find(g=>g.name===newName);if(!group){group={id:'g'+Date.now(),name:newName};groups.push(group);setGroups(groups)}}else group=groups.find(g=>g.id===val)||groups[0];let list=getSaved();let item=list.find(x=>x.key===key);if(item)item.groupId=group.id;setSaved(list);setActiveGroup(group.id);closeAppModal();renderSaved();status('Moved to '+group.name+'.','ok')})}function removeSaved(key){openConfirmModal('Remove ETA Monitor','This saved ETA monitor and its ETA history will be removed.','Remove',()=>{setSaved(getSaved().filter(x=>x.key!==key));let h=getEtaHistory();delete h[key];writeLS(LS_ETA_HISTORY,h);let j=getJtHistory();delete j[key];writeLS(LS_JT_HISTORY,j);closeAppModal();renderSaved();status('Saved monitor removed.','ok')})}function addGroup(){openTextModal('Create Group','Create a new SAVE group for organising ETA monitors.','Group name','','Create',n=>{if(!n){status('Group name cannot be empty.','err');return}let g=getGroups();let existing=g.find(x=>x.name===n);let item=existing||{id:'g'+Date.now(),name:n};if(!existing){g.push(item);setGroups(g)}setActiveGroup(item.id);closeAppModal();renderSaved();status('Group ready: '+item.name,'ok')})}function renameGroup(){let g=getGroups(),cur=g.find(x=>x.id===activeGroupId);if(!cur)return;openTextModal('Rename Group','Rename the current SAVE group.','Group name',cur.name,'Save',n=>{if(!n){status('Group name cannot be empty.','err');return}cur.name=n;setGroups(g);updateSaveTabText();closeAppModal();renderSaved();renderOptions();status('Group renamed.','ok')})}function deleteGroup(){if(activeGroupId==='default'){status('Default group cannot be deleted.','err');return}let cur=getGroups().find(x=>x.id===activeGroupId);openConfirmModal('Delete Group','Saved ETA monitors in '+(cur?cur.name:'this group')+' will move to Default.','Delete',()=>{let g=getGroups().filter(x=>x.id!==activeGroupId),list=getSaved();list.forEach(x=>{if(x.groupId===activeGroupId)x.groupId='default'});setGroups(g);setSaved(list);setActiveGroup('default');closeAppModal();renderSaved();renderOptions();status('Group deleted.','ok')})}
+function stopPrefix(id){id=stopIdOf(id);return id.slice(0,2)||id.slice(0,1)||'all'}function normalizeJourneyValue(v){if(v==null)return null;if(typeof v==='number')return v;if(typeof v==='string'){let n=parseFloat(v);return Number.isFinite(n)?n:null}if(typeof v==='object'){for(const k of ['time','seconds','sec','duration','journeyTime','jt','value','avg']){if(v[k]!=null){let n=normalizeJourneyValue(v[k]);if(n!=null)return n}}}return null}function extractJourneySeconds(data,start,end){if(!data)return null;for(const sk of [start,stopIdOf(start),String(start)]){const row=data[sk];if(row!=null){if(typeof row==='number')return row;for(const ek of [end,stopIdOf(end),String(end)]){const n=normalizeJourneyValue(row[ek]);if(n!=null)return n}}}for(const k of [start+'-'+end,start+'_'+end,start+'|'+end,start+','+end]){const n=normalizeJourneyValue(data[k]);if(n!=null)return n}return null}async function fetchJourneySegmentSeconds(start,end){const d=new Date(),day=(d.getDay()+6)%7,hour=d.getHours(),prefix=stopPrefix(start),urls=[`https://raw.githubusercontent.com/HK-Bus-ETA/hk-bus-time-between-stops/refs/heads/pages/times_hourly/${day}/${hour}/${prefix}.json`,`https://raw.githubusercontent.com/HK-Bus-ETA/hk-bus-time-between-stops/refs/heads/pages/times/${prefix}.json`,`https://timeinterval.hkbuseta.com/times_hourly/${day}/${hour}/${prefix}.json`,`https://timeinterval.hkbuseta.com/times/${prefix}.json`];for(const u of urls){try{let data=await json(u,15*60*1000),sec=extractJourneySeconds(data,stopIdOf(start),stopIdOf(end));if(sec!=null)return{sec,source:u.includes('times_hourly')?'hourly':'avg'}}catch(e){}}return{sec:240,source:'fallback'}}function getRouteStopsForSaved(item){const c=readLS(LS_ROUTE_CACHE,{})[routeKey(item.route||{})];return c&&Array.isArray(c.stops)?c.stops:[]}async function estimateJourneyTimeMinutes(item){const stops=getRouteStopsForSaved(item);let fi=stops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=stops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi<0&&item.from&&item.from.seq)fi=Number(item.from.seq)-1;if(ti<0&&item.to&&item.to.seq)ti=Number(item.to.seq)-1;if(fi<0||ti<0||ti<=fi)return{minutes:null,source:'invalid'};let total=0,sources=[];for(let i=fi;i<ti;i++){let seg=await fetchJourneySegmentSeconds(stopIdOf(stops[i].stop),stopIdOf(stops[i+1].stop));total+=seg.sec;sources.push(seg.source)}return{minutes:Math.max(1,Math.round(total/60)),source:sources.includes('hourly')?'hourly':sources.includes('avg')?'avg':'fallback'}}function renderJourneyTimeHistory(item,idx){const el=$('savedTrip'+idx);if(!el)return false;const h=getJtHistoryForKey(item.key);if(!h||h.minutes==null)return false;el.classList.toggle('warn',h.source==='fallback');el.innerHTML='<span class="label">Trip:</span> ~'+esc(h.minutes)+'m '+(h.source==='fallback'?'approx':'est.');return true}async function loadJourneyTime(item,idx,force=false){const el=$('savedTrip'+idx);if(!el)return;if(!force&&renderJourneyTimeHistory(item,idx))return;try{const r=await estimateJourneyTimeMinutes(item);if(r.minutes==null){el.innerHTML='<span class="label">Trip:</span> --';return}setJtHistoryForKey(item.key,r);el.classList.toggle('warn',r.source==='fallback');el.innerHTML='<span class="label">Trip:</span> ~'+esc(r.minutes)+'m '+(r.source==='fallback'?'approx':'est.')}catch(e){if(!renderJourneyTimeHistory(item,idx))el.innerHTML='<span class="label">Trip:</span> --'}}
+function renderSavedEtaHistory(item,idx){let box=$('savedEta'+idx),upd=$('savedUpdated'+idx);if(!box)return false;let h=getEtaHistoryForKey(item.key);if(!h||!Array.isArray(h.rows))return false;box.innerHTML=renderSavedEtaRows(h.rows);box.dataset.lastGood=box.innerHTML;if(upd)upd.textContent='Last updated '+new Date(h.ts||Date.now()).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});return true}async function loadSavedEta(item,idx,force){let box=$('savedEta'+idx),upd=$('savedUpdated'+idx);if(!box)return;try{let res=await fetchEtaRows(item.from,force);box.innerHTML=renderSavedEtaRows(res.rows);let now=Date.now();if(upd)upd.textContent='Updated '+new Date(now).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});box.dataset.lastGood=box.innerHTML;setEtaHistoryForKey(item.key,{rows:res.rows||[],url:res.url||'',ts:now})}catch(e){if(renderSavedEtaHistory(item,idx)){if(upd)upd.textContent='Using last ETA, refresh failed'}else if(box.dataset.lastGood){box.innerHTML=box.dataset.lastGood;if(upd)upd.textContent='Last good ETA, refresh failed'}else{box.innerHTML='<div class="etaChip emptyEta">ETA failed</div>';if(upd)upd.textContent='Fetch failed'}}}function renderSavedEtaRows(rows){if(!rows||!rows.length)return '<div class="etaChip emptyEta">No ETA</div>';return rows.slice(0,3).map((r,i)=>{let m=etaMin(r.eta||r.timestamp),txt=m==null?'--':m===0?'Now':m+'m';return '<div class="etaChip '+(i===0?'first':'')+'"><div class="min">'+esc(txt)+'</div></div>'}).join('')}async function openSavedMonitor(item){await openRoute(item.route);setTimeout(()=>{let fi=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi>=0)$('fromStop').value=fi;if(ti>=0)$('toStop').value=ti},80)}
+let configModalMode='export';
+function collectConfig(){
+  return {
+    app:'HK Transit ETA Single HTML',
+    schema:1,
+    exportedAt:new Date().toISOString(),
+    groups:getGroups(),
+    activeGroupId:activeGroupId,
+    saved:getSaved(),
+    etaHistory:getEtaHistory(),
+    journeyTimeHistory:getJtHistory(),
+    routeDetailCache:readLS(LS_ROUTE_CACHE,{})
   };
-  $('appModalTitle').textContent=title;
-  $('appModalSub').textContent=sub||'';
-  $('appSelectLabel').textContent=label||'Select';
-  const sel=$('appSelectInput');
-  sel.innerHTML='';
-  options.forEach(o=>sel.add(new Option(o.text,o.value)));
-  if(selected)sel.value=selected;
-  $('appTextField').classList.add('hidden');
-  $('appSelectField').classList.remove('hidden');
-  $('appNewGroupField').classList.toggle('hidden',sel.value!=='__new__');
-  $('appModalOk').textContent=okText||'OK';
-  $('appModal').classList.add('show');
 }
-function openConfirmModal(title, sub, okText, cb){
-  appModalOkCb=cb;
-  $('appModalTitle').textContent=title;
-  $('appModalSub').textContent=sub||'';
-  $('appTextField').classList.add('hidden');
-  $('appSelectField').classList.add('hidden');
-  $('appNewGroupField').classList.add('hidden');
-  $('appModalOk').textContent=okText||'Confirm';
-  $('appModal').classList.add('show');
+function uniqueGroupId(base, groups){
+  let id=base||('g'+Date.now());
+  if(!groups.find(g=>g.id===id))return id;
+  let i=1;
+  while(groups.find(g=>g.id===id+'_'+i))i++;
+  return id+'_'+i;
 }
-function closeAppModal(){
-  $('appModal').classList.remove('show');
-  appModalOkCb=null;
+function mergePlainObject(localObj, importObj){
+  return Object.assign({}, localObj||{}, importObj||{});
 }
-function confirmAppModal(){
-  if(appModalOkCb){let cb=appModalOkCb;cb();}
-}
-function toggleSavedMenu(idx){document.querySelectorAll('.savedMenu').forEach((m,i)=>{if(i!==idx)m.classList.remove('show')});let m=$('savedMenu'+idx);if(m)m.classList.toggle('show')}
-function renameSaved(key){
-  let list=getSaved(),it=list.find(x=>x.key===key);if(!it)return;
-  openTextModal('Rename ETA Monitor','Set a friendly name for this saved ETA.','Display name',it.customName||routeTitle(it.route),'Save',v=>{
-    if(!v){status('Name cannot be empty.','err');return}
-    it.customName=v;setSaved(list);closeAppModal();renderSaved();status('ETA monitor renamed.','ok')
-  })
-}
-function moveSaved(key){
-  let groups=getGroups(),it=getSaved().find(x=>x.key===key);if(!it)return;
-  let opts=groups.map(g=>({text:g.name,value:g.id}));opts.push({text:'+ create new group',value:'__new__'});
-  openSelectModal('Move ETA Monitor','Choose a group for this saved ETA monitor.','Group',opts,it.groupId||activeGroupId,'Move',(val,newName)=>{
-    let group=null;
-    if(val==='__new__'){
-      if(!newName){status('Please enter new group name.','err');$('appNewGroupInput').focus();return}
-      group=groups.find(g=>g.name===newName);
-      if(!group){group={id:'g'+Date.now(),name:newName};groups.push(group);setGroups(groups)}
-    }else group=groups.find(g=>g.id===val)||groups[0];
-    let list=getSaved();let item=list.find(x=>x.key===key);if(item)item.groupId=group.id;
-    setSaved(list);setActiveGroup(group.id);closeAppModal();renderSaved();status('Moved to '+group.name+'.','ok')
-  })
-}
-function removeSaved(key){
-  openConfirmModal('Remove ETA Monitor','This saved ETA monitor and its ETA history will be removed.','Remove',()=>{
-    setSaved(getSaved().filter(x=>x.key!==key));let h=getEtaHistory();delete h[key];writeLS(LS_ETA_HISTORY,h);let j=getJtHistory();delete j[key];writeLS(LS_JT_HISTORY,j);closeAppModal();renderSaved();status('Saved monitor removed.','ok')
-  })
-}
-function addGroup(){
-  openTextModal('Create Group','Create a new SAVE group for organising ETA monitors.','Group name','','Create',n=>{
-    if(!n){status('Group name cannot be empty.','err');return}
-    let g=getGroups();let existing=g.find(x=>x.name===n);let item=existing||{id:'g'+Date.now(),name:n};
-    if(!existing){g.push(item);setGroups(g)}
-    setActiveGroup(item.id);closeAppModal();renderSaved();status('Group ready: '+item.name,'ok')
-  })
-}
-function renameGroup(){
-  let g=getGroups(),cur=g.find(x=>x.id===activeGroupId);if(!cur)return;
-  openTextModal('Rename Group','Rename the current SAVE group.','Group name',cur.name,'Save',n=>{
-    if(!n){status('Group name cannot be empty.','err');return}
-    cur.name=n;setGroups(g);updateSaveTabText();closeAppModal();renderSaved();renderOptions();status('Group renamed.','ok')
-  })
-}
-function deleteGroup(){
-  if(activeGroupId==='default'){status('Default group cannot be deleted.','err');return}
-  let cur=getGroups().find(x=>x.id===activeGroupId);
-  openConfirmModal('Delete Group','Saved ETA monitors in '+(cur?cur.name:'this group')+' will move to Default.','Delete',()=>{
-    let g=getGroups().filter(x=>x.id!==activeGroupId),list=getSaved();list.forEach(x=>{if(x.groupId===activeGroupId)x.groupId='default'});setGroups(g);setSaved(list);setActiveGroup('default');closeAppModal();renderSaved();renderOptions();status('Group deleted.','ok')
-  })
-}
-function stopPrefix(stopId){stopId=stopIdOf(stopId);return stopId.slice(0,2)||stopId.slice(0,1)||'all'}
-function extractJourneySeconds(data,start,end){
-  if(!data)return null;
-  const keys=[end, stopIdOf(end), String(end)];
-  const startKeys=[start, stopIdOf(start), String(start)];
-  for(const sk of startKeys){
-    const row=data[sk];
-    if(row!=null){
-      if(typeof row==='number')return row;
-      for(const ek of keys){
-        const v=row[ek];
-        const n=normalizeJourneyValue(v);if(n!=null)return n;
-      }
-      if(Array.isArray(row))for(const it of row){if(stopIdOf(it.to||it.end||it.stop||it.id)===stopIdOf(end)){const n=normalizeJourneyValue(it);if(n!=null)return n}}
+function applyConfig(cfg){
+  if(!cfg||typeof cfg!=='object')throw new Error('Invalid config object');
+  const groupIdMap={};
+  let localGroups=getGroups().slice();
+  const importedGroups=Array.isArray(cfg.groups)?cfg.groups:[];
+  importedGroups.forEach(g=>{
+    if(!g||!g.name)return;
+    let existingById=localGroups.find(x=>x.id===g.id);
+    let existingByName=localGroups.find(x=>x.name===g.name);
+    if(existingById){
+      // Same group id: keep local object, but fill missing name from import.
+      if(!existingById.name)existingById.name=g.name;
+      groupIdMap[g.id]=existingById.id;
+    }else if(existingByName){
+      // Same group name: combine into existing group even if id differs.
+      groupIdMap[g.id]=existingByName.id;
+    }else{
+      // New group: add without touching existing groups.
+      const newId=uniqueGroupId(g.id,localGroups);
+      localGroups.push({...g,id:newId});
+      groupIdMap[g.id]=newId;
     }
+  });
+  setGroups(localGroups);
+
+  let localSaved=getSaved().slice();
+  const importedSaved=Array.isArray(cfg.saved)?cfg.saved:[];
+  let added=0, updated=0;
+  importedSaved.forEach(item=>{
+    if(!item||!item.key)return;
+    const mappedGroupId=groupIdMap[item.groupId]||item.groupId||'default';
+    const incoming={...item,groupId:mappedGroupId};
+    const idx=localSaved.findIndex(x=>x.key===item.key);
+    if(idx>=0){
+      // Combine duplicate route monitor without changing its local order.
+      localSaved[idx]={...incoming,...localSaved[idx],groupId:localSaved[idx].groupId||mappedGroupId,customName:localSaved[idx].customName||incoming.customName};
+      updated++;
+    }else{
+      // Append newly imported monitor after existing monitors.
+      localSaved.push(incoming);
+      added++;
+    }
+  });
+  setSaved(localSaved);
+
+  // Combine histories and route-detail cache. Imported values fill/refresh matching keys, but no local key is deleted.
+  if(cfg.etaHistory&&typeof cfg.etaHistory==='object')writeLS(LS_ETA_HISTORY,mergePlainObject(getEtaHistory(),cfg.etaHistory));
+  if(cfg.journeyTimeHistory&&typeof cfg.journeyTimeHistory==='object')writeLS(LS_JT_HISTORY,mergePlainObject(getJtHistory(),cfg.journeyTimeHistory));
+  if(cfg.routeDetailCache&&typeof cfg.routeDetailCache==='object')writeLS(LS_ROUTE_CACHE,mergePlainObject(readLS(LS_ROUTE_CACHE,{}),cfg.routeDetailCache));
+
+  let groups=getGroups();
+  let importedTarget=cfg.activeGroupId?(groupIdMap[cfg.activeGroupId]||cfg.activeGroupId):activeGroupId;
+  let target=groups.find(g=>g.id===importedTarget)?importedTarget:(groups.find(g=>g.id===activeGroupId)?activeGroupId:groups[0].id);
+  setActiveGroup(target);
+  editMode=false;
+  renderSaved();
+  renderOptions();
+  setMainTab('SAVE');
+  status('Config combined. Added '+added+', merged '+updated+'.','ok');
+}
+
+function serializeConfig(){
+  const json=JSON.stringify(collectConfig());
+  return 'HKTRANSIT1:'+btoa(unescape(encodeURIComponent(json)));
+}
+function deserializeConfig(text){
+  let t=(text||'').trim();
+  if(!t)throw new Error('Empty config text');
+  if(t.startsWith('HKTRANSIT1:')){
+    return JSON.parse(decodeURIComponent(escape(atob(t.slice('HKTRANSIT1:'.length)))));
   }
-  for(const k of [start+'-'+end,start+'_'+end,start+'|'+end,start+','+end]){const n=normalizeJourneyValue(data[k]);if(n!=null)return n}
-  return null;
+  return JSON.parse(t);
 }
-function normalizeJourneyValue(v){
-  if(v==null)return null;
-  if(typeof v==='number')return v;
-  if(typeof v==='string'){let n=parseFloat(v);return Number.isFinite(n)?n:null}
-  if(typeof v==='object'){
-    for(const k of ['time','seconds','sec','duration','journeyTime','jt','value','avg']){if(v[k]!=null){let n=normalizeJourneyValue(v[k]);if(n!=null)return n}}
+function exportConfigJson(){
+  const blob=new Blob([JSON.stringify(collectConfig(),null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='hk-transit-config-'+new Date().toISOString().slice(0,10)+'.json';
+  document.body.appendChild(a);a.click();a.remove();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  status('Config JSON exported.','ok');
+}
+function importConfigJsonFile(){
+  const input=$('importFileInput');
+  const file=input.files&&input.files[0];
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=()=>{
+    try{applyConfig(JSON.parse(String(r.result||'')))}
+    catch(e){status('Import failed: '+e.message,'err')}
+    input.value='';
+  };
+  r.onerror=()=>{status('File read failed.','err');input.value=''};
+  r.readAsText(file);
+}
+function openConfigModal(title,sub,text,mode){
+  configModalMode=mode;
+  $('configModalTitle').textContent=title;
+  $('configModalSub').textContent=sub||'';
+  $('configTextArea').value=text||'';
+  $('configTextArea').readOnly=mode==='export';
+  $('configActionBtn').textContent=mode==='export'?'Copy':'Import';
+  $('configModal').classList.add('show');
+  setTimeout(()=>{$('configTextArea').focus();$('configTextArea').select()},60);
+}
+function closeConfigModal(){
+  $('configModal').classList.remove('show');
+}
+async function confirmConfigModal(){
+  if(configModalMode==='export'){
+    try{await navigator.clipboard.writeText($('configTextArea').value);status('Config text copied.','ok')}
+    catch{status('Copy blocked by browser. Please select and copy manually.','err')}
+    return;
   }
-  return null;
+  try{applyConfig(deserializeConfig($('configTextArea').value));closeConfigModal()}
+  catch(e){status('Import failed: '+e.message,'err')}
 }
-async function fetchJourneySegmentSeconds(start,end){
-  const d=new Date();
-  const day=(d.getDay()+6)%7; // Monday = 0, same convention as hk-bus-eta docs
-  const hour=d.getHours();
-  const prefix=stopPrefix(start);
-  const urls=[
-    `https://raw.githubusercontent.com/HK-Bus-ETA/hk-bus-time-between-stops/refs/heads/pages/times_hourly/${day}/${hour}/${prefix}.json`,
-    `https://raw.githubusercontent.com/HK-Bus-ETA/hk-bus-time-between-stops/refs/heads/pages/times/${prefix}.json`,
-    `https://timeinterval.hkbuseta.com/times_hourly/${day}/${hour}/${prefix}.json`,
-    `https://timeinterval.hkbuseta.com/times/${prefix}.json`
-  ];
-  let lastErr=null;
-  for(const u of urls){
-    try{let data=await json(u,15*60*1000);let sec=extractJourneySeconds(data,stopIdOf(start),stopIdOf(end));if(sec!=null)return {sec,source:u.includes('times_hourly')?'hourly':'avg'}}catch(e){lastErr=e}
-  }
-  return {sec:240,source:'fallback'}; // HKBus fallback style: 4 minutes per missing segment
+function exportConfigText(){
+  openConfigModal('Export Config Text','Copy this text and share it. It contains saved ETA monitors, groups, order, names and ETA history. Import will combine with existing data.',serializeConfig(),'export');
 }
-function getRouteStopsForSaved(item){
-  const rc=readLS(LS_ROUTE_CACHE,{});
-  const c=rc[routeKey(item.route||{})];
-  if(c&&Array.isArray(c.stops))return c.stops;
-  return [];
+function importConfigText(){
+  openConfigModal('Import Config Text','Paste exported config text here. Import will combine with existing data, not overwrite it. The text can be HKTRANSIT1 serialized text or raw JSON.','','import');
 }
-async function estimateJourneyTimeMinutes(item){
-  const stops=getRouteStopsForSaved(item);
-  let fromId=stopIdOf(item.from&&item.from.stop), toId=stopIdOf(item.to&&item.to.stop);
-  let si=stops.findIndex(s=>stopIdOf(s.stop)===fromId), ei=stops.findIndex(s=>stopIdOf(s.stop)===toId);
-  if(si<0&&item.from&&item.from.seq)si=Number(item.from.seq)-1;
-  if(ei<0&&item.to&&item.to.seq)ei=Number(item.to.seq)-1;
-  if(si<0||ei<0||ei<=si){return {minutes:null,source:'invalid'}};
-  let total=0, sources=[];
-  for(let i=si;i<ei;i++){
-    let a=stops[i], b=stops[i+1];
-    if(!a||!b){total+=240;sources.push('fallback');continue}
-    let seg=await fetchJourneySegmentSeconds(stopIdOf(a.stop),stopIdOf(b.stop));
-    total+=seg.sec;sources.push(seg.source);
-  }
-  return {minutes:Math.max(1,Math.round(total/60)),source:sources.includes('hourly')?'hourly':sources.includes('avg')?'avg':'fallback'};
-}
-function renderJourneyTimeHistory(item,idx){
-  const el=$('savedTrip'+idx);if(!el)return false;
-  const h=getJtHistoryForKey(item.key);if(!h||h.minutes==null)return false;
-  el.classList.toggle('warn',h.source==='fallback');
-  el.innerHTML='<span class="label">Trip:</span> ~'+esc(h.minutes)+'m '+(h.source==='fallback'?'approx':'est.');
-  return true;
-}
-async function loadJourneyTime(item,idx,force=false){
-  const el=$('savedTrip'+idx);if(!el)return;
-  if(!force&&renderJourneyTimeHistory(item,idx))return;
-  try{
-    const r=await estimateJourneyTimeMinutes(item);
-    if(r.minutes==null){el.innerHTML='<span class="label">Trip:</span> --';return}
-    setJtHistoryForKey(item.key,r);
-    el.classList.toggle('warn',r.source==='fallback');
-    el.innerHTML='<span class="label">Trip:</span> ~'+esc(r.minutes)+'m '+(r.source==='fallback'?'approx':'est.');
-  }catch(e){
-    if(!renderJourneyTimeHistory(item,idx))el.innerHTML='<span class="label">Trip:</span> --';
-  }
-}
-function renderSavedEtaHistory(item,idx){let box=$('savedEta'+idx),upd=$('savedUpdated'+idx);if(!box)return false;let h=getEtaHistoryForKey(item.key);if(!h||!Array.isArray(h.rows))return false;box.innerHTML=renderSavedEtaRows(h.rows);box.dataset.lastGood=box.innerHTML;if(upd)upd.textContent='Last updated '+new Date(h.ts||Date.now()).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});return true}
-async function loadSavedEta(item,idx,force){let box=$('savedEta'+idx),upd=$('savedUpdated'+idx);if(!box)return;try{let res=await fetchEtaRows(item.from,force);box.innerHTML=renderSavedEtaRows(res.rows);let now=Date.now();if(upd)upd.textContent='Updated '+new Date(now).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});box.dataset.lastGood=box.innerHTML;setEtaHistoryForKey(item.key,{rows:res.rows||[],url:res.url||'',ts:now})}catch(e){if(renderSavedEtaHistory(item,idx)){if(upd)upd.textContent='Using last ETA, refresh failed'}else if(box.dataset.lastGood){box.innerHTML=box.dataset.lastGood;if(upd)upd.textContent='Last good ETA, refresh failed'}else{box.innerHTML='<div class="etaChip emptyEta">ETA failed</div>';if(upd)upd.textContent='Fetch failed'}}}
-function renderSavedEtaRows(rows){if(!rows||!rows.length)return '<div class="etaChip emptyEta">No ETA</div>';return rows.slice(0,3).map((r,i)=>{let m=etaMin(r.eta||r.timestamp),txt=m==null?'--':m===0?'Now':m+'m';return '<div class="etaChip '+(i===0?'first':'')+'"><div class="min">'+esc(txt)+'</div></div>'}).join('')}
-async function openSavedMonitor(item){await openRoute(item.route);setTimeout(()=>{let fi=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi>=0)$('fromStop').value=fi;if(ti>=0)$('toStop').value=ti},80)}
-function showGroupPicker(){let gp=$('groupPicker'),groups=getGroups();gp.innerHTML=groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋ New</button>';gp.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);hideGroupPicker();setMainTab('SAVE')});let add=gp.querySelector('[data-add]');if(add)add.onclick=()=>{hideGroupPicker();addGroup();setMainTab('SAVE')};gp.classList.add('show')}function hideGroupPicker(){$('groupPicker').classList.remove('show')}
-function startSaveAutoRefresh(){stopSaveAutoRefresh();saveRefreshTimer=setInterval(()=>{if(!$('savedView').classList.contains('hidden'))refreshAllSavedEta(false)},30000)}function stopSaveAutoRefresh(){if(saveRefreshTimer){clearInterval(saveRefreshTimer);saveRefreshTimer=null}}function refreshAllSavedEta(force=false){getSaved().filter(x=>(x.groupId||'default')===activeGroupId).forEach((x,idx)=>loadSavedEta(x,idx,force))}
-function setMainTab(tab){let search=tab==='SEARCH',save=tab==='SAVE',opt=tab==='OPTION';$('searchPanel').classList.toggle('hidden',!search);$('searchTitle').classList.toggle('hidden',!search);$('routes').classList.toggle('hidden',!search);$('savedView').classList.toggle('hidden',!save);$('optionView').classList.toggle('hidden',!opt);$('tabSearch').classList.toggle('on',search);$('tabSave').classList.toggle('on',save);$('tabOption').classList.toggle('on',opt);updateSaveTabText();if(save){renderSaved();startSaveAutoRefresh()}else stopSaveAutoRefresh();if(opt)renderOptions()}
-function renderOptions(){let box=$('cacheList'),rc=readLS(LS_ROUTE_CACHE,{});box.innerHTML=Object.keys(rc).length?'':'<div class="empty">No route detail cache.</div>'}async function refetchRouteData(){[API.KMB+'/route/',API.CTB+'/route/ctb',API.HKBUS].forEach(u=>cache.delete(u));status('Re-fetching route data...');try{await loadRoutes();active=mode==='BUS'?busRoutes:gmbRoutes;filter();status('Route data re-fetched.','ok')}catch(e){status('Re-fetch failed: '+e.message,'err')}}
-function gps(){if(!navigator.geolocation){status('GPS not supported.','err');return}status('Getting location...');navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude};status('GPS ready.','ok')},e=>status('GPS failed: '+e.message,'err'),{enableHighAccuracy:true,timeout:10000,maximumAge:60000})}
+function showGroupPicker(){let gp=$('groupPicker'),groups=getGroups();gp.innerHTML=groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋ New</button>';gp.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);hideGroupPicker();setMainTab('SAVE')});let add=gp.querySelector('[data-add]');if(add)add.onclick=()=>{hideGroupPicker();addGroup();setMainTab('SAVE')};gp.classList.add('show')}function hideGroupPicker(){$('groupPicker').classList.remove('show')}function startSaveAutoRefresh(){stopSaveAutoRefresh();saveRefreshTimer=setInterval(()=>{if(!$('savedView').classList.contains('hidden')&&!editMode)refreshAllSavedEta(false)},30000)}function stopSaveAutoRefresh(){if(saveRefreshTimer){clearInterval(saveRefreshTimer);saveRefreshTimer=null}}function refreshAllSavedEta(force=false){getSaved().filter(x=>(x.groupId||'default')===activeGroupId).forEach((x,idx)=>loadSavedEta(x,idx,force))}function setMainTab(tab){let search=tab==='SEARCH',save=tab==='SAVE',opt=tab==='OPTION';$('searchPanel').classList.toggle('hidden',!search);$('searchTitle').classList.toggle('hidden',!search);$('routes').classList.toggle('hidden',!search);$('savedView').classList.toggle('hidden',!save);$('optionView').classList.toggle('hidden',!opt);$('tabSearch').classList.toggle('on',search);$('tabSave').classList.toggle('on',save);$('tabOption').classList.toggle('on',opt);updateSaveTabText();if(save){renderSaved();startSaveAutoRefresh()}else{editMode=false;stopSaveAutoRefresh()}if(opt)renderOptions()}function renderOptions(){let box=$('cacheList'),rc=readLS(LS_ROUTE_CACHE,{});box.innerHTML=Object.keys(rc).length?'':'<div class="empty">No route detail cache.</div>'}async function refetchRouteData(){[API.KMB+'/route/',API.CTB+'/route/ctb',API.HKBUS].forEach(u=>cache.delete(u));status('Re-fetching route data...');try{await loadRoutes();active=mode==='BUS'?busRoutes:gmbRoutes;filter();status('Route data re-fetched.','ok')}catch(e){status('Re-fetch failed: '+e.message,'err')}}function gps(){if(!navigator.geolocation){status('GPS not supported.','err');return}status('Getting location...');navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude};status('GPS ready.','ok')},e=>status('GPS failed: '+e.message,'err'),{enableHighAccuracy:true,timeout:10000,maximumAge:60000})}
 boot();
-</script>
-</body>
-</html>
+</script></body></html>
