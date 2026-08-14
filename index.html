@@ -6,406 +6,139 @@
 <meta name="theme-color" content="#0b0d13">
 <title>HK Transit ETA</title>
 <style>
-:root{
-  --bg:#070910;--panel:#111520;--panel2:#181d2a;--line:rgba(255,255,255,.10);
-  --text:#f7f9ff;--sub:#8993a7;--blue:#0a84ff;--green:#30d158;--red:#ff453a;--orange:#ff9f0a;
-  --shadow:0 24px 70px rgba(0,0,0,.38);--r:26px;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif}body{background:radial-gradient(circle at 20% -10%,#24365c 0,#0d1321 36%,#070910 76%)}button,input,select{font:inherit}.app{width:min(430px,100%);min-height:100svh;margin:0 auto;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}.top{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 16px}.brand{display:flex;align-items:center;gap:12px}.icon{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#36a3ff,#6d5cff);display:grid;place-items:center;font-size:25px;box-shadow:0 14px 36px rgba(10,132,255,.35)}h1{font-size:28px;letter-spacing:-.8px;margin:0;line-height:1}.subtitle{font-size:12px;color:#9fb5d9;margin-top:2px}.circle{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-size:20px;box-shadow:var(--shadow)}.glass{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.045));border-radius:32px;box-shadow:var(--shadow);overflow:hidden}.pad{padding:14px}.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:rgba(0,0,0,.24);padding:5px;border-radius:22px}.seg button{border:0;border-radius:17px;color:var(--sub);background:transparent;padding:12px 8px;font-weight:900}.seg button.on{color:white;background:linear-gradient(135deg,#0a84ff,#5e5ce6);box-shadow:0 10px 24px rgba(10,132,255,.32)}.display{margin:12px 0 10px;border-radius:28px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);padding:14px}.routeInput{width:100%;border:0;outline:0;background:transparent;color:white;text-align:center;font-size:46px;font-weight:950;letter-spacing:1px;text-transform:uppercase;padding:4px 0}.routeInput::placeholder{color:rgba(255,255,255,.20);font-size:34px}.hint{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.pill{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--sub);font-size:11px;font-weight:700;border-radius:999px;padding:6px 8px}.keyboard{display:grid;grid-template-columns:.95fr 1.28fr;gap:10px}.keyBox{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:9px}.keyTitle{text-align:center;color:#aab4c8;font-size:10px;font-weight:950;letter-spacing:.7px;margin-bottom:8px}.numPad{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}.charPad{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.key{height:44px;border-radius:16px;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));color:white;font-size:18px;font-weight:950;box-shadow:inset 0 1px 0 rgba(255,255,255,.08)}.key:active{transform:scale(.96);filter:brightness(1.25)}.key.zero{grid-column:span 2}.key.back{background:linear-gradient(180deg,#1d8cff,#0761c7)}.key.clear{background:linear-gradient(180deg,#ff5b70,#b3203f)}.titleRow{display:flex;align-items:end;justify-content:space-between;margin:18px 4px 10px}.titleRow b{font-size:20px;letter-spacing:-.2px}.count{font-size:12px;color:var(--sub)}.routes{display:flex;flex-direction:column;gap:10px}.routeCard{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border-radius:24px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.routeCard:active{transform:scale(.985)}.rno{font-size:28px;font-weight:950;letter-spacing:-.4px}.meta{font-size:12px;color:var(--sub);line-height:1.35}.tag{border-radius:999px;padding:6px 9px;font-size:11px;font-weight:950;border:1px solid var(--line);white-space:nowrap}.kmb{background:rgba(255,159,10,.20);color:#ffd49e}.ctb{background:rgba(10,132,255,.22);color:#a9d3ff}.gmb{background:rgba(48,209,88,.18);color:#aaffc4}.empty{border:1px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.035);border-radius:24px;padding:24px 15px;text-align:center;color:var(--sub);font-size:14px;line-height:1.45}.status{margin-top:14px;border:1px solid rgba(255,255,255,.09);background:rgba(0,0,0,.18);border-radius:22px;padding:12px 13px;color:var(--sub);font-size:12px;line-height:1.45}.ok{color:var(--green)}.err{color:#ff8a82}.sheet{position:fixed;left:50%;bottom:0;width:min(430px,100vw);max-height:88svh;overflow:auto;transform:translateX(-50%) translateY(110%);transition:.25s cubic-bezier(.2,.8,.2,1);z-index:9;padding:10px 14px calc(16px + env(safe-area-inset-bottom));border-radius:34px 34px 0 0;border:1px solid var(--line);border-bottom:0;background:rgba(14,18,27,.94);backdrop-filter:blur(30px);box-shadow:0 -30px 90px rgba(0,0,0,.55)}.sheet.show{transform:translateX(-50%) translateY(0)}.grab{width:44px;height:5px;background:rgba(255,255,255,.28);border-radius:99px;margin:4px auto 12px}.sheetHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.close{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.10);color:white;font-size:20px}.selectBox{margin-top:12px}.selectBox label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}select{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:19px;padding:14px;font-size:15px;outline:0}option{background:#111520}.primary{width:100%;margin-top:13px;border:0;border-radius:21px;padding:15px;background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white;font-size:16px;font-weight:950}.eta{margin-top:12px}.etaRow{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.075);border-radius:22px;padding:14px;margin-bottom:9px}.etaMin{font-size:35px;font-weight:950;color:var(--green);letter-spacing:-1px}.etaMin small{font-size:13px;color:var(--sub)}@media(max-width:370px){.keyboard{grid-template-columns:1fr}.routeInput{font-size:40px}.key{height:42px}}
+:root{--bg:#070910;--line:rgba(255,255,255,.12);--text:#f8fbff;--sub:#9aa8bf;--blue:#0a84ff;--green:#30d158;--red:#ff453a;--shadow:0 24px 70px rgba(0,0,0,.38)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:radial-gradient(circle at 18% -8%,#24365c 0,#0d1321 34%,#070910 76%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif}button,input,select{font:inherit}.app{width:min(430px,100%);min-height:100svh;margin:0 auto;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}.top{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 16px}.brand{display:flex;align-items:center;gap:12px}.icon{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#36a3ff,#6d5cff);display:grid;place-items:center;font-size:25px;box-shadow:0 14px 36px rgba(10,132,255,.35)}h1{font-size:28px;letter-spacing:-.8px;margin:0;line-height:1}.subtitle{font-size:12px;color:#b2c7e9;margin-top:2px}.circle{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-size:20px;box-shadow:var(--shadow)}.glass{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.045));border-radius:30px;box-shadow:var(--shadow);overflow:hidden}.pad{padding:14px}.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:rgba(0,0,0,.24);padding:5px;border-radius:22px}.seg button{border:0;border-radius:17px;color:var(--sub);background:transparent;padding:12px 8px;font-weight:900}.seg button.on{color:white;background:linear-gradient(135deg,#0a84ff,#5e5ce6)}.display{margin:12px 0 10px;border-radius:28px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);padding:14px}.routeInput{width:100%;border:0;outline:0;background:transparent;color:white;text-align:center;font-size:46px;font-weight:950;letter-spacing:1px;text-transform:uppercase;padding:4px 0}.routeInput::placeholder{color:rgba(255,255,255,.20);font-size:34px}.hint{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}.pill{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--sub);font-size:11px;font-weight:700;border-radius:999px;padding:6px 8px}
+/* aligned keypad: every key same size, no spanning */
+.keyboard{display:grid;grid-template-columns:1fr 1.28fr;gap:10px;align-items:stretch}.keyBox{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:9px;display:flex;flex-direction:column}.keyTitle{text-align:center;color:#aab4c8;font-size:10px;font-weight:950;letter-spacing:.7px;margin-bottom:8px}.numPad,.charPad{display:grid;gap:7px}.numPad{grid-template-columns:repeat(3,minmax(0,1fr))}.charPad{grid-template-columns:repeat(4,minmax(0,1fr))}.key{width:100%;height:42px;min-width:0;border-radius:15px;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));color:white;font-size:17px;font-weight:950;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);padding:0;text-align:center}.key:active{transform:scale(.96);filter:brightness(1.25)}.key.back{background:linear-gradient(180deg,#1d8cff,#0761c7)}.key.clear{background:linear-gradient(180deg,#ff5b70,#b3203f)}
+.titleRow{display:flex;align-items:end;justify-content:space-between;margin:18px 4px 10px}.titleRow b{font-size:20px}.count{font-size:12px;color:var(--sub)}.routes{display:flex;flex-direction:column;gap:10px}.routeCard{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border-radius:24px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.routeCard:active{transform:scale(.985)}.rno{font-size:28px;font-weight:950;letter-spacing:-.4px}.meta{font-size:12px;color:var(--sub);line-height:1.35}.tag{border-radius:999px;padding:6px 9px;font-size:11px;font-weight:950;border:1px solid var(--line);white-space:nowrap}.kmb{background:rgba(255,159,10,.20);color:#ffd49e}.ctb{background:rgba(10,132,255,.22);color:#a9d3ff}.gmb{background:rgba(48,209,88,.18);color:#aaffc4}.empty{border:1px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.035);border-radius:24px;padding:24px 15px;text-align:center;color:var(--sub);font-size:14px;line-height:1.45}.status{margin-top:14px;border:1px solid rgba(255,255,255,.09);background:rgba(0,0,0,.18);border-radius:22px;padding:12px 13px;color:var(--sub);font-size:12px;line-height:1.45}.ok{color:var(--green)}.err{color:#ff8a82}.hidden{display:none!important}.bottomTabs{position:sticky;bottom:8px;z-index:4;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;padding:7px;border:1px solid var(--line);border-radius:24px;background:rgba(7,9,16,.84);backdrop-filter:blur(22px);box-shadow:var(--shadow)}.bottomTabs button{border:0;border-radius:18px;background:transparent;color:var(--sub);padding:11px 4px;font-weight:950;font-size:13px}.bottomTabs button.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.miniBtn{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.08);color:white;padding:10px 12px;font-weight:900}.miniBtn.danger{background:rgba(255,69,58,.18);color:#ffb0aa}.miniBtn.ok{background:rgba(48,209,88,.16);color:#b8ffd0}.rowBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.optBlock{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:24px;padding:14px;margin-bottom:12px}.optBlock h3{margin:0 0 8px;font-size:17px}.saveAction{margin-top:9px;width:100%;border:1px solid var(--line);border-radius:21px;padding:13px;background:rgba(48,209,88,.16);color:#c8ffd7;font-size:15px;font-weight:950}
+.sheet{position:fixed;left:50%;bottom:0;width:min(430px,100vw);max-height:88svh;overflow:auto;transform:translateX(-50%) translateY(110%);transition:.25s cubic-bezier(.2,.8,.2,1);z-index:9;padding:10px 14px calc(16px + env(safe-area-inset-bottom));border-radius:34px 34px 0 0;border:1px solid var(--line);border-bottom:0;background:rgba(14,18,27,.96);backdrop-filter:blur(30px);box-shadow:0 -30px 90px rgba(0,0,0,.55)}.sheet.show{transform:translateX(-50%) translateY(0)}.grab{width:44px;height:5px;background:rgba(255,255,255,.28);border-radius:99px;margin:4px auto 12px}.sheetHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.close{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.10);color:white;font-size:20px}.selectBox{margin-top:12px}.selectBox label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}select{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:19px;padding:14px;font-size:15px;outline:0}option{background:#111520}.primary{width:100%;margin-top:13px;border:0;border-radius:21px;padding:15px;background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white;font-size:16px;font-weight:950}.eta{margin-top:12px}.etaRow{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.075);border-radius:22px;padding:14px;margin-bottom:9px}.etaMin{font-size:35px;font-weight:950;color:var(--green);letter-spacing:-1px}.etaMin small{font-size:13px;color:var(--sub)}
+.groupBar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 0 8px}.groupChip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.07);color:var(--sub);padding:9px 13px;font-weight:950}.groupChip.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.savedMonitorCard{position:relative;display:grid;grid-template-columns:1fr 126px;gap:10px;align-items:center;width:100%;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border-radius:26px;padding:14px 40px 24px 14px;min-height:112px}.savedRouteTitle{font-size:19px;font-weight:950;line-height:1.05;letter-spacing:-.2px;margin-bottom:7px}.savedPair{font-size:14px;line-height:1.42;color:#c8d4ea;font-weight:750}.savedPair .label{color:#8fa0bb;font-weight:900}.savedEta{display:flex;flex-direction:row;gap:8px;align-items:baseline;justify-content:flex-end;white-space:nowrap}.etaChip{text-align:right}.etaChip .min{font-size:13px;font-weight:950;color:var(--green)}.etaChip.first .min{font-size:27px}.etaChip.emptyEta{font-size:12px;color:var(--sub)}.savedMore{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-weight:950;line-height:1}.savedMenu{position:absolute;top:42px;right:10px;z-index:20;display:none;flex-direction:column;gap:6px;min-width:130px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(11,15,24,.96);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.savedMenu.show{display:flex}.savedMenu button{border:0;border-radius:13px;padding:10px 12px;text-align:left;background:rgba(255,255,255,.08);color:white;font-weight:900}.savedMenu button.danger{background:rgba(255,69,58,.20);color:#ffb0aa}.savedUpdated{position:absolute;right:14px;bottom:7px;font-size:10px;color:var(--sub)}.groupPicker{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(12px);z-index:30;width:min(400px,calc(100vw - 28px));display:none;gap:8px;overflow-x:auto;padding:10px;border:1px solid var(--line);border-radius:22px;background:rgba(9,12,20,.96);box-shadow:var(--shadow);backdrop-filter:blur(22px)}.groupPicker.show{display:flex;transform:translateX(-50%) translateY(0)}
+@media(max-width:370px){.keyboard{grid-template-columns:1fr}.routeInput{font-size:40px}.savedMonitorCard{grid-template-columns:1fr 112px}.savedRouteTitle{font-size:18px}.savedPair{font-size:13px}.etaChip.first .min{font-size:24px}.etaChip .min{font-size:12px}}
 
-.hidden{display:none!important}.bottomTabs{position:sticky;bottom:8px;z-index:4;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;padding:7px;border:1px solid var(--line);border-radius:24px;background:rgba(7,9,16,.84);backdrop-filter:blur(22px);box-shadow:var(--shadow)}.bottomTabs button{border:0;border-radius:18px;background:transparent;color:var(--sub);padding:11px 4px;font-weight:950;font-size:13px}.bottomTabs button.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.miniBtn{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.08);color:white;padding:10px 12px;font-weight:900}.miniBtn.danger{background:rgba(255,69,58,.18);color:#ffb0aa}.miniBtn.ok{background:rgba(48,209,88,.16);color:#b8ffd0}.rowBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.optBlock{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:24px;padding:14px;margin-bottom:12px}.optBlock h3{margin:0 0 8px;font-size:17px}.saveAction{margin-top:9px;width:100%;border:1px solid var(--line);border-radius:21px;padding:13px;background:rgba(48,209,88,.16);color:#c8ffd7;font-size:15px;font-weight:950}
-.savedEta{margin-top:10px;display:flex;flex-direction:column;gap:7px}.savedEtaRow{display:flex;align-items:center;justify-content:space-between;border:1px solid var(--line);background:rgba(255,255,255,.07);border-radius:18px;padding:10px 12px}.savedEtaMin{font-size:22px;font-weight:950;color:var(--green)}.savedPair{font-size:12px;color:var(--sub);line-height:1.45;margin-top:4px}.saveAction.saved{background:rgba(255,159,10,.18);color:#ffd9a6}
-.savedMonitorCard{display:grid;grid-template-columns:1fr 118px;gap:12px;align-items:stretch;width:100%;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border-radius:26px;padding:14px}.savedMain{min-width:0}.savedRouteTitle{font-size:27px;font-weight:950;letter-spacing:-.5px;line-height:1.05}.savedPair{font-size:12px;color:var(--sub);line-height:1.45;margin-top:7px}.savedEta{display:flex;flex-direction:column;gap:7px;align-items:stretch;justify-content:center;margin:0}.etaChip{display:flex;flex-direction:column;justify-content:center;min-height:44px;border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.07);padding:8px 9px;text-align:right}.etaChip.first{min-height:60px;background:rgba(48,209,88,.14);border-color:rgba(48,209,88,.32)}.etaChip .min{font-size:16px;font-weight:950;color:var(--green);line-height:1}.etaChip.first .min{font-size:30px;letter-spacing:-.8px}.etaChip .time{font-size:10px;color:var(--sub);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.etaChip.emptyEta{color:var(--sub);text-align:center}.savedActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.savedActions .miniBtn{padding:9px 12px}.savedUrl{font-size:10px;color:var(--sub);margin-top:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}@media(max-width:370px){.savedMonitorCard{grid-template-columns:1fr 104px}.savedRouteTitle{font-size:24px}.etaChip.first .min{font-size:26px}}
-
-.savedMonitorCard{position:relative;display:grid!important;grid-template-columns:1fr 132px!important;gap:10px!important;align-items:center!important;padding:13px 40px 22px 14px!important;min-height:108px!important}.savedRouteTitle{font-size:24px!important}.savedPair{font-size:11px!important;margin-top:5px!important}.savedEta{display:flex!important;flex-direction:row!important;gap:9px!important;align-items:baseline!important;justify-content:flex-end!important;margin:0!important;white-space:nowrap}.etaChip{border:0!important;background:transparent!important;padding:0!important;min-height:0!important;text-align:right!important}.etaChip.first{border:0!important;background:transparent!important;min-height:0!important}.etaChip .min{font-size:14px!important;color:var(--green)!important}.etaChip.first .min{font-size:28px!important}.etaChip .time{display:none!important}.savedUrl{display:none!important}.savedMore{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-weight:950;line-height:1}.savedMenu{position:absolute;top:42px;right:10px;z-index:20;display:none;flex-direction:column;gap:6px;min-width:118px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(11,15,24,.96);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.savedMenu.show{display:flex}.savedMenu button{border:0;border-radius:13px;padding:10px 12px;text-align:left;background:rgba(255,255,255,.08);color:white;font-weight:900}.savedMenu button.danger{background:rgba(255,69,58,.20);color:#ffb0aa}.savedUpdated{position:absolute;right:14px;bottom:7px;font-size:10px;color:var(--sub)}.savedActions{display:none!important}.etaChip.emptyEta{font-size:12px;color:var(--sub)}@media(max-width:370px){.savedMonitorCard{grid-template-columns:1fr 115px!important}.savedRouteTitle{font-size:22px!important}.etaChip.first .min{font-size:24px!important}.savedEta{gap:6px!important}}
-
-/* v14: SAVE card readability update: smaller route number, larger From/To details */
-.savedMonitorCard{grid-template-columns:1fr 126px!important;padding:14px 40px 24px 14px!important;min-height:112px!important}.savedRouteTitle{font-size:19px!important;line-height:1.05!important;letter-spacing:-.2px!important;margin-bottom:7px!important}.savedPair{font-size:14px!important;line-height:1.42!important;margin-top:0!important;color:#c8d4ea!important;font-weight:750!important}.savedPair .label{color:#8fa0bb!important;font-weight:900!important}.savedEta{gap:8px!important}.etaChip.first .min{font-size:27px!important}.etaChip .min{font-size:13px!important}.savedUpdated{font-size:10px!important;right:14px!important;bottom:7px!important}@media(max-width:370px){.savedMonitorCard{grid-template-columns:1fr 112px!important}.savedRouteTitle{font-size:18px!important}.savedPair{font-size:13px!important}.etaChip.first .min{font-size:24px!important}.etaChip .min{font-size:12px!important}}
+/* save ETA custom modal */
+.modalOverlay{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.48);backdrop-filter:blur(10px);padding:14px}.modalOverlay.show{display:flex}.modalCard{width:min(430px,100%);border:1px solid var(--line);border-radius:30px;background:rgba(14,18,27,.97);box-shadow:var(--shadow);padding:16px}.modalTitle{font-size:22px;font-weight:950;margin:0 0 4px}.modalSub{color:var(--sub);font-size:12px;line-height:1.4;margin-bottom:14px}.field{margin-top:12px}.field label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}.modalInput,.modalSelect{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:18px;padding:13px 14px;outline:0;font-size:15px}.modalActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.modalBtn{border:0;border-radius:19px;padding:14px;font-size:15px;font-weight:950;color:white;background:rgba(255,255,255,.10)}.modalBtn.primary{background:linear-gradient(135deg,#0a84ff,#5e5ce6)}
 </style>
 </head>
 <body>
 <main class="app">
-  <header class="top">
-    <div class="brand"><div class="icon">🚌</div><div><h1>Transit</h1><div class="subtitle">Single HTML · Bus + Mini Bus</div></div></div>
-    <button class="circle" id="gpsBtn">⌖</button>
-  </header>
-
-  <section class="glass pad" id="searchPanel">
-    <div class="seg"><button id="busBtn" class="on">Bus</button><button id="gmbBtn">Mini Bus</button></div>
-    <div class="display">
-      <input id="routeInput" class="routeInput" placeholder="ROUTE" autocomplete="off" inputmode="none">
-      <div class="hint" id="hint"><span class="pill">Left numbers</span><span class="pill">Right letters</span></div>
-    </div>
-    <div class="keyboard" id="keyboard"></div>
-  </section>
-
-  <div class="titleRow" id="searchTitle"><b>Routes</b><span id="count" class="count">Type route number</span></div>
-  <section id="routes" class="routes"><div class="empty">Choose Bus or Mini Bus, then enter route by keypad.</div></section>
-  <section id="savedView" class="routes hidden"><div class="empty">No saved route yet.</div></section>
-  <section id="optionView" class="hidden">
-    <div class="optBlock"><h3>Route Data</h3><div class="meta">Re-fetch route list and HKBus mini bus mapping data.</div><div class="rowBtns"><button id="refetchBtn" class="miniBtn ok">Re-fetch route data</button></div></div>
-    <div class="optBlock"><h3>Route Detail Cache</h3><div class="meta">Cached stop dropdown data for routes opened before.</div><div class="rowBtns"><button id="clearAllCacheBtn" class="miniBtn danger">Remove all cache</button></div><div id="cacheList" class="routes" style="margin-top:12px"></div></div>
-  </section>
-  <nav class="bottomTabs"><button id="tabSearch" class="on">SEARCH</button><button id="tabSave">SAVE</button><button id="tabOption">OPTION</button></nav>
-  <div id="status" class="status">This is one standalone HTML file. Internet is only used to call official ETA APIs.</div>
+<header class="top"><div class="brand"><div class="icon">🚌</div><div><h1>Transit</h1><div class="subtitle">Single HTML · Bus + Mini Bus</div></div></div><button class="circle" id="gpsBtn">⌖</button></header>
+<section class="glass pad" id="searchPanel"><div class="seg"><button id="busBtn" class="on">Bus</button><button id="gmbBtn">Mini Bus</button></div><div class="display"><input id="routeInput" class="routeInput" placeholder="ROUTE" autocomplete="off" inputmode="none"><div class="hint"><span class="pill">Left numbers</span><span class="pill">Right letters</span></div></div><div class="keyboard" id="keyboard"></div></section>
+<div class="titleRow" id="searchTitle"><b>Routes</b><span id="count" class="count">Loading routes...</span></div>
+<section id="routes" class="routes"><div class="empty">Loading official route data...</div></section>
+<section id="savedView" class="routes hidden"><div class="empty">No saved ETA monitor yet.</div></section>
+<section id="optionView" class="hidden"><div class="optBlock"><h3>Save groups</h3><div class="meta">Create custom save tabs to organise ETA monitors.</div><div class="rowBtns"><button id="addGroupBtn" class="miniBtn ok">Add save tab</button><button id="renameGroupBtn" class="miniBtn">Rename current tab</button><button id="deleteGroupBtn" class="miniBtn danger">Delete current tab</button></div></div><div class="optBlock"><h3>Route data</h3><div class="rowBtns"><button id="refetchBtn" class="miniBtn ok">Re-fetch route data</button><button id="clearHistoryBtn" class="miniBtn danger">Clear ETA history</button></div></div><div class="optBlock"><h3>Route detail cache</h3><div class="rowBtns"><button id="clearAllCacheBtn" class="miniBtn danger">Remove all cache</button></div><div id="cacheList" class="routes" style="margin-top:12px"></div></div></section>
+<nav class="bottomTabs"><button id="tabSearch" class="on">SEARCH</button><button id="tabSave">SAVE</button><button id="tabOption">OPTION</button></nav>
+<div id="status" class="status">Ready.</div>
 </main>
-
-<section class="sheet" id="sheet">
-  <div class="grab"></div>
-  <div class="sheetHead"><div><div id="sheetRoute" class="rno">Route</div><div id="sheetMeta" class="meta">Loading stops...</div></div><button id="close" class="close">×</button></div>
-  <div class="selectBox"><label>From stop, nearest by default</label><select id="fromStop"></select></div>
-  <div class="selectBox"><label>To stop, loaded from selected route</label><select id="toStop"></select></div>
-  <button id="etaBtn" class="primary">Show ETA</button>
-  <button id="saveBtn" class="saveAction">Save ETA Monitor</button>
-  <div id="eta" class="eta"><div class="empty">Select From / To.</div></div>
-</section>
-
+<div id="groupPicker" class="groupPicker"></div>
+<div id="saveModal" class="modalOverlay">
+  <div class="modalCard">
+    <div class="modalTitle">Save ETA Monitor</div>
+    <div class="modalSub" id="saveModalSub">Choose a name and save group for this From / To ETA monitor.</div>
+    <div class="field"><label>Display name</label><input id="saveNameInput" class="modalInput" autocomplete="off"></div>
+    <div class="field"><label>Save group</label><select id="saveGroupSelect" class="modalSelect"></select></div>
+    <div class="field hidden" id="newGroupField"><label>New group name</label><input id="newGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div>
+    <div class="modalActions"><button id="saveCancelBtn" class="modalBtn">Cancel</button><button id="saveConfirmBtn" class="modalBtn primary">Save</button></div>
+  </div>
+</div>
+<section class="sheet" id="sheet"><div class="grab"></div><div class="sheetHead"><div><div id="sheetRoute" class="rno">Route</div><div id="sheetMeta" class="meta">Loading stops...</div></div><button id="close" class="close">×</button></div><div class="selectBox"><label>From stop</label><select id="fromStop"></select></div><div class="selectBox"><label>To stop</label><select id="toStop"></select></div><button id="etaBtn" class="primary">Show ETA</button><button id="saveBtn" class="saveAction">Save ETA Monitor</button><div id="eta" class="eta"><div class="empty">Select From / To.</div></div></section>
 <script>
 'use strict';
 const API={KMB:'https://data.etabus.gov.hk/v1/transport/kmb',CTB:'https://rt.data.gov.hk/v2/transport/citybus',GMB:'https://data.etagmb.gov.hk',HKBUS:'https://data.hkbus.app/routeFareList.min.json'};
-const $=id=>document.getElementById(id);const routeInput=$('routeInput');
-let mode='BUS',busRoutes=[],gmbRoutes=[],active=[],currentStops=[],currentRoute=null,pos=null,hkbDb=null;const cache=new Map();
-const LS_ROUTE_CACHE='hkTransit_routeDetailCache_v2';
-const LS_SAVED='hkTransit_savedRoutes_v1';
-const LS_ETA_HISTORY='hkTransit_savedEtaHistory_v1';
-let saveRefreshTimer=null;
+const $=id=>document.getElementById(id), routeInput=$('routeInput');
+let mode='BUS',busRoutes=[],gmbRoutes=[],active=[],currentStops=[],currentRoute=null,pos=null,hkbDb=null,activeGroupId='default',saveRefreshTimer=null,saveHoldTimer=null;const cache=new Map();
+const LS_ROUTE_CACHE='hkTransit_routeDetailCache_v3',LS_SAVED='hkTransit_savedRoutes_v2',LS_GROUPS='hkTransit_savedGroups_v1',LS_ACTIVE_GROUP='hkTransit_activeGroup_v1',LS_ETA_HISTORY='hkTransit_savedEtaHistory_v2';
 const numKeys=['1','2','3','4','5','6','7','8','9','0','⌫','CLR'];
 const charKeys=['A','B','C','D','E','F','H','K','M','N','P','R','S','T','W','X'];
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));}
-function toText(v){
-  if(v==null)return '';
-  if(typeof v==='string'||typeof v==='number')return String(v);
-  if(Array.isArray(v))return toText(v.find(x=>toText(x))||v[0]);
-  if(typeof v==='object')return toText(v.zh||v.tc||v.name_tc||v.name_zh||v.en||v.name_en||v.name||v.value||v.text||Object.values(v).find(x=>toText(x)));
-  return String(v);
-}
-function stopIdOf(v){
-  if(v==null)return '';
-  if(typeof v==='string'||typeof v==='number')return String(v);
-  if(Array.isArray(v))return stopIdOf(v[0]);
-  if(typeof v==='object'){
-    return stopIdOf(v.stop_id||v.stopId||v.stop||v.id||v.gmb||v.value||v.code||v.gtfs_stop_id||v.gtfsStopId||v.stopID||v[0]);
-  }
-  return String(v);
-}
+function toText(v){if(v==null)return '';if(typeof v==='string'||typeof v==='number')return String(v);if(Array.isArray(v))return toText(v.find(x=>toText(x))||v[0]);if(typeof v==='object')return toText(v.zh||v.tc||v.name_tc||v.name_zh||v.en||v.name_en||v.name||v.value||v.text||Object.values(v).find(x=>toText(x)));return String(v)}
+function stopIdOf(v){if(v==null)return '';if(typeof v==='string'||typeof v==='number')return String(v);if(Array.isArray(v))return stopIdOf(v[0]);if(typeof v==='object')return stopIdOf(v.stop_id||v.stopId||v.stop||v.id||v.gmb||v.value||v.code||v.gtfs_stop_id||v.gtfsStopId||v.stopID||v[0]);return String(v)}
 function status(s,c=''){$('status').innerHTML='<span class="'+c+'">'+esc(s)+'</span>'}
-async function fetchJsonOnce(url){
-  let r=await fetch(url,{cache:'no-store'});
-  if(!r.ok)throw new Error(r.status+' '+r.statusText);
-  return await r.json();
-}
-async function json(url,ttl=300000){
-  let n=Date.now(),c=cache.get(url);if(c&&n-c.t<ttl)return c.v;
-  let lastErr=null;
-  const urls=[url];
-  // GMB ETA endpoint is valid, but some mobile/file:// browsers block direct fetch by CORS/null-origin.
-  // Keep direct official API first. Only if it fails, try public read-only CORS relays so the app can still run as a single HTML file.
-  if(url.includes('data.etagmb.gov.hk/eta/')){
-    urls.push('https://api.allorigins.win/raw?url='+encodeURIComponent(url));
-    urls.push('https://corsproxy.io/?'+encodeURIComponent(url));
-  }
-  for(const u of urls){
-    const attempts=url.includes('data.etagmb.gov.hk/eta/')?2:1;
-    for(let i=0;i<attempts;i++){
-      try{let v=await fetchJsonOnce(u);cache.set(url,{t:n,v});return v}catch(e){lastErr=e; if(i<attempts-1)await new Promise(r=>setTimeout(r,450));}
-    }
-  }
-  throw lastErr||new Error('Fetch failed');
-}
-function buildKb(){const kb=$('keyboard');kb.innerHTML='';const make=k=>{let b=document.createElement('button');b.textContent=k;b.className='key '+(k==='0'?'zero ':'')+(k==='⌫'?'back ':'')+(k==='CLR'?'clear ':'');b.onclick=()=>{let v=routeInput.value.toUpperCase();if(k==='CLR')v='';else if(k==='⌫')v=v.slice(0,-1);else v+=k;routeInput.value=v;filter();};return b};let l=document.createElement('div'),r=document.createElement('div');l.className=r.className='keyBox';l.innerHTML='<div class="keyTitle">NUMBER PAD</div><div class="numPad"></div>';r.innerHTML='<div class="keyTitle">CHARACTER PAD</div><div class="charPad"></div>';numKeys.forEach(k=>l.querySelector('.numPad').appendChild(make(k)));charKeys.forEach(k=>r.querySelector('.charPad').appendChild(make(k)));kb.append(l,r)}
-function dist(a,b,c,d){if(!a||!b||!c||!d)return 9e9;const R=6371,t=x=>x*Math.PI/180;const q=Math.sin(t(c-a)/2)**2+Math.cos(t(a))*Math.cos(t(c))*Math.sin(t(d-b)/2)**2;return 2*R*Math.asin(Math.sqrt(q))}
-function dstr(k){return k>999?'':k<1?Math.round(k*1000)+'m':k.toFixed(1)+'km'}
-function name(s){return toText(s.name_tc||s.stop_name_tc||s.name_zh||s.name_en||s.stop_name_en||s.name||s.stop||'')}
-function etaMin(x){let d=new Date(x);if(isNaN(d))return null;return Math.max(0,Math.round((d-Date.now())/60000))}
-function time(x){try{return new Date(x).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'})}catch{return ''}}
-
-function readLS(k,def){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(def))}catch{return def}}
-function writeLS(k,v){localStorage.setItem(k,JSON.stringify(v))}
-function routeKey(r){return [r.type,r.route,r.bound||'',r.service_type||'',r.hkbusId||'',r.gtfs_id||'',r.region||''].join('|')}
-function routeTitle(r){return `${r.type} ${r.route}`}
-function routeMeta(r){return r.type==='GMB'?(r.desc_tc||r.desc_en||r.region||''):`${r.orig_tc||r.orig_en||''} → ${r.dest_tc||r.dest_en||''}`}
-function getRouteCache(){return readLS(LS_ROUTE_CACHE,{})}
-function setRouteCache(key,data){let c=getRouteCache();c[key]={...data,ts:Date.now()};writeLS(LS_ROUTE_CACHE,c)}
-function removeRouteCache(key){let c=getRouteCache();delete c[key];writeLS(LS_ROUTE_CACHE,c);renderOptions()}
-function clearAllRouteCache(){writeLS(LS_ROUTE_CACHE,{});renderOptions();status('All route detail cache removed.','ok')}
-function getSaved(){return readLS(LS_SAVED,[])}
-function setSaved(v){writeLS(LS_SAVED,v)}
-function getEtaHistory(){return readLS(LS_ETA_HISTORY,{})}
-function setEtaHistoryForKey(key,data){let h=getEtaHistory();h[key]={...data,ts:Date.now()};writeLS(LS_ETA_HISTORY,h)}
-function getEtaHistoryForKey(key){return getEtaHistory()[key]||null}
-function isSavedRoute(r){const k=routeKey(r);return getSaved().some(x=>x.key===k)}
-function savedKey(route,from,to){return [routeKey(route),stopIdOf(from&&from.stop),stopIdOf(to&&to.stop)].join('||')}
+async function fetchJsonOnce(url){let r=await fetch(url,{cache:'no-store'});if(!r.ok)throw new Error(r.status+' '+r.statusText);return await r.json()}
+async function json(url,ttl=300000){let n=Date.now(),c=cache.get(url);if(c&&n-c.t<ttl)return c.v;let lastErr=null;const urls=[url];if(url.includes('data.etagmb.gov.hk/eta/')){urls.push('https://corsproxy.io/?'+encodeURIComponent(url));urls.push('https://api.allorigins.win/raw?url='+encodeURIComponent(url));}for(const u of urls){const attempts=url.includes('data.etagmb.gov.hk/eta/')?2:1;for(let i=0;i<attempts;i++){try{let v=await fetchJsonOnce(u);cache.set(url,{t:n,v});return v}catch(e){lastErr=e;if(i<attempts-1)await new Promise(r=>setTimeout(r,450));}}}throw lastErr||new Error('Fetch failed')}
+function readLS(k,d){try{return JSON.parse(localStorage.getItem(k)||JSON.stringify(d))}catch{return d}}function writeLS(k,v){localStorage.setItem(k,JSON.stringify(v))}
+function getGroups(){let g=readLS(LS_GROUPS,null);if(!g||!g.length)g=[{id:'default',name:'Default'}];return g}function setGroups(g){writeLS(LS_GROUPS,g)}function setActiveGroup(id){activeGroupId=id;writeLS(LS_ACTIVE_GROUP,id);updateSaveTabText()}function getSaved(){return readLS(LS_SAVED,[])}function setSaved(v){writeLS(LS_SAVED,v)}function getEtaHistory(){return readLS(LS_ETA_HISTORY,{})}function setEtaHistoryForKey(k,d){let h=getEtaHistory();h[k]={...d,ts:Date.now()};writeLS(LS_ETA_HISTORY,h)}function getEtaHistoryForKey(k){return getEtaHistory()[k]||null}
+function routeKey(r){return [r.type,r.route,r.bound||'',r.service_type||'',r.hkbusId||'',r.gtfs_id||'',r.region||''].join('|')}function savedKey(route,from,to){return [routeKey(route),stopIdOf(from&&from.stop),stopIdOf(to&&to.stop)].join('||')}function routeTitle(r){return `${r.type} ${r.route}`}function routeMeta(r){return r.type==='GMB'?(r.desc_tc||r.desc_en||r.region||''):`${r.orig_tc||r.orig_en||''} → ${r.dest_tc||r.dest_en||''}`}function name(s){return toText(s.name_tc||s.stop_name_tc||s.name_zh||s.name_en||s.stop_name_en||s.name||s.stop||'')}function etaMin(x){let d=new Date(x);if(isNaN(d))return null;return Math.max(0,Math.round((d-Date.now())/60000))}function time(x){try{return new Date(x).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'})}catch{return ''}}
+function buildKb(){const kb=$('keyboard');kb.innerHTML='';const make=k=>{let b=document.createElement('button');b.textContent=k;b.className='key '+(k==='⌫'?'back ':'')+(k==='CLR'?'clear ':'');b.onclick=()=>{let v=routeInput.value.toUpperCase();if(k==='CLR')v='';else if(k==='⌫')v=v.slice(0,-1);else v+=k;routeInput.value=v;filter()};return b};let l=document.createElement('div'),r=document.createElement('div');l.className=r.className='keyBox';l.innerHTML='<div class="keyTitle">NUMBER PAD</div><div class="numPad"></div>';r.innerHTML='<div class="keyTitle">CHARACTER PAD</div><div class="charPad"></div>';numKeys.forEach(k=>l.querySelector('.numPad').appendChild(make(k)));charKeys.forEach(k=>r.querySelector('.charPad').appendChild(make(k)));kb.append(l,r)}
+async function boot(){activeGroupId=readLS(LS_ACTIVE_GROUP,'default');buildKb();wireEvents();ensureActiveGroup();try{await loadRoutes();setMode('BUS');let hasCache=getSaved().length>0||Object.keys(getEtaHistory()).length>0;setMainTab(hasCache?'SAVE':'SEARCH');status('Ready. Route list loaded.','ok')}catch(e){status('Route list failed: '+e.message,'err');setMainTab(getSaved().length?'SAVE':'SEARCH')}}
+function wireEvents(){routeInput.oninput=()=>{routeInput.value=routeInput.value.toUpperCase().replace(/[^0-9A-Z]/g,'');filter()};$('busBtn').onclick=()=>setMode('BUS');$('gmbBtn').onclick=()=>setMode('GMB');$('close').onclick=()=>$('sheet').classList.remove('show');$('etaBtn').onclick=eta;$('saveBtn').onclick=saveCurrentRoute;$('saveCancelBtn').onclick=closeSaveModal;$('saveConfirmBtn').onclick=confirmSaveMonitor;$('saveGroupSelect').onchange=()=>{$('newGroupField').classList.toggle('hidden',$('saveGroupSelect').value!=='__new__')};$('tabSearch').onclick=()=>setMainTab('SEARCH');$('tabOption').onclick=()=>setMainTab('OPTION');$('tabSave').onclick=()=>setMainTab('SAVE');$('tabSave').addEventListener('pointerdown',()=>{saveHoldTimer=setTimeout(showGroupPicker,420)});['pointerup','pointerleave','pointercancel'].forEach(ev=>$('tabSave').addEventListener(ev,()=>{clearTimeout(saveHoldTimer)}));$('refetchBtn').onclick=refetchRouteData;$('clearHistoryBtn').onclick=()=>{writeLS(LS_ETA_HISTORY,{});renderSaved();status('ETA history cleared.','ok')};$('clearAllCacheBtn').onclick=()=>{writeLS(LS_ROUTE_CACHE,{});renderOptions();status('Route detail cache removed.','ok')};$('addGroupBtn').onclick=addGroup;$('renameGroupBtn').onclick=renameGroup;$('deleteGroupBtn').onclick=deleteGroup;$('gpsBtn').onclick=gps;document.addEventListener('click',e=>{if(!e.target.closest('#groupPicker')&&!e.target.closest('#tabSave'))hideGroupPicker();if(e.target.id==='saveModal')closeSaveModal()})}
+function ensureActiveGroup(){let groups=getGroups();if(!groups.find(g=>g.id===activeGroupId))activeGroupId=groups[0].id;writeLS(LS_ACTIVE_GROUP,activeGroupId);updateSaveTabText()}function updateSaveTabText(){let g=getGroups().find(x=>x.id===activeGroupId);$('tabSave').textContent=g?g.name:'SAVE'}
+async function loadRoutes(){busRoutes=[];gmbRoutes=[];const kmbP=json(API.KMB+'/route/').then(k=>(k.data||[]).forEach(x=>busRoutes.push({type:'KMB',route:String(x.route).toUpperCase(),bound:x.bound,service_type:x.service_type||1,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));const ctbP=json(API.CTB+'/route/ctb').then(c=>(c.data||[]).forEach(x=>busRoutes.push({type:'CTB',route:String(x.route).toUpperCase(),bound:x.bound,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));const hkbP=json(API.HKBUS,86400000).then(db=>addGmbFromHkbusDb(db));const res=await Promise.allSettled([kmbP,ctbP,hkbP]);let fail=res.filter(x=>x.status==='rejected').map(x=>x.reason.message);if(!busRoutes.length&&fail.length)throw new Error(fail.join(' | '));}
+function addGmbFromHkbusDb(db){hkbDb=db;Object.entries(db.routeList||{}).forEach(([id,e])=>{if(!e||!e.route||!e.stops||!e.stops.gmb)return;const route=String(e.route).toUpperCase(),dest=e.dest||{},orig=e.orig||{},bound=(e.bound&&e.bound.gmb)||'';gmbRoutes.push({type:'GMB',route,hkbusId:id,gtfs_id:e.gtfsId||e.gtfs_id||e.gtfsID,bound,route_seq:bound==='I'?2:1,stops:e.stops.gmb,desc_tc:(orig.zh||orig.tc||'')+(dest.zh||dest.tc?' → '+(dest.zh||dest.tc):''),desc_en:(orig.en||'')+(dest.en?' → '+dest.en:''),raw:e})})}
+function setMode(m){mode=m;$('busBtn').classList.toggle('on',m==='BUS');$('gmbBtn').classList.toggle('on',m==='GMB');active=m==='BUS'?busRoutes:gmbRoutes;filter()}function filter(){let q=routeInput.value.trim().toUpperCase();let data=active.filter(x=>!q||String(x.route).toUpperCase().startsWith(q)).sort((a,b)=>String(a.route).localeCompare(String(b.route),undefined,{numeric:true,sensitivity:'base'}));$('count').textContent=q?data.length+' prefix match(es)':active.length+' routes';renderRoutes(data.slice(0,q?120:25))}function renderRoutes(items){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}items.forEach(x=>{let d=document.createElement('div');d.className='routeCard';d.innerHTML='<div><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div></div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRoute(x);box.appendChild(d)})}
+async function openRoute(r){currentRoute=r;currentStops=[];$('fromStop').innerHTML='';$('toStop').innerHTML='';$('sheet').classList.add('show');$('sheetRoute').textContent=routeTitle(r);$('sheetMeta').textContent='Loading stops...';$('eta').innerHTML='<div class="empty">Loading stops...</div>';const key=routeKey(r),rc=readLS(LS_ROUTE_CACHE,{}),cached=rc[key];try{if(cached&&Array.isArray(cached.stops)){currentStops=cached.stops;fillStops();$('sheetMeta').textContent=(cached.meta||routeMeta(r))+' · cached';return}currentStops=r.type==='KMB'?await kmbStops(r):r.type==='CTB'?await ctbStops(r):await gmbStops(r);rc[key]={route:r,stops:currentStops,meta:routeMeta(r),ts:Date.now()};writeLS(LS_ROUTE_CACHE,rc);fillStops();$('sheetMeta').textContent=routeMeta(r);status('Stops loaded and cached.','ok')}catch(e){$('eta').innerHTML='<div class="empty err">Cannot load stops: '+esc(e.message)+'</div>';status('Cannot load stops. '+e.message,'err')}}
+async function kmbStops(r){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];let svcs=[String(r.service_type||1),'1','2','3'].filter((v,i,a)=>a.indexOf(v)===i);let err=null;for(const dir of dirs)for(const svc of svcs){try{let rs=await json(`${API.KMB}/route-stop/${r.route}/${dir}/${svc}`),arr=rs.data||[];if(!arr.length)continue;let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.KMB}/stop/${x.stop}`)).data||{};return {...x,type:'KMB',route:r.route,bound:boundCode,service_type:svc,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('KMB stops not found')}
+async function ctbStops(r){let dirs=[r.bound,'outbound','inbound'].filter((v,i,a)=>v&&a.indexOf(v)===i);let err=null;for(const b of dirs){try{let rs=await json(`${API.CTB}/route-stop/ctb/${r.route}/${b}`),arr=rs.data||[];if(!arr.length)continue;return Promise.all(arr.map(async x=>{let s=(await json(`${API.CTB}/stop/${x.stop}`)).data||{};return {...x,type:'CTB',route:r.route,bound:b,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('Citybus stops not found')}
+function hkbusStopInfo(stopId){stopId=stopIdOf(stopId);if(!hkbDb)return{};let s=(hkbDb.stopList||{})[stopId]||(hkbDb.stopMap||{})[stopId]||{};if(Array.isArray(s))s=s[0]||{};if(typeof s==='string')return{name_tc:s,name_en:s};if(s.gmb)s=s.gmb;return{name_tc:toText(s.name_tc||s.name_zh||s.zh||s.tc||s.name),name_en:toText(s.name_en||s.en),lat:+(s.lat||s.latitude||s.y||''),long:+(s.long||s.lng||s.longitude||s.x||'')}}
+async function gmbStops(r){if(r.hkbusId&&hkbDb&&hkbDb.routeList&&hkbDb.routeList[r.hkbusId]){let e=hkbDb.routeList[r.hkbusId],ids=(e.stops&&e.stops.gmb)||[],bound=(e.bound&&e.bound.gmb)||r.bound||'O',routeSeq=bound==='I'?2:1,gtfs=e.gtfsId||e.gtfs_id||e.gtfsID||r.gtfs_id;return ids.map((raw,i)=>{let id=stopIdOf(raw),si=hkbusStopInfo(id),nm=toText(si.name_tc)||toText(si.name_en)||id;return{type:'GMB',route:r.route,gtfs_id:gtfs,route_id:gtfs,route_seq:routeSeq,bound,stop:id,stop_seq:i+1,seq:i+1,name_tc:nm,name_en:toText(si.name_en)||'',lat:si.lat,long:si.long}}).filter(x=>x.stop)}throw new Error('GMB route mapping missing')}
+function fillStops(){let f=$('fromStop'),t=$('toStop');f.innerHTML='';t.innerHTML='';currentStops.forEach((s,i)=>{let txt=(s.seq||i+1)+'. '+name(s);f.add(new Option(txt,i));t.add(new Option(txt,i))});f.value=0;t.value=Math.min(currentStops.length-1,1);$('eta').innerHTML='<div class="empty">From and To loaded. Tap Show ETA.</div>'}
+function etaUrlForStop(s){const sid=encodeURIComponent(stopIdOf(s.stop)),gid=encodeURIComponent(stopIdOf(s.gtfs_id||s.route_id));if(s.type==='KMB')return `${API.KMB}/eta/${sid}/${s.route}/${s.service_type||1}`;if(s.type==='CTB')return `${API.CTB}/eta/ctb/${sid}/${s.route}`;return `${API.GMB}/eta/route-stop/${gid}/${sid}`}
+async function fetchEtaRows(s,force=false){let url=etaUrlForStop(s);if(force)cache.delete(url);let d=await json(url,25000),rows=[];if(s.type==='GMB'){let raw=d.data||[];if(Array.isArray(raw)){let match=raw.filter(e=>(!s.route_seq||String(e.route_seq)===String(s.route_seq))&&(!s.stop_seq||String(e.stop_seq)===String(s.stop_seq)));if(!match.length)match=raw;rows=match.flatMap(e=>(e.eta||[]).map(a=>({eta:a.timestamp||a.eta,rmk_tc:a.remarks_tc||a.rmk_tc||'',diff:a.diff})))}}else rows=(d.data||[]).filter(x=>!s.bound||!x.dir||x.dir===s.bound);return{rows,url}}
+async function eta(){let s=currentStops[+$('fromStop').value];if(!s)return;$('eta').innerHTML='<div class="empty">Loading ETA...</div>';try{let res=await fetchEtaRows(s,true);showEta(res.rows,res.url)}catch(e){$('eta').innerHTML='<div class="empty err">ETA failed: '+esc(e.message)+'</div>'}}function showEta(rows,url){if(!rows.length){$('eta').innerHTML='<div class="empty">No ETA now.</div>';return}$('eta').innerHTML=rows.slice(0,3).map(r=>{let iso=r.eta||r.timestamp,m=etaMin(iso),txt=m==null?'--':m===0?'Now':m;return '<div class="etaRow"><div><div class="etaMin">'+esc(txt)+' <small>'+(m===0?'':'min')+'</small></div><div class="meta">'+esc(time(iso)+' '+(r.rmk_tc||r.diff||''))+'</div></div><span class="tag">ETA</span></div>'}).join('')+'<div class="status">'+esc(url)+'</div>'}
 function saveCurrentRoute(){
   if(!currentRoute||!currentStops.length){status('Open a route and load stops first.','err');return}
   const f=currentStops[+$('fromStop').value], t=currentStops[+$('toStop').value];
-  if(!f||!t){status('Select From and To stop first.','err');return}
-  let list=getSaved();let key=savedKey(currentRoute,f,t);
-  const item={key,route:currentRoute,from:f,to:t,ts:Date.now()};
+  if(!f||!t){status('Select From and To first.','err');return}
+  openSaveModal(f,t);
+}
+function populateSaveGroupSelect(){
+  const sel=$('saveGroupSelect');
+  sel.innerHTML='';
+  getGroups().forEach(g=>sel.add(new Option(g.name,g.id)));
+  sel.add(new Option('+ create new group','__new__'));
+  sel.value=getGroups().find(g=>g.id===activeGroupId)?activeGroupId:'default';
+  $('newGroupField').classList.add('hidden');
+  $('newGroupInput').value='';
+}
+function openSaveModal(f,t){
+  $('saveNameInput').value=routeTitle(currentRoute);
+  $('saveModalSub').textContent='From: '+name(f)+'  •  To: '+name(t);
+  populateSaveGroupSelect();
+  $('saveModal').classList.add('show');
+  setTimeout(()=>$('saveNameInput').focus(),60);
+}
+function closeSaveModal(){
+  $('saveModal').classList.remove('show');
+}
+function confirmSaveMonitor(){
+  const f=currentStops[+$('fromStop').value], t=currentStops[+$('toStop').value];
+  if(!currentRoute||!f||!t){closeSaveModal();status('Route/stop selection missing.','err');return}
+  let customName=$('saveNameInput').value.trim()||routeTitle(currentRoute);
+  let groups=getGroups();
+  let groupId=$('saveGroupSelect').value;
+  let group=null;
+  if(groupId==='__new__'){
+    const newName=$('newGroupInput').value.trim();
+    if(!newName){status('Please enter new group name.','err');$('newGroupInput').focus();return}
+    group=groups.find(g=>g.name===newName);
+    if(!group){group={id:'g'+Date.now(),name:newName};groups.push(group);setGroups(groups)}
+  }else{
+    group=groups.find(g=>g.id===groupId)||groups[0];
+  }
+  const key=savedKey(currentRoute,f,t);
+  const list=getSaved();
+  const item={key,route:currentRoute,from:f,to:t,customName,groupId:group.id,ts:Date.now()};
   const idx=list.findIndex(x=>x.key===key);
   if(idx>=0)list[idx]=item;else list.unshift(item);
-  setSaved(list);status('ETA monitor saved.','ok');renderSaved();
+  setSaved(list);
+  setActiveGroup(group.id);
+  closeSaveModal();
+  status('ETA monitor saved to '+group.name+'.','ok');
+  renderSaved();
+  setMainTab('SAVE');
 }
-function removeSaved(key){setSaved(getSaved().filter(x=>x.key!==key));let h=getEtaHistory();delete h[key];writeLS(LS_ETA_HISTORY,h);renderSaved();status('Saved monitor removed.','ok')}
-function startSaveAutoRefresh(){
-  stopSaveAutoRefresh();
-  saveRefreshTimer=setInterval(()=>{if(!$('savedView').classList.contains('hidden'))refreshAllSavedEta(false)},30000);
-}
-function stopSaveAutoRefresh(){if(saveRefreshTimer){clearInterval(saveRefreshTimer);saveRefreshTimer=null}}
-function refreshAllSavedEta(force=false){getSaved().forEach((x,idx)=>loadSavedEta(x,idx,force))}
-function setMainTab(tab){
-  const search=tab==='SEARCH', save=tab==='SAVE', opt=tab==='OPTION';
-  $('searchPanel').classList.toggle('hidden',!search);$('searchTitle').classList.toggle('hidden',!search);$('routes').classList.toggle('hidden',!search);
-  $('savedView').classList.toggle('hidden',!save);$('optionView').classList.toggle('hidden',!opt);
-  $('tabSearch').classList.toggle('on',search);$('tabSave').classList.toggle('on',save);$('tabOption').classList.toggle('on',opt);
-  if(save){renderSaved();startSaveAutoRefresh()}else{stopSaveAutoRefresh()}
-  if(opt)renderOptions();
-}
-function toggleSavedMenu(idx){
-  document.querySelectorAll('.savedMenu').forEach((m,i)=>{if(i!==idx)m.classList.remove('show')});
-  const m=$('savedMenu'+idx);if(m)m.classList.toggle('show');
-}
-function renderSaved(){
-  let box=$('savedView'),list=getSaved();box.innerHTML='';
-  if(!list.length){box.innerHTML='<div class="empty">No ETA monitor yet. Open a route, choose From / To, then tap Save ETA Monitor.</div>';return}
-  list.forEach((x,idx)=>{
-    let r=x.route||{}, f=x.from||{}, t=x.to||{};
-    let d=document.createElement('div');
-    d.className='savedMonitorCard';
-    d.innerHTML='<div class="savedMain"><div class="savedRouteTitle">'+esc(routeTitle(r))+'</div><div class="savedPair"><span class="label">From:</span> '+esc(name(f))+'<br><span class="label">To:</span> '+esc(name(t))+'</div></div><div class="savedEta" id="savedEta'+idx+'"><div class="etaChip emptyEta">Loading</div></div><button class="savedMore" id="savedMore'+idx+'">...</button><div class="savedMenu" id="savedMenu'+idx+'"><button data-act="open">Open</button><button data-act="refresh">Refresh</button><button class="danger" data-act="remove">Remove</button></div><div class="savedUpdated" id="savedUpdated'+idx+'">--</div>';
-    d.querySelector('#savedMore'+idx).onclick=(ev)=>{ev.stopPropagation();toggleSavedMenu(idx)};
-    d.querySelector('[data-act="open"]').onclick=(ev)=>{ev.stopPropagation();toggleSavedMenu(idx);openSavedMonitor(x)};
-    d.querySelector('[data-act="refresh"]').onclick=(ev)=>{ev.stopPropagation();toggleSavedMenu(idx);loadSavedEta(x,idx,true)};
-    d.querySelector('[data-act="remove"]').onclick=(ev)=>{ev.stopPropagation();removeSaved(x.key)};
-    d.onclick=()=>openSavedMonitor(x);
-    box.appendChild(d);
-    renderSavedEtaHistory(x,idx);
-    loadSavedEta(x,idx,false);
-  })
-}
-async function openSavedMonitor(item){
-  await openRoute(item.route);
-  setTimeout(()=>{
-    const fIdx=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop));
-    const tIdx=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));
-    if(fIdx>=0)$('fromStop').value=fIdx;if(tIdx>=0)$('toStop').value=tIdx;
-  },80);
-}
-function renderSavedEtaHistory(item,idx){
-  const box=$('savedEta'+idx);const upd=$('savedUpdated'+idx);if(!box)return false;
-  const h=getEtaHistoryForKey(item.key);
-  if(!h||!Array.isArray(h.rows))return false;
-  box.innerHTML=renderSavedEtaRows(h.rows);
-  box.dataset.lastGood=box.innerHTML;
-  if(upd)upd.textContent='Last updated '+new Date(h.ts||Date.now()).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});
-  return true;
-}
-async function loadSavedEta(item,idx,force){
-  const box=$('savedEta'+idx);const upd=$('savedUpdated'+idx);if(!box)return;
-  try{
-    let res=await fetchEtaRows(item.from,force);
-    box.innerHTML=renderSavedEtaRows(res.rows);
-    const now=Date.now();
-    if(upd)upd.textContent='Updated '+new Date(now).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});
-    box.dataset.lastGood=box.innerHTML;
-    setEtaHistoryForKey(item.key,{rows:res.rows||[],url:res.url||'',ts:now});
-  }catch(e){
-    // Keep ETA history across tab changes and failed refreshes.
-    if(renderSavedEtaHistory(item,idx)){
-      if(upd)upd.textContent='Using last ETA, refresh failed';
-    }else if(box.dataset.lastGood){
-      box.innerHTML=box.dataset.lastGood;
-      if(upd)upd.textContent='Last good ETA, refresh failed';
-    }else {
-      box.innerHTML='<div class="etaChip emptyEta">ETA failed</div>';
-      if(upd)upd.textContent='Fetch failed';
-    }
-  }
-}
-function renderSavedEtaRows(rows){
-  if(!rows||!rows.length)return '<div class="etaChip emptyEta">No ETA</div>';
-  return rows.slice(0,3).map((r,i)=>{
-    let iso=r.eta||r.timestamp,m=etaMin(iso),txt=m==null?'--':m===0?'Now':m+'m';
-    return '<div class="etaChip '+(i===0?'first':'')+'"><div class="min">'+esc(txt)+'</div><div class="time">'+esc(time(iso))+'</div></div>';
-  }).join('');
-}
-function renderOptions(){let list=$('cacheList'),c=getRouteCache(),entries=Object.entries(c);list.innerHTML='';if(!entries.length){list.innerHTML='<div class="empty">No route detail cache.</div>';return}entries.sort((a,b)=>(b[1].ts||0)-(a[1].ts||0)).forEach(([key,v])=>{let r=v.route||{};let d=document.createElement('div');d.className='routeCard';d.innerHTML='<div><div class="rno">'+esc(routeTitle(r))+'</div><div class="meta">'+esc(routeMeta(r)||key)+'<br>Cached: '+esc(new Date(v.ts||0).toLocaleString('zh-HK'))+'</div><div class="rowBtns"><button class="miniBtn">Open cache</button><button class="miniBtn danger">Remove cache</button></div></div><span class="tag">CACHE</span>';let btns=d.querySelectorAll('button');btns[0].onclick=(ev)=>{ev.stopPropagation();openRoute(r)};btns[1].onclick=(ev)=>{ev.stopPropagation();removeRouteCache(key)};list.appendChild(d)})}
-async function refetchRouteData(){
-  [API.KMB+'/route/',API.CTB+'/route/ctb',API.GMB+'/route',API.HKBUS].forEach(u=>cache.delete(u));
-  status('Re-fetching route data...');
-  try{await loadRoutes();active=mode==='BUS'?busRoutes:gmbRoutes;filter();renderOptions();status('Route data re-fetched.','ok')}catch(e){status('Re-fetch failed: '+e.message,'err')}
-}
-async function boot(){buildKb();routeInput.oninput=()=>{routeInput.value=routeInput.value.toUpperCase().replace(/[^0-9A-Z]/g,'');filter()};$('busBtn').onclick=()=>setMode('BUS');$('gmbBtn').onclick=()=>setMode('GMB');$('gpsBtn').onclick=gps;$('close').onclick=()=>$('sheet').classList.remove('show');$('etaBtn').onclick=eta;$('saveBtn').onclick=saveCurrentRoute;$('tabSearch').onclick=()=>setMainTab('SEARCH');$('tabSave').onclick=()=>setMainTab('SAVE');$('tabOption').onclick=()=>setMainTab('OPTION');$('clearAllCacheBtn').onclick=clearAllRouteCache;$('refetchBtn').onclick=refetchRouteData;try{await loadRoutes();setMode('BUS');setMainTab('SEARCH');status('Ready. Route list loaded.','ok')}catch(e){status('Official API is blocked by this browser when opened as file. The UI is standalone, but live data needs browser permission for cross-origin API access. '+e.message,'err');}}
-function addGmbFromHkbusDb(db){
-  hkbDb=db;
-  const rl=db.routeList||{};
-  Object.entries(rl).forEach(([id,e])=>{
-    if(!e||!e.route||!e.stops||!e.stops.gmb)return;
-    const route=String(e.route).toUpperCase();
-    const bound=(e.bound&&e.bound.gmb)||'';
-    const dest=e.dest||{};
-    const orig=e.orig||{};
-    const item={
-      type:'GMB',route,region:'',hkbusId:id,gtfs_id:e.gtfsId||e.gtfs_id||e.gtfsID,
-      bound,route_seq:bound==='I'?2:1,stops:e.stops.gmb,
-      desc_tc:(orig.zh||orig.tc||'')+(dest.zh||dest.tc?' → '+(dest.zh||dest.tc):''),
-      desc_en:(orig.en||'')+(dest.en?' → '+dest.en:''),raw:e
-    };
-    gmbRoutes.push(item);
-  });
-  // de-duplicate exact route/direction/stop-set entries
-  const seen=new Set();
-  gmbRoutes=gmbRoutes.filter(x=>{const k=[x.route,x.hkbusId,x.gtfs_id,x.bound,(x.stops||[]).join(',')].join('|');if(seen.has(k))return false;seen.add(k);return true;});
-}
-async function loadRoutes(){
-  busRoutes=[];gmbRoutes=[];
-  const kmbP=json(API.KMB+'/route/').then(k=>{(k.data||[]).forEach(x=>busRoutes.push({type:'KMB',route:String(x.route).toUpperCase(),bound:x.bound,service_type:x.service_type||1,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x}))});
-  const ctbP=json(API.CTB+'/route/ctb').then(c=>{(c.data||[]).forEach(x=>busRoutes.push({type:'CTB',route:String(x.route).toUpperCase(),bound:x.bound,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x}))});
-  // HKBus uses this daily static DB for minibus route/stop mapping. It avoids /route-stop CORS/direction issues and gives the correct GTFS id + stop id list.
-  const hkbP=json(API.HKBUS,86400000).then(db=>addGmbFromHkbusDb(db));
-  // Keep official GMB route list only as a fallback. If it fails, HKBus DB can still power GMB route/stop selection.
-  const gmbP=json(API.GMB+'/route').then(g=>{let src=g.data||g;const add=(x,region)=>{let route=x.route_code||x.route||x.route_no||x.code;if(route)gmbRoutes.push({type:'GMB',region:x.region||region||x.district||'',route:String(route).toUpperCase(),desc_tc:x.description_tc||x.desc_tc||x.name_tc||'',desc_en:x.description_en||x.desc_en||x.name_en||'',raw:x})};if(Array.isArray(src))src.forEach(x=>add(x,x.region));else if(Array.isArray(src.routes))src.routes.forEach(x=>add(x,x.region));else Object.entries(src).forEach(([region,val])=>Array.isArray(val)&&val.forEach(x=>add(x,region)));gmbRoutes=gmbRoutes.filter(x=>x.route)});
-  const res=await Promise.allSettled([kmbP,ctbP,hkbP,gmbP]);
-  const fail=res.filter(x=>x.status==='rejected').map(x=>x.reason&&x.reason.message?x.reason.message:String(x.reason));
-  if(!busRoutes.length&&fail.length)throw new Error('Bus route list failed: '+fail.join(' | '));
-  if(fail.length)status('Some data sources failed, but usable sources remain. '+fail.join(' | '),'err');
-}
-function setMode(m){mode=m;$('busBtn').classList.toggle('on',m==='BUS');$('gmbBtn').classList.toggle('on',m==='GMB');active=m==='BUS'?busRoutes:gmbRoutes;filter()}
-function routeRank(route,q){
-  const r=String(route||'').toUpperCase();
-  if(!q)return 0;
-  if(r===q)return 0;
-  if(r.startsWith(q))return 1;
-  return 99;
-}
-function filter(){
-  let q=routeInput.value.trim().toUpperCase();
-  // Prefix filter: typing "3" shows 3, 30X, 31, 31M, 38, 39A... for selection.
-  // Typing "41" shows 41, 41A, 41M...; typing "41A" narrows to 41A variants.
-  let data=active
-    .filter(x=>!q||String(x.route).toUpperCase().startsWith(q))
-    .sort((a,b)=>routeRank(a.route,q)-routeRank(b.route,q)||String(a.route).localeCompare(String(b.route),undefined,{numeric:true,sensitivity:'base'}));
-  // Only use manual fallback when there is no official prefix match at all.
-  if(q&&mode==='BUS'&&!data.length){data=[
-    {type:'KMB',route:q,bound:'O',service_type:1,orig_tc:'',dest_tc:'Manual lookup',manual:true},
-    {type:'KMB',route:q,bound:'I',service_type:1,orig_tc:'',dest_tc:'Manual lookup',manual:true},
-    {type:'CTB',route:q,bound:'outbound',orig_tc:'',dest_tc:'Manual lookup',manual:true},
-    {type:'CTB',route:q,bound:'inbound',orig_tc:'',dest_tc:'Manual lookup',manual:true}
-  ]}
-  if(q&&mode==='GMB'&&!data.length)data=['HKI','KLN','NT'].map(region=>({type:'GMB',region,route:q,manual:true}));
-  $('count').textContent=q?data.length+' prefix match(es)':active.length+' routes';
-  render(data.slice(0,q?120:25));
-}
-function render(items){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}items.forEach(x=>{let m=x.type==='GMB'?`${x.region||''} ${x.desc_tc||x.desc_en||''}`:`${x.orig_tc||x.orig_en||''} → ${x.dest_tc||x.dest_en||''}`;let d=document.createElement('div');d.className='routeCard';d.innerHTML='<div><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(m)+'</div></div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRoute(x);box.appendChild(d)})}
-async function openRoute(r){currentRoute=r;currentStops=[];$('fromStop').innerHTML='';$('toStop').innerHTML='';$('sheet').classList.add('show');$('sheetRoute').textContent=r.type+' '+r.route;$('sheetMeta').textContent='Loading selected route stops...';$('eta').innerHTML='<div class="empty">Loading stops...</div>';const key=routeKey(r);const cached=getRouteCache()[key];try{if(cached&&Array.isArray(cached.stops)){currentStops=cached.stops;$('sheetMeta').textContent=(cached.meta||routeMeta(r)||'')+' · cached';fillStops();status('Stops loaded from cache.','ok');return}currentStops=r.type==='KMB'?await kmbStops(r):r.type==='CTB'?await ctbStops(r):await gmbStops(r);const meta=(r.orig_tc||r.region||'')+' → '+(r.dest_tc||r.desc_tc||'');setRouteCache(key,{route:r,stops:currentStops,meta});fillStops();$('sheetMeta').textContent=meta;status('Stops loaded and cached.','ok')}catch(e){$('fromStop').innerHTML='';$('toStop').innerHTML='';$('eta').innerHTML='<div class="empty err">Cannot load stops: '+esc(e.message)+'</div>';status('Cannot load stops. '+e.message,'err')}}
-async function kmbStops(r){
-  const bounds=[];
-  const addBound=b=>{if(b&&!bounds.includes(b))bounds.push(b)};
-  if(r.bound==='O')addBound('outbound');
-  else if(r.bound==='I')addBound('inbound');
-  else {addBound(r.bound);}
-  addBound('outbound');addBound('inbound');
-  const services=[String(r.service_type||1),'1','2','3'].filter((v,i,a)=>a.indexOf(v)===i);
-  let lastErr=null;
-  for(const dir of bounds){
-    for(const svc of services){
-      try{
-        let rs=await json(`${API.KMB}/route-stop/${r.route}/${dir}/${svc}`);
-        let arr=rs.data||[];
-        if(!arr.length)continue;
-        const boundCode=dir==='outbound'?'O':'I';
-        return Promise.all(arr.map(async x=>{let s=(await json(`${API.KMB}/stop/${x.stop}`)).data||{};return {...x,type:'KMB',route:r.route,bound:boundCode,service_type:svc,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}));
-      }catch(e){lastErr=e}
-    }
-  }
-  throw lastErr||new Error('KMB route-stop not found for '+r.route);
-}
-async function ctbStops(r){
-  const bounds=[];const add=b=>{if(b&&!bounds.includes(b))bounds.push(b)};add(r.bound);add('outbound');add('inbound');
-  let lastErr=null;
-  for(const b of bounds){
-    try{
-      let rs=await json(`${API.CTB}/route-stop/ctb/${r.route}/${b}`);
-      let arr=rs.data||[];if(!arr.length)continue;
-      return Promise.all(arr.map(async x=>{let s=(await json(`${API.CTB}/stop/${x.stop}`)).data||{};return {...x,type:'CTB',route:r.route,bound:b,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}));
-    }catch(e){lastErr=e}
-  }
-  throw lastErr||new Error('Citybus route-stop not found for '+r.route);
-}
-function stopField(o,keys){for(const k of keys){let v=toText(o&&o[k]);if(v)return v}return ''}
-function hkbusStopInfo(stopId){
-  stopId=stopIdOf(stopId);
-  if(!hkbDb)return {};
-  const sl=hkbDb.stopList||{};
-  const sm=hkbDb.stopMap||{};
-  let s=sl[stopId]||sm[stopId]||{};
-  if(Array.isArray(s))s=s[0]||{};
-  if(typeof s==='string')return {name_tc:s,name_en:s};
-  // Some builds store stop data by operator inside stopList.
-  if(s.gmb)s=s.gmb;
-  return {
-    name_tc:toText(stopField(s,['name_tc','name_zh','zh','tc','name','name_tc_full','displayName'])),
-    name_en:toText(stopField(s,['name_en','en','name_en_full','displayNameEn'])),
-    lat:+(s.lat||s.latitude||s.y||''),
-    long:+(s.long||s.lng||s.longitude||s.x||'')
-  };
-}
-async function gmbStops(r){
-  // Preferred path: HKBus daily static DB already contains the ordered GMB stop IDs and gtfsId.
-  // This is the same approach used by hk-bus-crawling / HKBus ETA style logic: static routeFareList gives gtfsId + ordered stop list, then ETA uses /eta/route-stop/{gtfsId}/{stopId}.
-  if(r.hkbusId&&hkbDb&&hkbDb.routeList&&hkbDb.routeList[r.hkbusId]){
-    const e=hkbDb.routeList[r.hkbusId];
-    const ids=(e.stops&&e.stops.gmb)||r.stops||[];
-    const bound=(e.bound&&e.bound.gmb)||r.bound||'O';
-    const routeSeq=bound==='I'?2:1;
-    const gtfs=e.gtfsId||e.gtfs_id||e.gtfsID||r.gtfs_id;
-    return ids.map((idRaw,i)=>{const id=stopIdOf(idRaw);const si=hkbusStopInfo(id);const nm=toText(si.name_tc)||toText(si.name_en)||id;return {type:'GMB',route:r.route,region:r.region||'',gtfs_id:gtfs,route_id:gtfs,route_seq:routeSeq,bound,stop:id,stop_seq:i+1,seq:i+1,name_tc:nm,name_en:toText(si.name_en)||'',lat:si.lat,long:si.long};}).filter(x=>x.stop);
-  }
-  let detail=null,region=r.region,err=null;
-  const tryRegions=region?[region]:['HKI','KLN','NT'];
-  for(const rg of tryRegions){try{detail=await json(`${API.GMB}/route/${rg}/${r.route}`);region=rg;break}catch(e){err=e}}
-  let candidates=[];
-  const addCand=(rid,seq)=>{if(rid&&!candidates.some(x=>String(x.rid)===String(rid)&&String(x.seq)===String(seq||1)))candidates.push({rid,seq:seq||1})};
-  const dig=(o)=>{if(!o||typeof o!=='object')return;if(o.route_id)addCand(o.route_id,o.route_seq||o.seq||1);if(o.routeId)addCand(o.routeId,o.route_seq||o.seq||1);if(Array.isArray(o.directions))o.directions.forEach(d=>addCand(d.route_id||o.route_id||o.routeId,d.route_seq||d.seq||1));if(Array.isArray(o.routes))o.routes.forEach(dig);if(Array.isArray(o.route))o.route.forEach(dig);};
-  if(detail)dig(detail.data||detail);dig(r.raw);
-  if(String(r.route).toUpperCase()==='308M'&&(region==='NT'||!region)){addCand(2001204,1);addCand(2001201,1);addCand(2001204,2);addCand(2001201,2)}
-  if(!candidates.length)throw err||new Error('GMB route id missing');
-  let lastErr=null;
-  for(const c of candidates){try{let rs=await json(`${API.GMB}/route-stop/${c.rid}/${c.seq}`);let data=rs.data||rs;let arr=data.route_stops||data.stops||data.stop_list||data;if(!Array.isArray(arr)&&Array.isArray(data.data))arr=data.data;if(!Array.isArray(arr)||!arr.length)continue;return arr.map((s,i)=>{let coord=s.coordinates||s.coord||{};let w=coord.wgs84||coord.WGS84||{};return {type:'GMB',route:r.route,region,route_id:c.rid,route_seq:c.seq,stop:stopIdOf(s.stop_id||s.stop||s.id||s.stopId),stop_seq:s.stop_seq||s.seq||i+1,seq:+(s.stop_seq||s.seq||i+1),name_tc:s.name_tc||s.stop_name_tc||s.name_zh||s.name||s.description_tc||'',name_en:s.name_en||s.stop_name_en||s.description_en||'',lat:+(w.latitude||w.lat||s.lat||s.latitude),long:+(w.longitude||w.long||w.lng||s.long||s.lng||s.longitude)};});}catch(e){lastErr=e}}
-  throw lastErr||new Error('GMB stop list not found');
-}
-function fillStops(){let f=$('fromStop'),t=$('toStop');f.innerHTML='';t.innerHTML='';let nearest=0,best=9e9;currentStops.forEach((s,i)=>{let km=pos?dist(pos.lat,pos.lon,s.lat,s.long):9e9;if(km<best){best=km;nearest=i}let txt=(s.seq||i+1)+'. '+toText(name(s))+(pos?' · '+dstr(km):'');f.add(new Option(txt,i));t.add(new Option(txt,i))});f.value=nearest;t.value=Math.min(currentStops.length-1,nearest+1);$('eta').innerHTML='<div class="empty">From and To loaded from this route. Tap Show ETA.</div>'}
-function etaUrlForStop(s){
-  const sid=encodeURIComponent(stopIdOf(s.stop));
-  const gid=encodeURIComponent(stopIdOf(s.gtfs_id||s.route_id));
-  if(s.type==='KMB')return `${API.KMB}/eta/${sid}/${s.route}/${s.service_type||1}`;
-  if(s.type==='CTB')return `${API.CTB}/eta/ctb/${sid}/${s.route}`;
-  return s.gtfs_id?`${API.GMB}/eta/route-stop/${gid}/${sid}`:`${API.GMB}/eta/route-stop/${gid}/${s.route_seq}/${s.stop_seq||s.seq}`;
-}
-async function fetchEtaRows(s,force=false){
-  let url=etaUrlForStop(s);if(force)cache.delete(url);
-  let d=await json(url,25000);let rows=[];
-  if(s.type==='GMB'){
-    let raw=d.data||[];
-    if(Array.isArray(raw)){
-      let matched=raw.filter(e=>(!s.route_seq||String(e.route_seq)===String(s.route_seq)||((s.bound==='O')&&String(e.route_seq)==='1')||((s.bound==='I')&&String(e.route_seq)==='2'))&&(!s.stop_seq||String(e.stop_seq)===String(s.stop_seq)));
-      if(!matched.length)matched=raw;
-      rows=matched.flatMap(e=>(e.eta||[]).map(a=>({eta:a.timestamp||a.eta,rmk_tc:a.remarks_tc||a.rmk_tc||'',rmk_en:a.remarks_en||a.rmk_en||''})));
-    }else if(raw.eta){rows=raw.eta.map(a=>({eta:a.timestamp||a.eta,rmk_tc:a.remarks_tc||a.rmk_tc||'',rmk_en:a.remarks_en||''}));}
-  }else{
-    rows=(d.data||[]).filter(x=>!s.bound||!x.dir||x.dir===s.bound);
-  }
-  return {rows,url};
-}
-async function eta(){
-  let s=currentStops[+$('fromStop').value];if(!s)return;
-  let url='';
-  try{
-    $('eta').innerHTML='<div class="empty">Loading ETA...</div>';
-    let res=await fetchEtaRows(s,true);url=res.url;showEta(res.rows,url)
-  }catch(e){$('eta').innerHTML='<div class="empty err">ETA failed: '+esc(e.message)+'<br>'+esc(url)+'</div>'}
-}
-function showEta(rows,url){if(!rows.length){$('eta').innerHTML='<div class="empty">No ETA now.</div>';return}$('eta').innerHTML=rows.slice(0,3).map(r=>{let iso=r.eta||r.timestamp,m=etaMin(iso),txt=m==null?'--':m===0?'Now':m;return '<div class="etaRow"><div><div class="etaMin">'+txt+' <small>'+(m===0?'':'min')+'</small></div><div class="meta">'+esc(time(iso)+' '+(r.rmk_tc||r.remarks_tc||r.diff||''))+'</div></div><span class="tag">ETA</span></div>'}).join('')+'<div class="status">'+esc(url)+'</div>'}
-function gps(){if(!navigator.geolocation){status('GPS not supported.','err');return}status('Getting location...');navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude};status('GPS ready. From stop will default to nearest.','ok');if(currentStops.length)fillStops()},e=>status('GPS failed: '+e.message,'err'),{enableHighAccuracy:true,timeout:10000,maximumAge:60000})}
+function renderGroupBar(){let groups=getGroups();ensureActiveGroup();return '<div class="groupBar">'+groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋</button></div>'}
+function renderSaved(){let box=$('savedView'),list=getSaved().filter(x=>(x.groupId||'default')===activeGroupId);box.innerHTML=renderGroupBar();box.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);renderSaved()});let add=box.querySelector('[data-add]');if(add)add.onclick=addGroup;if(!list.length){box.insertAdjacentHTML('beforeend','<div class="empty">No ETA monitor in this group.</div>');return}list.forEach((x,idx)=>{let r=x.route||{},f=x.from||{},t=x.to||{},title=x.customName||routeTitle(r);let d=document.createElement('div');d.className='savedMonitorCard';d.innerHTML='<div class="savedMain"><div class="savedRouteTitle">'+esc(title)+'</div><div class="savedPair"><span class="label">From:</span> '+esc(name(f))+'<br><span class="label">To:</span> '+esc(name(t))+'</div></div><div class="savedEta" id="savedEta'+idx+'"><div class="etaChip emptyEta">Loading</div></div><button class="savedMore" id="savedMore'+idx+'">...</button><div class="savedMenu" id="savedMenu'+idx+'"><button data-act="open">Open</button><button data-act="refresh">Refresh</button><button data-act="rename">Rename</button><button data-act="move">Move group</button><button class="danger" data-act="remove">Remove</button></div><div class="savedUpdated" id="savedUpdated'+idx+'">--</div>';d.querySelector('#savedMore'+idx).onclick=e=>{e.stopPropagation();toggleSavedMenu(idx)};d.querySelector('[data-act="open"]').onclick=e=>{e.stopPropagation();openSavedMonitor(x)};d.querySelector('[data-act="refresh"]').onclick=e=>{e.stopPropagation();loadSavedEta(x,idx,true)};d.querySelector('[data-act="rename"]').onclick=e=>{e.stopPropagation();renameSaved(x.key)};d.querySelector('[data-act="move"]').onclick=e=>{e.stopPropagation();moveSaved(x.key)};d.querySelector('[data-act="remove"]').onclick=e=>{e.stopPropagation();removeSaved(x.key)};box.appendChild(d);renderSavedEtaHistory(x,idx);loadSavedEta(x,idx,false)})}
+function toggleSavedMenu(idx){document.querySelectorAll('.savedMenu').forEach((m,i)=>{if(i!==idx)m.classList.remove('show')});let m=$('savedMenu'+idx);if(m)m.classList.toggle('show')}function renameSaved(key){let list=getSaved(),it=list.find(x=>x.key===key);if(!it)return;let n=prompt('Rename ETA monitor:',it.customName||routeTitle(it.route));if(n){it.customName=n;setSaved(list);renderSaved()}}function moveSaved(key){let groups=getGroups(),it=getSaved().find(x=>x.key===key);if(!it)return;let n=prompt('Move to group:',groups.find(g=>g.id===it.groupId)?.name||'Default');if(!n)return;let g=groups.find(x=>x.name===n);if(!g){g={id:'g'+Date.now(),name:n};groups.push(g);setGroups(groups)}let list=getSaved();list.find(x=>x.key===key).groupId=g.id;setSaved(list);setActiveGroup(g.id);renderSaved()}function removeSaved(key){setSaved(getSaved().filter(x=>x.key!==key));let h=getEtaHistory();delete h[key];writeLS(LS_ETA_HISTORY,h);renderSaved();status('Saved monitor removed.','ok')}function addGroup(){let n=prompt('New group name:');if(!n)return;let g=getGroups();let item={id:'g'+Date.now(),name:n};g.push(item);setGroups(g);setActiveGroup(item.id);renderSaved()}function renameGroup(){let g=getGroups(),cur=g.find(x=>x.id===activeGroupId);if(!cur)return;let n=prompt('Rename group:',cur.name);if(n){cur.name=n;setGroups(g);updateSaveTabText();renderSaved();renderOptions()}}function deleteGroup(){if(activeGroupId==='default'){status('Default group cannot be deleted.','err');return}if(!confirm('Delete this group? Saved routes will move to Default.'))return;let g=getGroups().filter(x=>x.id!==activeGroupId),list=getSaved();list.forEach(x=>{if(x.groupId===activeGroupId)x.groupId='default'});setGroups(g);setSaved(list);setActiveGroup('default');renderSaved();renderOptions()}
+function renderSavedEtaHistory(item,idx){let box=$('savedEta'+idx),upd=$('savedUpdated'+idx);if(!box)return false;let h=getEtaHistoryForKey(item.key);if(!h||!Array.isArray(h.rows))return false;box.innerHTML=renderSavedEtaRows(h.rows);box.dataset.lastGood=box.innerHTML;if(upd)upd.textContent='Last updated '+new Date(h.ts||Date.now()).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});return true}
+async function loadSavedEta(item,idx,force){let box=$('savedEta'+idx),upd=$('savedUpdated'+idx);if(!box)return;try{let res=await fetchEtaRows(item.from,force);box.innerHTML=renderSavedEtaRows(res.rows);let now=Date.now();if(upd)upd.textContent='Updated '+new Date(now).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});box.dataset.lastGood=box.innerHTML;setEtaHistoryForKey(item.key,{rows:res.rows||[],url:res.url||'',ts:now})}catch(e){if(renderSavedEtaHistory(item,idx)){if(upd)upd.textContent='Using last ETA, refresh failed'}else if(box.dataset.lastGood){box.innerHTML=box.dataset.lastGood;if(upd)upd.textContent='Last good ETA, refresh failed'}else{box.innerHTML='<div class="etaChip emptyEta">ETA failed</div>';if(upd)upd.textContent='Fetch failed'}}}
+function renderSavedEtaRows(rows){if(!rows||!rows.length)return '<div class="etaChip emptyEta">No ETA</div>';return rows.slice(0,3).map((r,i)=>{let m=etaMin(r.eta||r.timestamp),txt=m==null?'--':m===0?'Now':m+'m';return '<div class="etaChip '+(i===0?'first':'')+'"><div class="min">'+esc(txt)+'</div></div>'}).join('')}
+async function openSavedMonitor(item){await openRoute(item.route);setTimeout(()=>{let fi=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi>=0)$('fromStop').value=fi;if(ti>=0)$('toStop').value=ti},80)}
+function showGroupPicker(){let gp=$('groupPicker'),groups=getGroups();gp.innerHTML=groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋ New</button>';gp.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);hideGroupPicker();setMainTab('SAVE')});let add=gp.querySelector('[data-add]');if(add)add.onclick=()=>{hideGroupPicker();addGroup();setMainTab('SAVE')};gp.classList.add('show')}function hideGroupPicker(){$('groupPicker').classList.remove('show')}
+function startSaveAutoRefresh(){stopSaveAutoRefresh();saveRefreshTimer=setInterval(()=>{if(!$('savedView').classList.contains('hidden'))refreshAllSavedEta(false)},30000)}function stopSaveAutoRefresh(){if(saveRefreshTimer){clearInterval(saveRefreshTimer);saveRefreshTimer=null}}function refreshAllSavedEta(force=false){getSaved().filter(x=>(x.groupId||'default')===activeGroupId).forEach((x,idx)=>loadSavedEta(x,idx,force))}
+function setMainTab(tab){let search=tab==='SEARCH',save=tab==='SAVE',opt=tab==='OPTION';$('searchPanel').classList.toggle('hidden',!search);$('searchTitle').classList.toggle('hidden',!search);$('routes').classList.toggle('hidden',!search);$('savedView').classList.toggle('hidden',!save);$('optionView').classList.toggle('hidden',!opt);$('tabSearch').classList.toggle('on',search);$('tabSave').classList.toggle('on',save);$('tabOption').classList.toggle('on',opt);updateSaveTabText();if(save){renderSaved();startSaveAutoRefresh()}else stopSaveAutoRefresh();if(opt)renderOptions()}
+function renderOptions(){let box=$('cacheList'),rc=readLS(LS_ROUTE_CACHE,{});box.innerHTML=Object.keys(rc).length?'':'<div class="empty">No route detail cache.</div>'}async function refetchRouteData(){[API.KMB+'/route/',API.CTB+'/route/ctb',API.HKBUS].forEach(u=>cache.delete(u));status('Re-fetching route data...');try{await loadRoutes();active=mode==='BUS'?busRoutes:gmbRoutes;filter();status('Route data re-fetched.','ok')}catch(e){status('Re-fetch failed: '+e.message,'err')}}
+function gps(){if(!navigator.geolocation){status('GPS not supported.','err');return}status('Getting location...');navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude};status('GPS ready.','ok')},e=>status('GPS failed: '+e.message,'err'),{enableHighAccuracy:true,timeout:10000,maximumAge:60000})}
 boot();
 </script>
 </body>
