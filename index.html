@@ -399,7 +399,74 @@ function stopSearchAutoRefresh(){if(searchEtaTimer)clearInterval(searchEtaTimer)
 function startSaveAutoRefresh(){stopSaveAutoRefresh();saveRefreshTimer=setInterval(()=>{if(!$('savedView').classList.contains('hidden')&&!editMode)refreshAllSavedEta(false)},30000)}function stopSaveAutoRefresh(){if(saveRefreshTimer){clearInterval(saveRefreshTimer);saveRefreshTimer=null}}function refreshAllSavedEta(force=false){getSaved().filter(x=>(x.groupId||'default')===activeGroupId).forEach((x,idx)=>loadSavedEta(x,idx,force))}
 function setMainTab(tab){let search=tab==='SEARCH',save=tab==='SAVE',opt=tab==='OPTION';$('searchPanel').classList.toggle('hidden',!search);$('searchTitle').classList.toggle('hidden',!search);$('routes').classList.toggle('hidden',!search);$('savedView').classList.toggle('hidden',!save);$('optionView').classList.toggle('hidden',!opt);$('tabSearch').classList.toggle('on',search);$('tabSave').classList.toggle('on',save);$('tabOption').classList.toggle('on',opt);updateSaveTabText();if(save){renderSaved();startSaveAutoRefresh()}else{editMode=false;selectedKeys.clear();document.body.classList.remove('noSelect');stopSaveAutoRefresh()}if(search){startSearchAutoRefresh();if(pos&&!routeInput.value.trim())gps(true)}else{stopSearchAutoRefresh()}if(opt)renderOptions()}
 
-function renderOptions(){
+function formatBytes(bytes) {
+    if (bytes === 0) return '0 B';
+    const k = 1024;
+    const sizes = ['B', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+
+function calculateCacheStats() {
+    return new Promise(resolve => {
+        if(!IDB.db) return resolve({});
+        let tx = IDB.db.transaction('kv', 'readonly');
+        let req = tx.objectStore('kv').openCursor();
+        let stats = {
+            api: { count: 0, size: 0, label: 'API Requests' },
+            route: { count: 0, size: 0, label: 'Route Details' },
+            lite: { count: 0, size: 0, label: 'Lite Routing' },
+            index: { count: 0, size: 0, label: 'Stop Index' },
+            other: { count: 0, size: 0, label: 'Other Cache' }
+        };
+        req.onsuccess = e => {
+            let cursor = e.target.result;
+            if(cursor) {
+                let k = cursor.key;
+                let size = 0;
+                try { size = JSON.stringify(cursor.value).length; } catch(err){}
+
+                if(k.startsWith('req_')) { stats.api.count++; stats.api.size += size; }
+                else if(k.startsWith('routeDetailCache_')) { stats.route.count++; stats.route.size += size; }
+                else if(k.startsWith('lite_')) { stats.lite.count++; stats.lite.size += size; }
+                else if(k === 'stopIndex') { stats.index.count++; stats.index.size += size; }
+                else { stats.other.count++; stats.other.size += size; }
+
+                cursor.continue();
+            } else {
+                resolve(stats);
+            }
+        };
+        req.onerror = () => resolve({});
+    });
+}
+
+window.deleteCacheCategory = function(prefix) {
+    if(!IDB.db) return;
+    status('Deleting cache category...', 'ok');
+    let tx = IDB.db.transaction('kv', 'readwrite');
+    let store = tx.objectStore('kv');
+    let req = store.openCursor();
+    req.onsuccess = e => {
+        let cursor = e.target.result;
+        if(cursor) {
+            let k = cursor.key;
+            if(prefix === 'other') {
+                if(!k.startsWith('req_') && !k.startsWith('routeDetailCache_') && !k.startsWith('lite_') && k !== 'stopIndex') cursor.delete();
+            } else if(prefix === 'stopIndex' && k === 'stopIndex') {
+                cursor.delete();
+            } else if (prefix !== 'stopIndex' && k.startsWith(prefix)) {
+                cursor.delete();
+            }
+            cursor.continue();
+        } else {
+            renderOptions();
+            status('Cache category cleared.', 'ok');
+        }
+    };
+};
+
+async function renderOptions(){
     let sel=$('etaModeSelect');if(sel)sel.value=getEtaMode();
     let rSlider = $('radiusSlider');
     let rDisplay = $('radiusDisplay');
@@ -412,18 +479,43 @@ function renderOptions(){
             if(pos && !routeInput.value.trim()) { filter(); status('Search radius updated to ' + rSlider.value + 'm. Refreshing GPS search...','ok'); }
         };
     }
-    
+
     let box=$('cacheList');
     if(IDB.db) {
-       let tx = IDB.db.transaction('kv', 'readonly');
-       let req = tx.objectStore('kv').getAllKeys();
-       
-       req.onsuccess = () => {
-           let count = req.result;
-           box.innerHTML='<div class="cacheStatGrid"><div class="cacheStat" style="grid-column:1/-1"><b>IndexedDB 啟用中</b><span>LocalStorage 快取限制已移除，資料庫現有 '+count+' 個紀錄。</span></div><div class="cacheStat"><b>'+esc(getSaved().length)+'</b><span>Saved ETA monitors</span></div></div>';
-       };
+        box.innerHTML = '<div class="empty" style="margin-bottom:10px;">Calculating cache usage...</div>';
+        let stats = await calculateCacheStats();
+        let html = '<div style="display:flex; flex-direction:column; gap:8px;">';
+        let totalCount = 0;
+        let totalSize = 0;
+
+        for(let key in stats) {
+            let s = stats[key];
+            if(s.count > 0) {
+                totalCount += s.count;
+                totalSize += s.size;
+                let prefix = key === 'api' ? 'req_' : key === 'route' ? 'routeDetailCache_' : key === 'lite' ? 'lite_' : key === 'index' ? 'stopIndex' : 'other';
+
+                html += `<div class="routeCard" style="display:flex; justify-content:space-between; align-items:center; padding: 12px; margin:0;">
+                    <div>
+                        <div style="font-size:15px; font-weight:900; color:white; margin-bottom:2px;">${s.label}</div>
+                        <div style="font-size:12px; color:var(--sub);">${s.count} items · ~${formatBytes(s.size)}</div>
+                    </div>
+                    <button class="miniBtn danger" onclick="deleteCacheCategory('${prefix}')" style="margin:0;">Delete</button>
+                </div>`;
+            }
+        }
+
+        if(totalCount === 0) {
+            html += '<div class="empty">Cache is empty.</div>';
+        }
+        html += '</div>';
+
+        box.innerHTML = `<div class="cacheStatGrid" style="margin-bottom:12px;"><div class="cacheStat" style="grid-column:1/-1"><b>IndexedDB 啟用中</b><span>LocalStorage 快取限制已移除。資料庫現有 ${totalCount} 個紀錄 (~${formatBytes(totalSize)})。</span></div><div class="cacheStat"><b>${esc(getSaved().length)}</b><span>Saved ETA monitors</span></div></div>` + html;
+    } else {
+        box.innerHTML = '<div class="empty">IndexedDB not available.</div>';
     }
 }
+
 async function refetchRouteData(){[API.KMB+'/route/',API.CTB+'/route/CTB',API.CTB+'/route/ctb',API.HKBUS].forEach(async u=>{await IDB.set('req_'+u, null);});await IDB.clear();stopIndexMem=null;nearbyStopMem=null;suggestedRouteNearest.clear();status('Re-fetching route and stop data...');try{await loadRoutes();active=mode==='BUS'?busRoutes:gmbRoutes;filter();status('Route data and IDB cache re-fetched.','ok')}catch(e){status('Re-fetch failed: '+e.message,'err')}}
 function gps(silent=false){if(!navigator.geolocation){if(!silent)status('GPS not supported.','err');return}if(!silent)status('Getting location...');navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude,ts:Date.now()};writeLS(LS_LAST_POS,pos);if(!silent)status('GPS ready. Using Bounding Box and Worker to check nearby stops.','ok');filter()},e=>{if(!silent)status('GPS failed: '+e.message,'err')},{enableHighAccuracy:true,timeout:10000,maximumAge:60000})}
 boot();
