@@ -359,9 +359,11 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
 const API={KMB:'https://data.etabus.gov.hk/v1/transport/kmb',CTB:'https://rt.data.gov.hk/v2/transport/citybus',GMB:'https://data.etagmb.gov.hk',HKBUS:'https://data.hkbus.app/routeFareList.min.json'};
 const $=id=>document.getElementById(id), routeInput=$('routeInput');
 let mode='BUS',busRoutes=[],gmbRoutes=[],active=[],currentStops=[],currentRoute=null,pos=null,hkbDb=null,activeGroupId='default',saveRefreshTimer=null,saveHoldTimer=null,appModalOkCb=null,editMode=false,dragKey=null,pointerDrag=null,groupDrag=null,routeSearchSeq=0,stopIndexMem=null,nearbyStopMem=null;
-let searchWorker=null,currentFound=[];
-let currentPreviewItems=[],searchAutoGpsTimer=null,previewEtaTimer=null,renderWorkerTimeout=null;
 const selectedKeys=new Set();const suggestedRouteNearest=new Map();
+
+// Workers Variables
+let searchWorkers=[], workerProgress=[], activeWorkersCount=0, totalRoutesToCheck=0, currentFound=[], currentPreviewItems=[];
+let searchAutoGpsTimer=null, previewEtaTimer=null, renderWorkerTimeout=null;
 
 const IDB = {
     db: null,
@@ -430,6 +432,7 @@ function setEtaMode(m){writeLS(LS_ETA_MODE,m==='actual'?'actual':'remaining');re
 function getGroups(){let g=readLS(LS_GROUPS,null);if(!g||!g.length)g=[{id:'default',name:'Default'}];return g}function setGroups(g){writeLS(LS_GROUPS,g)}function setActiveGroup(id){activeGroupId=id;writeLS(LS_ACTIVE_GROUP,id);updateSaveTabText()}function getSaved(){return readLS(LS_SAVED,[])}function setSaved(v){writeLS(LS_SAVED,v)}function getEtaHistory(){return readLS(LS_ETA_HISTORY,{})}function setEtaHistoryForKey(k,d){let h=getEtaHistory();h[k]={...d,ts:Date.now()};writeLS(LS_ETA_HISTORY,h)}function getEtaHistoryForKey(k){return getEtaHistory()[k]||null}function getJtHistory(){return readLS(LS_JT_HISTORY,{})}function setJtHistoryForKey(k,d){let h=getJtHistory();h[k]={...d,ts:Date.now()};writeLS(LS_JT_HISTORY,h)}function getJtHistoryForKey(k){return getJtHistory()[k]||null}
 function readRadius(){return parseInt(localStorage.getItem(LS_GPS_RADIUS)||'500', 10);}
 function writeRadius(v){localStorage.setItem(LS_GPS_RADIUS, v);}
+
 function routeKey(r){return [r.type,r.route,r.bound||'',r.service_type||'',r.hkbusId||'',r.gtfs_id||'',r.region||''].join('|')}function savedKey(route,from,to){return [routeKey(route),stopIdOf(from&&from.stop),stopIdOf(to&&to.stop)].join('||')}function routeTitle(r){return `${r.type} ${r.route}`}function routeMeta(r){return r.type==='GMB'?(r.desc_tc||r.desc_en||r.region||''):`${r.orig_tc||r.orig_en||''} → ${r.dest_tc||r.dest_en||''}`}function name(s){return toText(s.name_tc||s.stop_name_tc||s.name_zh||s.name_en||s.stop_name_en||s.name||s.stop||'')}function etaMin(x){let d=new Date(x);if(isNaN(d))return null;return Math.max(0,Math.round((d-Date.now())/60000))}function time(x){try{return new Date(x).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'})}catch{return ''}}
 
 function buildKb(){const kb=$('keyboard');kb.innerHTML='';const make=k=>{let b=document.createElement('button');b.textContent=k;b.className='key '+(k==='⌫'?'back ':'')+(k==='CLR'?'clear ':'');b.onclick=()=>{let v=routeInput.value.toUpperCase();if(k==='CLR')v='';else if(k==='⌫')v=v.slice(0,-1);else v+=k;routeInput.value=v;filter()};return b};let l=document.createElement('div'),r=document.createElement('div');l.className=r.className='keyBox';l.innerHTML='<div class="keyTitle">NUMBER PAD</div><div class="numPad"></div>';r.innerHTML='<div class="keyTitle">CHARACTER PAD</div><div class="charPad"></div>';numKeys.forEach(k=>l.querySelector('.numPad').appendChild(make(k)));charKeys.forEach(k=>r.querySelector('.charPad').appendChild(make(k)));kb.append(l,r)}
@@ -446,7 +449,7 @@ async function boot(){
         setMode('BUS');
         let hasCache=getSaved().length>0||Object.keys(getEtaHistory()).length>0;
         setMainTab(hasCache?'SAVE':'SEARCH');
-        status('Ready. Route list loaded. IDB Cache Active.','ok');
+        status('Ready. Route list loaded. Fast Threads Active.','ok');
     }catch(e){
         status('Route list failed: '+e.message,'err');
         setMainTab(getSaved().length?'SAVE':'SEARCH');
@@ -488,20 +491,25 @@ function filter(){
     let q=routeInput.value.trim().toUpperCase();
     let data=active.filter(x=>!q||String(x.route).toUpperCase().startsWith(q)).sort((a,b)=>String(a.route).localeCompare(String(b.route),undefined,{numeric:true,sensitivity:'base'}));
     
+    // When typing manually, bypass GPS limit
     if(q) {
-        if(searchWorker) routeSearchSeq++; // terminate current worker processing
+        if(searchWorkers.length > 0) routeSearchSeq++; // terminate current worker processing
         $('count').textContent=data.length+' match(es)';
         renderRoutes(data.slice(0,120),false);
+        currentPreviewItems = data.slice(0,12); // set items for ETA auto-refresh
         return;
     }
     
+    // Empty search box but have GPS
     if(pos){
         renderSuggestedRouteResults(data,q);
         return;
     }
     
+    // No GPS, No Search
     $('count').textContent=active.length+' routes';
     renderRoutes(data.slice(0,25),false);
+    currentPreviewItems = data.slice(0,12);
 }
 
 function stopIndexObj(type,x){let id=stopIdOf(x.stop||x.stop_id||x.id||x.code);let lat=+(x.lat||x.latitude||x.y||''),long=+(x.long||x.lng||x.longitude||x.x||'');if(!id||!Number.isFinite(lat)||!Number.isFinite(long)||lat===0||long===0)return null;return{type,stop:id,name_tc:toText(x.name_tc||x.name_zh||x.tc||x.zh||x.name),name_en:toText(x.name_en||x.en),lat,long}}
@@ -546,9 +554,19 @@ async function json(url, ttl=300000){
     let n=Date.now();
     let c = await IDB.get('req_' + url);
     if(c && n-c.t < ttl) return c.v;
-    let v = await fetchJsonOnce(url);
-    await IDB.set('req_' + url, {t: n, v});
-    return v;
+    
+    let lastErr;
+    for(let i=0; i<2; i++) {
+        try {
+            let v = await fetchJsonOnce(url);
+            await IDB.set('req_' + url, {t: n, v});
+            return v;
+        } catch(e) {
+            lastErr = e;
+            await new Promise(r => setTimeout(r, 200 + Math.random()*200));
+        }
+    }
+    throw lastErr;
 }
 
 function ctbDirWord(v){let s = String(v||'').toLowerCase();if(s==='o'||s==='outbound') return 'outbound';if(s==='i'||s==='inbound') return 'inbound';return 'outbound';}
@@ -589,35 +607,10 @@ async function routeStopLite(r){
     return out;
 }
 
-function distM(a,b,c,d){let R=6371000,rad=Math.PI/180,p1=a*rad,p2=c*rad,dp=(c-a)*rad,dl=(d-b)*rad,x=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x));}
-
 onmessage = async function(e) {
     if (e.data.type === 'SEARCH') {
         await IDB.init();
-        const { routes, stopIndex, pos, radius, seq } = e.data.payload;
-
-        const latDelta = (radius / 1000) / 111;
-        const lonDelta = (radius / 1000) / (111 * Math.cos(pos.lat * Math.PI / 180));
-        const minLat = pos.lat - latDelta;
-        const maxLat = pos.lat + latDelta;
-        const minLon = pos.lon - lonDelta;
-        const maxLon = pos.lon + lonDelta;
-
-        let nearby = [];
-        for(let i=0; i<stopIndex.length; i++){
-            let s = stopIndex[i];
-            if(s.lat >= minLat && s.lat <= maxLat && s.long >= minLon && s.long <= maxLon){
-                let d = distM(pos.lat, pos.lon, s.lat, s.long);
-                if(d <= radius) nearby.push({...s, dist: d});
-            }
-        }
-        nearby.sort((a,b)=>a.dist-b.dist);
-        postMessage({ type: 'NEARBY_DONE', nearby, seq });
-
-        if(!nearby.length) {
-            postMessage({ type: 'DONE', seq, count: 0 });
-            return;
-        }
+        const { routes, nearby, seq } = e.data.payload;
 
         let nearbyMap = new Map();
         nearby.forEach(s => nearbyMap.set((s.type||'')+'|'+stopIdOf(s.stop), s));
@@ -642,7 +635,7 @@ onmessage = async function(e) {
                 postMessage({ type: 'FOUND', route: r, near: best, seq });
             }
             if (i % 5 === 0 || i === routes.length - 1) {
-                postMessage({ type: 'PROGRESS', current: i+1, total: routes.length, seq });
+                postMessage({ type: 'PROGRESS', current: i+1, seq });
             }
         }
         postMessage({ type: 'DONE', seq, count: foundCount });
@@ -650,80 +643,121 @@ onmessage = async function(e) {
 }
 `;
 
-function initWorker() {
-    if (searchWorker) return;
+function initWorkers() {
+    if (searchWorkers.length > 0) return;
     const blob = new Blob([workerCode], { type: 'application/javascript' });
-    searchWorker = new Worker(URL.createObjectURL(blob));
-    searchWorker.onmessage = e => {
-        const data = e.data;
-        if(data.seq !== routeSearchSeq) return; 
-        
-        if(data.type === 'NEARBY_DONE') {
-            nearbyStopMem = data.nearby;
-            $('count').textContent = data.nearby.length + ' nearby stop(s). Thread checking routes...';
-            if(!data.nearby.length) $('routes').innerHTML='<div class="empty">No bus stop found within '+readRadius()+'m from GPS.</div>';
-        } else if(data.type === 'FOUND') {
-            currentFound.push(data.route);
-            suggestedRouteNearest.set(routeKey(data.route), data.near);
-            if (currentFound.length <= 160) {
-                clearTimeout(renderWorkerTimeout);
-                renderWorkerTimeout = setTimeout(()=> {
-                    renderRoutes(currentFound.slice(), true);
-                }, 100);
-            }
-        } else if(data.type === 'PROGRESS') {
-            $('count').textContent = 'Nearby stops ' + (nearbyStopMem?nearbyStopMem.length:0) + ' · suggested ' + currentFound.length + ' / checked ' + data.current + ' of ' + data.total;
-        } else if(data.type === 'DONE') {
-            clearTimeout(renderWorkerTimeout);
-            if(currentFound.length > 0) renderRoutes(currentFound.slice(), true);
-            $('count').textContent = data.count + ' suggested route(s) from ' + (nearbyStopMem?nearbyStopMem.length:0) + ' nearby stop(s)';
-            if(data.count === 0 && nearbyStopMem && nearbyStopMem.length > 0) $('routes').innerHTML='<div class="empty">Nearby stops found, but no route mapping matched.</div>';
-        }
-    };
+    const url = URL.createObjectURL(blob);
+    const numThreads = Math.min(navigator.hardwareConcurrency || 4, 8); 
+    for(let i=0; i<numThreads; i++) {
+        let w = new Worker(url);
+        w.onmessage = (e) => handleWorkerMessage(e, i);
+        searchWorkers.push(w);
+        workerProgress.push(0);
+    }
 }
+
+function handleWorkerMessage(e, workerId) {
+    const data = e.data;
+    if(data.seq !== routeSearchSeq) return;
+
+    if(data.type === 'FOUND') {
+        currentFound.push(data.route);
+        suggestedRouteNearest.set(routeKey(data.route), data.near);
+        if (currentFound.length <= 160) {
+            clearTimeout(renderWorkerTimeout);
+            renderWorkerTimeout = setTimeout(()=> {
+                renderRoutes(currentFound.slice(), true);
+                currentPreviewItems = currentFound.slice(0, 12);
+            }, 100);
+        }
+    } else if(data.type === 'PROGRESS') {
+        workerProgress[workerId] = data.current;
+        let checked = workerProgress.reduce((a,b)=>a+b, 0);
+        $('count').textContent = 'Nearby stops ' + (nearbyStopMem?nearbyStopMem.length:0) + ' · suggested ' + currentFound.length + ' / checked ' + checked + ' of ' + totalRoutesToCheck;
+    } else if(data.type === 'DONE') {
+        activeWorkersCount--;
+        if(activeWorkersCount <= 0) {
+            clearTimeout(renderWorkerTimeout);
+            if(currentFound.length > 0) {
+                renderRoutes(currentFound.slice(), true);
+                currentPreviewItems = currentFound.slice(0, 12);
+            } else {
+                $('routes').innerHTML='<div class="empty">Nearby stops found, but no route mapping matched.</div>';
+                currentPreviewItems = [];
+            }
+            $('count').textContent = currentFound.length + ' suggested route(s) from ' + (nearbyStopMem?nearbyStopMem.length:0) + ' nearby stop(s)';
+        }
+    }
+}
+
+function distM(a,b,c,d){let R=6371000,rad=Math.PI/180,p1=a*rad,p2=c*rad,dp=(c-a)*rad,dl=(d-b)*rad,x=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 
 async function renderSuggestedRouteResults(data, q){
     let seq = ++routeSearchSeq;
     let box = $('routes');
     $('count').textContent = 'Building nearby stop index...';
-    box.innerHTML = '<div class="empty">Building region bounding box and starting Web Worker thread...</div>';
-    
+    box.innerHTML = '<div class="empty">Finding nearby stops within bounding box...</div>';
+
     let index = await buildStopIndex(false);
     if(seq !== routeSearchSeq) return;
-    
-    currentFound = [];
-    suggestedRouteNearest.clear();
-    
-    initWorker();
-    searchWorker.postMessage({
-        type: 'SEARCH',
-        payload: { routes: data.slice(0), stopIndex: index, pos: pos, radius: readRadius(), seq: seq } 
-    });
-}
 
-function renderRoutes(items,suggested=false){
-    let box=$('routes');
-    box.innerHTML='';
-    if(!items.length){
-        box.innerHTML='<div class="empty">No route matched.</div>';
+    let radius = readRadius();
+    const latDelta = (radius / 1000) / 111;
+    const lonDelta = (radius / 1000) / (111 * Math.cos(pos.lat * Math.PI / 180));
+    const minLat = pos.lat - latDelta;
+    const maxLat = pos.lat + latDelta;
+    const minLon = pos.lon - lonDelta;
+    const maxLon = pos.lon + lonDelta;
+
+    let nearby = [];
+    for(let i=0; i<index.length; i++){
+        let s = index[i];
+        if(s.lat >= minLat && s.lat <= maxLat && s.long >= minLon && s.long <= maxLon){
+            let d = distM(pos.lat, pos.lon, s.lat, s.long);
+            if(d <= radius) nearby.push({...s, dist: d});
+        }
+    }
+    nearby.sort((a,b)=>a.dist-b.dist);
+    nearbyStopMem = nearby;
+
+    if(!nearby.length) {
+        $('count').textContent = '0 nearby stops within ' + radius + 'm';
+        box.innerHTML = '<div class="empty">No bus stop found within '+radius+'m from GPS.</div>';
         currentPreviewItems = [];
         return;
     }
-    if(suggested)box.insertAdjacentHTML('beforeend','<div class="suggestedRouteNote">Suggested routes from stops within '+readRadius()+'m from GPS</div>');
-    items.forEach((x,idx)=>{
-        let d=document.createElement('div');
-        d.className='routeCard';
-        d.dataset.routeIdx=idx;
-        let preview=pos?'<div class="routeEtaPreview muted" id="routeEtaPreview'+idx+'">Nearby ETA loading...</div>':'<div class="routeEtaPreview muted">Tap ⌖ to enable nearby ETA</div>';
-        d.innerHTML='<div class="routeCardMain"><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div>'+preview+'</div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';
-        d.onclick=()=>openRouteFromSearch(x);
-        box.appendChild(d);
-    });
-    currentPreviewItems = items.slice(0,12);
-    if(pos)loadRouteEtaPreviews(currentPreviewItems);
+
+    initWorkers();
+    $('count').textContent = nearby.length + ' nearby stop(s). Distributing to ' + searchWorkers.length + ' threads...';
+    box.innerHTML = '<div class="empty">Starting threads to map '+data.length+' routes...<br>This may take a moment for the first time.</div>';
+
+    currentFound = [];
+    suggestedRouteNearest.clear();
+    workerProgress.fill(0);
+    activeWorkersCount = searchWorkers.length;
+    totalRoutesToCheck = data.length;
+
+    const chunkSize = Math.ceil(data.length / searchWorkers.length);
+    for(let i=0; i<searchWorkers.length; i++) {
+        let chunk = data.slice(i*chunkSize, (i+1)*chunkSize);
+        if (chunk.length === 0) {
+            activeWorkersCount--;
+            workerProgress[i] = 0;
+            continue; 
+        }
+        searchWorkers[i].postMessage({
+            type: 'SEARCH',
+            payload: { routes: chunk, nearby: nearby, seq: seq }
+        });
+    }
+    
+    if (activeWorkersCount === 0) {
+         box.innerHTML='<div class="empty">No route mapping matched.</div>';
+         currentPreviewItems = [];
+    }
 }
 
-function distM(a,b,c,d){let R=6371000,rad=Math.PI/180,p1=a*rad,p2=c*rad,dp=(c-a)*rad,dl=(d-b)*rad,x=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
+function renderRoutes(items,suggested=false){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}if(suggested)box.insertAdjacentHTML('beforeend','<div class="suggestedRouteNote">Suggested routes from stops within '+readRadius()+'m from GPS</div>');items.forEach((x,idx)=>{let d=document.createElement('div');d.className='routeCard';d.dataset.routeIdx=idx;let preview=pos?'<div class="routeEtaPreview muted" id="routeEtaPreview'+idx+'">Nearby ETA loading...</div>':'<div class="routeEtaPreview muted">Tap ⌖ to enable nearby ETA</div>';d.innerHTML='<div class="routeCardMain"><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div>'+preview+'</div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRouteFromSearch(x);box.appendChild(d)});if(pos)loadRouteEtaPreviews(items.slice(0,12))}
 function validStopCoord(s){return Number.isFinite(+s.lat)&&Number.isFinite(+s.long)&&+s.lat!==0&&+s.long!==0}
 async function routeStopsForPreview(r){const key='routeDetailCache_'+routeKey(r);const cached=await IDB.get(key);if(cached&&Array.isArray(cached.stops)&&cached.stops.length)return cached.stops;let lite=await (async function routeStopLiteMain(r){let k='lite_'+routeKey(r);let c=await IDB.get(k);if(c)return c; let out=[]; if(r.type==='GMB'){out=(r.stops||[]).map((raw,i)=>({type:'GMB',stop:stopIdOf(raw)}));}else if(r.type==='KMB'){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];for(const dir of dirs){try{let d=await json(API.KMB+'/route-stop/'+encodeURIComponent(r.route)+'/'+dir+'/'+(r.service_type||1),86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'KMB'}));break;}}catch(e){}}}else if(r.type==='CTB'){let dirs=[(r.bound==='I'?'inbound':'outbound'),(r.bound==='I'?'outbound':'inbound')];for(const dir of dirs){try{let d=await json(API.CTB+'/route-stop/CTB/'+encodeURIComponent(r.route)+'/'+dir,86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'CTB'}));break;}}catch(e){}}} await IDB.set(k,out);return out;})(r);let stops=await Promise.all(lite.map(async x=>{try{if(x.type==='KMB'){let st=(await json(`${API.KMB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='CTB'){let st=(await json(`${API.CTB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='GMB'){let si=hkbusStopInfo(x.stop);return{...x,name_tc:si.name_tc,name_en:si.name_en,lat:si.lat,long:si.long}}}catch(e){}return x}));await IDB.set(key, {route:r,stops,meta:routeMeta(r),ts:Date.now()});return stops}
 function nearestStop(stops){if(!pos)return null;let best=null,bd=Infinity;stops.filter(validStopCoord).forEach(s=>{let d=distM(pos.lat,pos.lon,+s.lat,+s.long);if(d<bd){bd=d;best=s}});return best?{stop:best,dist:bd}:null}
@@ -738,7 +772,6 @@ async function openRoute(r){currentRoute=r;currentStops=[];$('fromStop').innerHT
 async function kmbStops(r){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];let svcs=[String(r.service_type||1),'1','2','3'].filter((v,i,a)=>a.indexOf(v)===i);let err=null;for(const dir of dirs)for(const svc of svcs){try{let rs=await json(`${API.KMB}/route-stop/${r.route}/${dir}/${svc}`),arr=rs.data||[];if(!arr.length)continue;let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.KMB}/stop/${x.stop}`)).data||{};return {...x,type:'KMB',route:r.route,bound:boundCode,service_type:svc,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('KMB stops not found')}function ctbDirCode(v){v=String(v||'').toLowerCase();if(v==='o'||v==='outbound')return'O';if(v==='i'||v==='inbound')return'I';return''}function ctbDirWord(v){let c=ctbDirCode(v);return c==='I'?'inbound':'outbound'}async function ctbStops(r){let preferred=ctbDirWord(r.bound);let dirs=[preferred,preferred==='outbound'?'inbound':'outbound'];let err=null;for(const dir of dirs){try{let rs=await json(`${API.CTB}/route-stop/CTB/${encodeURIComponent(r.route)}/${dir}`),arr=rs.data||[];if(!arr.length)continue;let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.CTB}/stop/${x.stop}`)).data||{};return {...x,type:'CTB',route:r.route,bound:boundCode,dir:boundCode,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('Citybus stops not found')}
 function hkbusStopInfo(stopId){stopId=stopIdOf(stopId);if(!hkbDb)return{};let s=(hkbDb.stopList||{})[stopId]||(hkbDb.stopMap||{})[stopId]||{};if(Array.isArray(s))s=s[0]||{};if(typeof s==='string')return{name_tc:s,name_en:s};if(s.gmb)s=s.gmb;return{name_tc:toText(s.name_tc||s.name_zh||s.zh||s.tc||s.name),name_en:toText(s.name_en||s.en),lat:+(s.lat||s.latitude||s.y||''),long:+(s.long||s.lng||s.longitude||s.x||'')}}async function gmbStops(r){if(r.hkbusId&&hkbDb&&hkbDb.routeList&&hkbDb.routeList[r.hkbusId]){let e=hkbDb.routeList[r.hkbusId],ids=(e.stops&&e.stops.gmb)||[],bound=(e.bound&&e.bound.gmb)||r.bound||'O',routeSeq=bound==='I'?2:1,gtfs=e.gtfsId||e.gtfs_id||e.gtfsID||r.gtfs_id;return ids.map((raw,i)=>{let id=stopIdOf(raw),si=hkbusStopInfo(id),nm=toText(si.name_tc)||toText(si.name_en)||id;return{type:'GMB',route:r.route,gtfs_id:gtfs,route_id:gtfs,route_seq:routeSeq,bound,stop:id,stop_seq:i+1,seq:i+1,name_tc:nm,name_en:toText(si.name_en)||'',lat:si.lat,long:si.long}}).filter(x=>x.stop)}throw new Error('GMB route mapping missing')}
 function fillStops(){let f=$('fromStop'),t=$('toStop');f.innerHTML='';t.innerHTML='';currentStops.forEach((s,i)=>{let txt=(s.seq||i+1)+'. '+name(s);f.add(new Option(txt,i));t.add(new Option(txt,i))});f.value=0;t.value=Math.min(currentStops.length-1,1);$('eta').innerHTML='<div class="empty">From and To loaded. Tap Show ETA.</div>'}
-
 function etaUrlForStop(s){const sid=encodeURIComponent(stopIdOf(s.stop)),gid=encodeURIComponent(stopIdOf(s.gtfs_id||s.route_id));if(s.type==='KMB')return `${API.KMB}/eta/${sid}/${encodeURIComponent(s.route)}/${s.service_type||1}`;if(s.type==='CTB')return `${API.CTB}/eta/CTB/${sid}/${encodeURIComponent(s.route)}`;return `${API.GMB}/eta/route-stop/${gid}/${sid}`}function normalizeEtaRows(data){return Array.isArray(data)?data:[]}async function fetchEtaRows(s,force=false){let url=etaUrlForStop(s);if(force)await IDB.set('req_'+url,null);let d=await json(url,25000),rows=[];if(s.type==='GMB'){let raw=d.data||[];if(Array.isArray(raw)){let match=raw.filter(e=>(!s.route_seq||String(e.route_seq)===String(s.route_seq))&&(!s.stop_seq||String(e.stop_seq)===String(s.stop_seq)));if(!match.length)match=raw;rows=match.flatMap(e=>(e.eta||[]).map(a=>({eta:a.timestamp||a.eta,rmk_tc:a.remarks_tc||a.rmk_tc||'',diff:a.diff})))}}else if(s.type==='CTB'){let raw=normalizeEtaRows(d.data);let want=ctbDirCode(s.bound||s.dir);rows=raw.filter(x=>!want||!x.dir||ctbDirCode(x.dir)===want);if(!rows.length&&raw.length)rows=raw;rows=rows.filter(x=>x.eta||x.timestamp)}else rows=(d.data||[]).filter(x=>!s.bound||!x.dir||x.dir===s.bound);return{rows,url}}async function eta(){let s=currentStops[+$('fromStop').value];if(!s)return;$('eta').innerHTML='<div class="empty">Loading ETA...</div>';try{let res=await fetchEtaRows(s,true);showEta(res.rows,res.url)}catch(e){$('eta').innerHTML='<div class="empty err">ETA failed: '+esc(e.message)+'</div>'}}function showEta(rows,url){if(!rows.length){$('eta').innerHTML='<div class="empty">No ETA now.</div>';return}let mode=getEtaMode();$('eta').innerHTML=rows.slice(0,3).map(r=>{let iso=r.eta||r.timestamp,m=etaMin(iso),actual=time(iso),txt=mode==='actual'?(actual||'--'):(m==null?'--':m===0?'Now':m);let unit=mode==='actual'?'':(m===0?'':'min');let meta=mode==='actual'?((m==null?'':(m===0?'Now':m+' min'))+' '+(r.rmk_tc||r.diff||'')):(actual+' '+(r.rmk_tc||r.diff||''));return '<div class="etaRow '+(mode==='actual'?'actualDetail':'')+'"><div><div class="etaMin">'+esc(txt)+' <small>'+esc(unit)+'</small></div><div class="meta">'+esc(meta.trim())+'</div></div><span class="tag">ETA</span></div>'}).join('')+'<div class="status">'+esc(url)+'</div>'}
 
 function saveCurrentRoute(){if(!currentRoute||!currentStops.length){status('Open a route and load stops first.','err');return}const f=currentStops[+$('fromStop').value],t=currentStops[+$('toStop').value];if(!f||!t){status('Select From and To first.','err');return}openSaveModal(f,t)}
@@ -759,7 +792,6 @@ function moveKeysToGroup(keys,groupId){let groups=getGroups(),g=groups.find(x=>x
 function deleteSavedKeys(keys){if(!keys.length)return;let set=new Set(keys);setSaved(getSaved().filter(x=>!set.has(x.key)));let h=getEtaHistory();keys.forEach(k=>delete h[k]);writeLS(LS_ETA_HISTORY,h);let j=getJtHistory();keys.forEach(k=>delete j[k]);writeLS(LS_JT_HISTORY,j);selectedKeys.clear();renderSaved();status('Deleted '+keys.length+' route(s).','ok')}
 function batchMoveSelected(){let items=selectedSavedItems();if(!items.length){status('Select route(s) first.','err');return}let opts=getGroups().map(g=>({text:g.name,value:g.id}));opts.push({text:'+ create new group',value:'__new__'});openSelectModal('Move Selected Routes','Move '+items.length+' saved ETA monitor(s) to another group.','Group',opts,activeGroupId,'Move',(val,newName)=>{let groups=getGroups(),group=null;if(val==='__new__'){if(!newName){status('Please enter new group name.','err');$('appNewGroupInput').focus();return}group=groups.find(g=>g.name===newName);if(!group){group={id:'g'+Date.now(),name:newName};groups.push(group);setGroups(groups)}}else group=groups.find(g=>g.id===val)||groups[0];closeAppModal();moveKeysToGroup(items.map(x=>x.key),group.id)})}
 function batchDeleteSelected(){let items=selectedSavedItems();if(!items.length){status('Select route(s) first.','err');return}openConfirmModal('Delete Selected Routes','Delete '+items.length+' saved ETA monitor(s) and ETA history.','Delete',()=>{closeAppModal();deleteSavedKeys(items.map(x=>x.key))})}
-
 function startCardPointerDrag(e,card,key){if(!editMode)return;if(!e.target.closest('.dragGrip'))return;e.preventDefault();e.stopPropagation();pointerDrag={key,card,startY:e.clientY,startX:e.clientX};card.setPointerCapture?.(e.pointerId);card.classList.add('dragging');document.body.classList.add('noSelect');const move=ev=>moveCardPointerDrag(ev);const up=ev=>endCardPointerDrag(ev,move,up);card.addEventListener('pointermove',move);card.addEventListener('pointerup',up,{once:true});card.addEventListener('pointercancel',up,{once:true})}
 function moveCardPointerDrag(e){if(!pointerDrag)return;e.preventDefault();let card=pointerDrag.card;card.style.transform='translate('+(e.clientX-pointerDrag.startX)+'px,'+(e.clientY-pointerDrag.startY)+'px) scale(1.03)';card.style.position='relative';card.style.zIndex='90';document.querySelectorAll('.dropBefore,.dropGroup').forEach(el=>el.classList.remove('dropBefore','dropGroup'));let group=[...document.querySelectorAll('.groupChip[data-g]')].find(el=>{let r=el.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom});if(group&&group.dataset.g){group.classList.add('dropGroup');return}let target=[...document.querySelectorAll('.savedMonitorCard.editing')].find(el=>{if(el===card)return false;let r=el.getBoundingClientRect();return e.clientY>=r.top&&e.clientY<=r.bottom});if(target)target.classList.add('dropBefore')}
 function endCardPointerDrag(e,move,up){if(!pointerDrag)return;let card=pointerDrag.card;card.removeEventListener('pointermove',move);card.classList.remove('dragging');card.style.transform='';card.style.position='';card.style.zIndex='';let group=document.querySelector('.groupChip.dropGroup');let target=document.querySelector('.savedMonitorCard.dropBefore');document.querySelectorAll('.dropBefore,.dropGroup').forEach(el=>el.classList.remove('dropBefore','dropGroup'));if(group&&group.dataset.g&&group.dataset.g!==activeGroupId){moveKeysToGroup([pointerDrag.key],group.dataset.g)}else if(target&&target.dataset.key&&target.dataset.key!==pointerDrag.key){reorderSavedInGroup(pointerDrag.key,target.dataset.key)}pointerDrag=null;document.body.classList.toggle('noSelect',editMode)}
@@ -768,7 +800,6 @@ function startGroupPointerDrag(e,chip,id){if(!editMode||e.target.closest('.group
 function moveGroupPointerDrag(e){if(!groupDrag)return;e.preventDefault();let chip=groupDrag.chip;chip.style.transform='translateX('+(e.clientX-groupDrag.startX)+'px) scale(.96)';chip.style.zIndex='60';document.querySelectorAll('.groupChip.dropGroup').forEach(el=>el.classList.remove('dropGroup'));let target=[...document.querySelectorAll('.groupChip[data-g]')].find(el=>{if(el===chip)return false;let r=el.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom});if(target)target.classList.add('dropGroup')}
 function endGroupPointerDrag(e,move,up){if(!groupDrag)return;let chip=groupDrag.chip;chip.removeEventListener('pointermove',move);chip.classList.remove('dragging');chip.style.transform='';chip.style.zIndex='';let target=document.querySelector('.groupChip.dropGroup');document.querySelectorAll('.groupChip.dropGroup').forEach(el=>el.classList.remove('dropGroup'));if(target&&target.dataset.g&&target.dataset.g!==groupDrag.id)reorderGroups(groupDrag.id,target.dataset.g);groupDrag=null;document.body.classList.toggle('noSelect',editMode)}
 function reorderGroups(fromId,toId){let groups=getGroups();let from=groups.findIndex(g=>g.id===fromId),to=groups.findIndex(g=>g.id===toId);if(from<0||to<0)return;let [m]=groups.splice(from,1);groups.splice(to,0,m);setGroups(groups);renderSaved();status('Group order updated.','ok')}
-
 function openTextModal(title,sub,label,value,okText,cb){appModalOkCb=()=>cb($('appTextInput').value.trim());$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appTextLabel').textContent=label||'Input';$('appTextInput').value=value||'';$('appTextField').classList.remove('hidden');$('appSelectField').classList.add('hidden');$('appNewGroupField').classList.add('hidden');$('appModalOk').textContent=okText||'OK';$('appModal').classList.add('show');setTimeout(()=>$('appTextInput').focus(),60)}function openSelectModal(title,sub,label,options,selected,okText,cb){appModalOkCb=()=>cb($('appSelectInput').value,$('appNewGroupInput').value.trim());$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appSelectLabel').textContent=label||'Select';const sel=$('appSelectInput');sel.innerHTML='';options.forEach(o=>sel.add(new Option(o.text,o.value)));if(selected)sel.value=selected;$('appTextField').classList.add('hidden');$('appSelectField').classList.remove('hidden');$('appNewGroupField').classList.toggle('hidden',sel.value!=='__new__');$('appModalOk').textContent=okText||'OK';$('appModal').classList.add('show')}function openConfirmModal(title,sub,okText,cb){appModalOkCb=cb;$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appTextField').classList.add('hidden');$('appSelectField').classList.add('hidden');$('appNewGroupField').classList.add('hidden');$('appModalOk').textContent=okText||'Confirm';$('appModal').classList.add('show')}function closeAppModal(){$('appModal').classList.remove('show');appModalOkCb=null}function confirmAppModal(){if(appModalOkCb){let cb=appModalOkCb;cb()}}
 function toggleSavedMenu(idx){closeSavedMenus();let m=$('savedMenu'+idx);if(m)m.classList.add('show')}
 function renameSaved(key){let list=getSaved(),it=list.find(x=>x.key===key);if(!it)return;openTextModal('Rename ETA Monitor','Set a friendly name for this saved ETA.','Display name',it.customName||routeTitle(it.route),'Save',v=>{if(!v){status('Name cannot be empty.','err');return}it.customName=v;setSaved(list);closeAppModal();renderSaved();status('ETA monitor renamed.','ok')})}
@@ -823,7 +854,6 @@ function setMainTab(tab){
         stopSaveAutoRefresh();
     }
     
-    // Trigger GPS refresh if user switches back to Search and no text is inputted
     if(search) {
         if(!routeInput.value && pos) gps(true);
     }
@@ -886,13 +916,11 @@ function renderOptions(){
            
            let total = keys.length;
            let html = '<div class="cacheStatGrid">';
-           html += `<div class="cacheStat" style="grid-column:1/-1"><b>IndexedDB Active</b><span>Database size scaling enabled. Total records: ${total}</span></div>`;
-           
+           html += `<div class="cacheStat" style="grid-column:1/-1"><b>IndexedDB Active</b><span>Total cached records: ${total}</span></div>`;
            html += `<div class="cacheStat"><b>${stats.req}</b><span>API Req Cache</span><button class="miniBtn danger" style="margin-top:8px" onclick="clearIdbPrefix('req_')">Delete</button></div>`;
            html += `<div class="cacheStat"><b>${stats.detail}</b><span>Route Details</span><button class="miniBtn danger" style="margin-top:8px" onclick="clearIdbPrefix('routeDetailCache_')">Delete</button></div>`;
            html += `<div class="cacheStat"><b>${stats.lite}</b><span>Lite Routes</span><button class="miniBtn danger" style="margin-top:8px" onclick="clearIdbPrefix('lite_')">Delete</button></div>`;
            html += `<div class="cacheStat"><b>${stats.index}</b><span>Stop Index</span><button class="miniBtn danger" style="margin-top:8px" onclick="clearIdbPrefix('stopIndex')">Delete</button></div>`;
-           
            html += '</div>';
            box.innerHTML = html;
        };
@@ -900,18 +928,11 @@ function renderOptions(){
 }
 
 async function refetchRouteData(){
-    // Delete known cached routes from DB
     await IDB.set('stopIndex', null);
-    
     let tx = IDB.db.transaction('kv', 'readwrite');
     let store = tx.objectStore('kv');
     let req = store.getAllKeys();
-    req.onsuccess = () => {
-        req.result.forEach(k => {
-            if(k.startsWith('req_')) store.delete(k);
-        });
-    };
-
+    req.onsuccess = () => { req.result.forEach(k => { if(k.startsWith('req_')) store.delete(k); }); };
     stopIndexMem=null;
     nearbyStopMem=null;
     suggestedRouteNearest.clear();
@@ -935,7 +956,7 @@ function gps(silent = false){
     navigator.geolocation.getCurrentPosition(p=>{
         pos={lat:p.coords.latitude,lon:p.coords.longitude,ts:Date.now()};
         writeLS(LS_LAST_POS,pos);
-        if(!silent) status('GPS ready. Using Bounding Box and Worker to check nearby stops.','ok');
+        if(!silent) status('GPS ready. Multithreading Worker started.','ok');
         filter();
     }, e=>{
         if(!silent) status('GPS failed: '+e.message,'err');
