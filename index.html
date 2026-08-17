@@ -104,7 +104,32 @@ function wireEvents(){routeInput.oninput=()=>{routeInput.value=routeInput.value.
 function ensureActiveGroup(){let groups=getGroups();if(!groups.find(g=>g.id===activeGroupId))activeGroupId=groups[0].id;writeLS(LS_ACTIVE_GROUP,activeGroupId);updateSaveTabText()}function updateSaveTabText(){let g=getGroups().find(x=>x.id===activeGroupId);$('tabSave').textContent=g?g.name:'SAVE'}
 async function loadRoutes(){busRoutes=[];gmbRoutes=[];const kmbP=json(API.KMB+'/route/').then(k=>(k.data||[]).forEach(x=>busRoutes.push({type:'KMB',route:String(x.route).toUpperCase(),bound:x.bound,service_type:x.service_type||1,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));const ctbP=json(API.CTB+'/route/CTB').then(c=>(c.data||[]).forEach(x=>busRoutes.push({type:'CTB',route:String(x.route).toUpperCase(),bound:x.bound,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));const hkbP=json(API.HKBUS,86400000).then(db=>addGmbFromHkbusDb(db));const res=await Promise.allSettled([kmbP,ctbP,hkbP]);let fail=res.filter(x=>x.status==='rejected').map(x=>x.reason.message);if(!busRoutes.length&&fail.length)throw new Error(fail.join(' | '));}
 function addGmbFromHkbusDb(db){hkbDb=db;Object.entries(db.routeList||{}).forEach(([id,e])=>{if(!e||!e.route||!e.stops||!e.stops.gmb)return;const route=String(e.route).toUpperCase(),dest=e.dest||{},orig=e.orig||{},bound=(e.bound&&e.bound.gmb)||'';gmbRoutes.push({type:'GMB',route,hkbusId:id,gtfs_id:e.gtfsId||e.gtfs_id||e.gtfsID,bound,route_seq:bound==='I'?2:1,stops:e.stops.gmb,desc_tc:(orig.zh||orig.tc||'')+(dest.zh||dest.tc?' → '+(dest.zh||dest.tc):''),desc_en:(orig.en||'')+(dest.en?' → '+dest.en:''),raw:e})})}
-function setMode(m){mode=m;$('busBtn').classList.toggle('on',m==='BUS');$('gmbBtn').classList.toggle('on',m==='GMB');active=m==='BUS'?busRoutes:gmbRoutes;filter()}function filter(){let q=routeInput.value.trim().toUpperCase();let data=active.filter(x=>!q||String(x.route).toUpperCase().startsWith(q)).sort((a,b)=>String(a.route).localeCompare(String(b.route),undefined,{numeric:true,sensitivity:'base'}));if(pos){renderSuggestedRouteResults(data,q);return}$('count').textContent=q?data.length+' prefix match(es)':active.length+' routes';renderRoutes(data.slice(0,q?120:25),false)}
+function setMode(m){mode=m;$('busBtn').classList.toggle('on',m==='BUS');$('gmbBtn').classList.toggle('on',m==='GMB');active=m==='BUS'?busRoutes:gmbRoutes;filter()}
+function filter(){
+    let q=routeInput.value.trim().toUpperCase();
+    let data=active.filter(x=>!q||String(x.route).toUpperCase().startsWith(q)).sort((a,b)=>String(a.route).localeCompare(String(b.route),undefined,{numeric:true,sensitivity:'base'}));
+    
+    // Check if user is typing a specific route. If yes, bypass GPS and show all matching routes.
+    if(q) {
+        if(searchWorker) {
+            // Stop any ongoing GPS search if user starts typing
+            routeSearchSeq++; 
+        }
+        $('count').textContent=data.length+' match(es)';
+        renderRoutes(data.slice(0,120),false);
+        return;
+    }
+    
+    // If empty input and GPS is available, show nearby routes
+    if(pos){
+        renderSuggestedRouteResults(data,q);
+        return;
+    }
+    
+    // Default fallback: show count and top routes
+    $('count').textContent=active.length+' routes';
+    renderRoutes(data.slice(0,25),false);
+}
 function stopIndexObj(type,x){let id=stopIdOf(x.stop||x.stop_id||x.id||x.code);let lat=+(x.lat||x.latitude||x.y||''),long=+(x.long||x.lng||x.longitude||x.x||'');if(!id||!Number.isFinite(lat)||!Number.isFinite(long)||lat===0||long===0)return null;return{type,stop:id,name_tc:toText(x.name_tc||x.name_zh||x.tc||x.zh||x.name),name_en:toText(x.name_en||x.en),lat,long}}
 function normalizeStopIndex(list){return (Array.isArray(list)?list:[]).map(x=>stopIndexObj(x.type||x.co||'BUS',x)).filter(Boolean)}
 async function fetchCtbAllStops(){const urls=[`${API.CTB}/stop/CTB`,`${API.CTB}/stop/ctb`,`${API.CTB}/stop`];let last=null;for(const u of urls){try{let d=await json(u,86400000),arr=d.data||[];if(Array.isArray(arr)&&arr.length)return arr}catch(e){last=e}}throw last||new Error('CTB all stops unavailable')}
@@ -383,20 +408,119 @@ function renderOptions(){
         rSlider.oninput = () => { rDisplay.textContent = rSlider.value + 'm'; };
         rSlider.onchange = () => {
             writeRadius(rSlider.value);
-            if(pos) { filter(); status('Search radius updated to ' + rSlider.value + 'm. Refreshing GPS search...','ok'); }
+            if(pos && !routeInput.value.trim()) { filter(); status('Search radius updated to ' + rSlider.value + 'm. Refreshing GPS search...','ok'); }
         };
     }
     
     let box=$('cacheList');
     if(IDB.db) {
        let tx = IDB.db.transaction('kv', 'readonly');
-       let req = tx.objectStore('kv').count();
+       let req = tx.objectStore('kv').getAllKeys();
+       
        req.onsuccess = () => {
-           let count = req.result;
-           box.innerHTML='<div class="cacheStatGrid"><div class="cacheStat" style="grid-column:1/-1"><b>IndexedDB 啟用中</b><span>LocalStorage 快取限制已移除，資料庫現有 '+count+' 個紀錄。</span></div><div class="cacheStat"><b>'+esc(getSaved().length)+'</b><span>Saved ETA monitors</span></div></div>';
+           let keys = req.result;
+           let stats = {
+               api: 0,
+               routeDetail: 0,
+               liteStops: 0,
+               stopIndex: 0,
+               other: 0
+           };
+           
+           keys.forEach(k => {
+               if(k.startsWith('req_')) stats.api++;
+               else if(k.startsWith('routeDetailCache_')) stats.routeDetail++;
+               else if(k.startsWith('lite_')) stats.liteStops++;
+               else if(k === 'stopIndex') stats.stopIndex++;
+               else stats.other++;
+           });
+           
+           let deleteBtnHTML = (cat) => `<button onclick="deleteCacheCategory('${cat}')" class="groupMini danger" style="width:28px;height:28px;font-size:14px;border-radius:10px;">🗑️</button>`;
+
+           box.innerHTML=`
+           <div class="cacheStatGrid">
+               <div class="cacheStat" style="grid-column:1/-1; display:flex; justify-content:space-between; align-items:center;">
+                   <div>
+                       <b>${keys.length} 筆總紀錄</b>
+                       <span>IndexedDB 快取使用中</span>
+                   </div>
+                   ${deleteBtnHTML('all')}
+               </div>
+               
+               <div class="cacheStat" style="display:flex; justify-content:space-between; align-items:center;">
+                   <div>
+                       <b>${stats.api}</b>
+                       <span>API 請求</span>
+                   </div>
+                   ${stats.api > 0 ? deleteBtnHTML('req_') : ''}
+               </div>
+               
+               <div class="cacheStat" style="display:flex; justify-content:space-between; align-items:center;">
+                   <div>
+                       <b>${stats.routeDetail}</b>
+                       <span>路線停靠站</span>
+                   </div>
+                   ${stats.routeDetail > 0 ? deleteBtnHTML('routeDetailCache_') : ''}
+               </div>
+               
+               <div class="cacheStat" style="display:flex; justify-content:space-between; align-items:center;">
+                   <div>
+                       <b>${stats.liteStops}</b>
+                       <span>簡化路線數據</span>
+                   </div>
+                   ${stats.liteStops > 0 ? deleteBtnHTML('lite_') : ''}
+               </div>
+               
+               <div class="cacheStat" style="display:flex; justify-content:space-between; align-items:center;">
+                   <div>
+                       <b>${stats.stopIndex}</b>
+                       <span>全港車站索引</span>
+                   </div>
+                   ${stats.stopIndex > 0 ? deleteBtnHTML('stopIndex') : ''}
+               </div>
+           </div>`;
        };
     }
 }
+
+async function deleteCacheCategory(prefix) {
+    if(!IDB.db) return;
+    status('Deleting cache...');
+    
+    if(prefix === 'all') {
+        await IDB.clear();
+        stopIndexMem = null;
+        nearbyStopMem = null;
+        suggestedRouteNearest.clear();
+        status('All cache removed.','ok');
+        renderOptions();
+        return;
+    }
+
+    return new Promise(resolve => {
+        let tx = IDB.db.transaction('kv', 'readwrite');
+        let store = tx.objectStore('kv');
+        let req = store.openCursor();
+        let count = 0;
+        
+        req.onsuccess = (e) => {
+            let cursor = e.target.result;
+            if(cursor) {
+                if(prefix === 'stopIndex' ? cursor.key === prefix : cursor.key.startsWith(prefix)) {
+                    cursor.delete();
+                    count++;
+                }
+                cursor.continue();
+            } else {
+                if(prefix === 'stopIndex') stopIndexMem = null;
+                status(`Deleted ${count} cache entries.`, 'ok');
+                renderOptions();
+                resolve();
+            }
+        };
+    });
+}
+
 async function refetchRouteData(){[API.KMB+'/route/',API.CTB+'/route/CTB',API.CTB+'/route/ctb',API.HKBUS].forEach(async u=>{await IDB.set('req_'+u, null);});await IDB.clear();stopIndexMem=null;nearbyStopMem=null;suggestedRouteNearest.clear();status('Re-fetching route and stop data...');try{await loadRoutes();active=mode==='BUS'?busRoutes:gmbRoutes;filter();status('Route data and IDB cache re-fetched.','ok')}catch(e){status('Re-fetch failed: '+e.message,'err')}}
 function gps(){if(!navigator.geolocation){status('GPS not supported.','err');return}status('Getting location...');navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude,ts:Date.now()};writeLS(LS_LAST_POS,pos);status('GPS ready. Using Bounding Box and Worker to check nearby stops.','ok');filter()},e=>status('GPS failed: '+e.message,'err'),{enableHighAccuracy:true,timeout:10000,maximumAge:60000})}
 boot();
