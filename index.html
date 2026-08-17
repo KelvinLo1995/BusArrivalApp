@@ -27,6 +27,7 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
 const API={KMB:'https://data.etabus.gov.hk/v1/transport/kmb',CTB:'https://rt.data.gov.hk/v2/transport/citybus',GMB:'https://data.etagmb.gov.hk',HKBUS:'https://data.hkbus.app/routeFareList.min.json'};
 const $=id=>document.getElementById(id), routeInput=$('routeInput');
 let mode='BUS',busRoutes=[],gmbRoutes=[],active=[],currentStops=[],currentRoute=null,pos=null,hkbDb=null,activeGroupId='default',saveRefreshTimer=null,saveHoldTimer=null,appModalOkCb=null,editMode=false,dragKey=null,pointerDrag=null,groupDrag=null,routeSearchSeq=0,stopIndexMem=null,nearbyStopMem=null;const selectedKeys=new Set();const suggestedRouteNearest=new Map();
+let searchGpsTimer=null,searchEtaTimer=null,currentPreviewItems=[];
 
 // IndexedDB Helper to remove 5MB Cache Limit
 const IDB = {
@@ -325,7 +326,7 @@ async function renderSuggestedRouteResults(data, q){
     });
 }
 
-function renderRoutes(items,suggested=false){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}if(suggested)box.insertAdjacentHTML('beforeend','<div class="suggestedRouteNote">Suggested routes from stops within '+readRadius()+'m from GPS</div>');items.forEach((x,idx)=>{let d=document.createElement('div');d.className='routeCard';d.dataset.routeIdx=idx;let preview=pos?'<div class="routeEtaPreview muted" id="routeEtaPreview'+idx+'">Nearby ETA loading...</div>':'<div class="routeEtaPreview muted">Tap ⌖ to enable nearby ETA</div>';d.innerHTML='<div class="routeCardMain"><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div>'+preview+'</div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRouteFromSearch(x);box.appendChild(d)});if(pos)loadRouteEtaPreviews(items.slice(0,12))}
+function renderRoutes(items,suggested=false){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';currentPreviewItems=[];return}if(suggested)box.insertAdjacentHTML('beforeend','<div class="suggestedRouteNote">Suggested routes from stops within '+readRadius()+'m from GPS</div>');items.forEach((x,idx)=>{let d=document.createElement('div');d.className='routeCard';d.dataset.routeIdx=idx;let preview=pos?'<div class="routeEtaPreview muted" id="routeEtaPreview'+idx+'">Nearby ETA loading...</div>':'<div class="routeEtaPreview muted">Tap ⌖ to enable nearby ETA</div>';d.innerHTML='<div class="routeCardMain"><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div>'+preview+'</div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRouteFromSearch(x);box.appendChild(d)});currentPreviewItems=items.slice(0,12);if(pos)loadRouteEtaPreviews(currentPreviewItems)}
 function distM(a,b,c,d){let R=6371000,rad=Math.PI/180,p1=a*rad,p2=c*rad,dp=(c-a)*rad,dl=(d-b)*rad,x=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 function validStopCoord(s){return Number.isFinite(+s.lat)&&Number.isFinite(+s.long)&&+s.lat!==0&&+s.long!==0}
 async function routeStopsForPreview(r){const key='routeDetailCache_'+routeKey(r);const cached=await IDB.get(key);if(cached&&Array.isArray(cached.stops)&&cached.stops.length)return cached.stops;let lite=await (async function routeStopLiteMain(r){let k='lite_'+routeKey(r);let c=await IDB.get(k);if(c)return c; let out=[]; if(r.type==='GMB'){out=(r.stops||[]).map((raw,i)=>({type:'GMB',stop:stopIdOf(raw)}));}else if(r.type==='KMB'){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];for(const dir of dirs){try{let d=await json(API.KMB+'/route-stop/'+encodeURIComponent(r.route)+'/'+dir+'/'+(r.service_type||1),86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'KMB'}));break;}}catch(e){}}}else if(r.type==='CTB'){let dirs=[(r.bound==='I'?'inbound':'outbound'),(r.bound==='I'?'outbound':'inbound')];for(const dir of dirs){try{let d=await json(API.CTB+'/route-stop/CTB/'+encodeURIComponent(r.route)+'/'+dir,86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'CTB'}));break;}}catch(e){}}} await IDB.set(k,out);return out;})(r);let stops=await Promise.all(lite.map(async x=>{try{if(x.type==='KMB'){let st=(await json(`${API.KMB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='CTB'){let st=(await json(`${API.CTB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='GMB'){let si=hkbusStopInfo(x.stop);return{...x,name_tc:si.name_tc,name_en:si.name_en,lat:si.lat,long:si.long}}}catch(e){}return x}));await IDB.set(key, {route:r,stops,meta:routeMeta(r),ts:Date.now()});return stops}
@@ -392,11 +393,11 @@ function importConfigJsonFile(){const input=$('importFileInput');const file=inpu
 function openConfigModal(title,sub,text,mode){configModalMode=mode;$('configModalTitle').textContent=title;$('configModalSub').textContent=sub||'';$('configTextArea').value=text||'';$('configTextArea').readOnly=mode==='export';$('configActionBtn').textContent=mode==='export'?'Copy':'Import';$('configModal').classList.add('show');setTimeout(()=>{$('configTextArea').focus();$('configTextArea').select()},60);}
 function closeConfigModal(){$('configModal').classList.remove('show');}
 async function confirmConfigModal(){if(configModalMode==='export'){try{await navigator.clipboard.writeText($('configTextArea').value);status('Config text copied.','ok')}catch{status('Copy blocked by browser. Please select and copy manually.','err')}return;}try{applyConfig(deserializeConfig($('configTextArea').value));closeConfigModal()}catch(e){status('Import failed: '+e.message,'err')}}
-function exportConfigText(){openConfigModal('Export Config Text','Copy this text and share it. It contains saved ETA monitors, groups, order, names and ETA history. Import will combine with existing data.',serializeConfig(),'export');}
-function importConfigText(){openConfigModal('Import Config Text','Paste exported config text here. Import will combine with existing data, not overwrite it. The text can be HKTRANSIT1 serialized text or raw JSON.','','import');}
-function applyConfig(cfg){if(!cfg||typeof cfg!=='object')throw new Error('Invalid config object');const groupIdMap={};const importedGroups=Array.isArray(cfg.groups)?cfg.groups.filter(g=>g&&g.name):[];const localGroups=getGroups().slice();const mergedGroups=[];const usedLocalIds=new Set();importedGroups.forEach(g=>{let existingById=localGroups.find(x=>x.id===g.id);let existingByName=localGroups.find(x=>x.name===g.name);let newId;if(existingById){newId=existingById.id;usedLocalIds.add(existingById.id);mergedGroups.push({...existingById,...g,id:newId});}else if(existingByName){newId=existingByName.id;usedLocalIds.add(existingByName.id);mergedGroups.push({...existingByName,...g,id:newId});}else{newId=g.id||('g'+Date.now());mergedGroups.push({...g,id:newId});}if(g.id)groupIdMap[g.id]=newId;});localGroups.forEach(g=>{if(!usedLocalIds.has(g.id)&&!mergedGroups.find(x=>x.id===g.id))mergedGroups.push(g);});if(!mergedGroups.length)mergedGroups.push({id:'default',name:'Default'});setGroups(mergedGroups);const localSaved=getSaved().slice();const importedSaved=Array.isArray(cfg.saved)?cfg.saved.filter(x=>x&&x.key):[];const localByKey=new Map(localSaved.map(x=>[x.key,x]));const usedKeys=new Set();const mergedSaved=[];let added=0,updated=0;importedSaved.forEach(item=>{const mappedGroupId=groupIdMap[item.groupId]||item.groupId||'default';const existing=localByKey.get(item.key);const incoming={...item,groupId:mappedGroupId};if(existing){mergedSaved.push({...existing,...incoming,customName:incoming.customName||existing.customName,groupId:mappedGroupId});updated++;}else{mergedSaved.push(incoming);added++;}usedKeys.add(item.key);});localSaved.forEach(item=>{if(!usedKeys.has(item.key))mergedSaved.push(item);});setSaved(mergedSaved);let groups=getGroups();let importedTarget=cfg.activeGroupId?(groupIdMap[cfg.activeGroupId]||cfg.activeGroupId):activeGroupId;let target=groups.find(g=>g.id===importedTarget)?importedTarget:(groups.find(g=>g.id===activeGroupId)?activeGroupId:groups[0].id);setActiveGroup(target);selectedKeys.clear();editMode=false;renderSaved();renderOptions();setMainTab('SAVE');status('Config combined. Imported order/name restored. Added '+added+', updated '+updated+'.','ok');}
-
-function showGroupPicker(){let gp=$('groupPicker'),groups=getGroups();gp.innerHTML=groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋ New</button>';gp.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);hideGroupPicker();setMainTab('SAVE')});let add=gp.querySelector('[data-add]');if(add)add.onclick=()=>{hideGroupPicker();addGroup();setMainTab('SAVE')};gp.classList.add('show')}function hideGroupPicker(){$('groupPicker').classList.remove('show')}function startSaveAutoRefresh(){stopSaveAutoRefresh();saveRefreshTimer=setInterval(()=>{if(!$('savedView').classList.contains('hidden')&&!editMode)refreshAllSavedEta(false)},30000)}function stopSaveAutoRefresh(){if(saveRefreshTimer){clearInterval(saveRefreshTimer);saveRefreshTimer=null}}function refreshAllSavedEta(force=false){getSaved().filter(x=>(x.groupId||'default')===activeGroupId).forEach((x,idx)=>loadSavedEta(x,idx,force))}function setMainTab(tab){let search=tab==='SEARCH',save=tab==='SAVE',opt=tab==='OPTION';$('searchPanel').classList.toggle('hidden',!search);$('searchTitle').classList.toggle('hidden',!search);$('routes').classList.toggle('hidden',!search);$('savedView').classList.toggle('hidden',!save);$('optionView').classList.toggle('hidden',!opt);$('tabSearch').classList.toggle('on',search);$('tabSave').classList.toggle('on',save);$('tabOption').classList.toggle('on',opt);updateSaveTabText();if(save){renderSaved();startSaveAutoRefresh()}else{editMode=false;selectedKeys.clear();document.body.classList.remove('noSelect');stopSaveAutoRefresh()}if(opt)renderOptions()}
+function showGroupPicker(){let gp=$('groupPicker'),groups=getGroups();gp.innerHTML=groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋ New</button>';gp.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);hideGroupPicker();setMainTab('SAVE')});let add=gp.querySelector('[data-add]');if(add)add.onclick=()=>{hideGroupPicker();addGroup();setMainTab('SAVE')};gp.classList.add('show')}function hideGroupPicker(){$('groupPicker').classList.remove('show')}
+function startSearchAutoRefresh(){stopSearchAutoRefresh();searchEtaTimer=setInterval(()=>{if(currentPreviewItems.length>0)loadRouteEtaPreviews(currentPreviewItems)},30000);searchGpsTimer=setInterval(()=>{if(!routeInput.value.trim()&&pos)gps(true)},60000)}
+function stopSearchAutoRefresh(){if(searchEtaTimer)clearInterval(searchEtaTimer);if(searchGpsTimer)clearInterval(searchGpsTimer);searchEtaTimer=null;searchGpsTimer=null}
+function startSaveAutoRefresh(){stopSaveAutoRefresh();saveRefreshTimer=setInterval(()=>{if(!$('savedView').classList.contains('hidden')&&!editMode)refreshAllSavedEta(false)},30000)}function stopSaveAutoRefresh(){if(saveRefreshTimer){clearInterval(saveRefreshTimer);saveRefreshTimer=null}}function refreshAllSavedEta(force=false){getSaved().filter(x=>(x.groupId||'default')===activeGroupId).forEach((x,idx)=>loadSavedEta(x,idx,force))}
+function setMainTab(tab){let search=tab==='SEARCH',save=tab==='SAVE',opt=tab==='OPTION';$('searchPanel').classList.toggle('hidden',!search);$('searchTitle').classList.toggle('hidden',!search);$('routes').classList.toggle('hidden',!search);$('savedView').classList.toggle('hidden',!save);$('optionView').classList.toggle('hidden',!opt);$('tabSearch').classList.toggle('on',search);$('tabSave').classList.toggle('on',save);$('tabOption').classList.toggle('on',opt);updateSaveTabText();if(save){renderSaved();startSaveAutoRefresh()}else{editMode=false;selectedKeys.clear();document.body.classList.remove('noSelect');stopSaveAutoRefresh()}if(search){startSearchAutoRefresh();if(pos&&!routeInput.value.trim())gps(true)}else{stopSearchAutoRefresh()}if(opt)renderOptions()}
 
 function renderOptions(){
     let sel=$('etaModeSelect');if(sel)sel.value=getEtaMode();
@@ -418,110 +419,12 @@ function renderOptions(){
        let req = tx.objectStore('kv').getAllKeys();
        
        req.onsuccess = () => {
-           let keys = req.result;
-           let stats = {
-               api: 0,
-               routeDetail: 0,
-               liteStops: 0,
-               stopIndex: 0,
-               other: 0
-           };
-           
-           keys.forEach(k => {
-               if(k.startsWith('req_')) stats.api++;
-               else if(k.startsWith('routeDetailCache_')) stats.routeDetail++;
-               else if(k.startsWith('lite_')) stats.liteStops++;
-               else if(k === 'stopIndex') stats.stopIndex++;
-               else stats.other++;
-           });
-           
-           let deleteBtnHTML = (cat) => `<button onclick="deleteCacheCategory('${cat}')" class="groupMini danger" style="width:28px;height:28px;font-size:14px;border-radius:10px;">🗑️</button>`;
-
-           box.innerHTML=`
-           <div class="cacheStatGrid">
-               <div class="cacheStat" style="grid-column:1/-1; display:flex; justify-content:space-between; align-items:center;">
-                   <div>
-                       <b>${keys.length} 筆總紀錄</b>
-                       <span>IndexedDB 快取使用中</span>
-                   </div>
-                   ${deleteBtnHTML('all')}
-               </div>
-               
-               <div class="cacheStat" style="display:flex; justify-content:space-between; align-items:center;">
-                   <div>
-                       <b>${stats.api}</b>
-                       <span>API 請求</span>
-                   </div>
-                   ${stats.api > 0 ? deleteBtnHTML('req_') : ''}
-               </div>
-               
-               <div class="cacheStat" style="display:flex; justify-content:space-between; align-items:center;">
-                   <div>
-                       <b>${stats.routeDetail}</b>
-                       <span>路線停靠站</span>
-                   </div>
-                   ${stats.routeDetail > 0 ? deleteBtnHTML('routeDetailCache_') : ''}
-               </div>
-               
-               <div class="cacheStat" style="display:flex; justify-content:space-between; align-items:center;">
-                   <div>
-                       <b>${stats.liteStops}</b>
-                       <span>簡化路線數據</span>
-                   </div>
-                   ${stats.liteStops > 0 ? deleteBtnHTML('lite_') : ''}
-               </div>
-               
-               <div class="cacheStat" style="display:flex; justify-content:space-between; align-items:center;">
-                   <div>
-                       <b>${stats.stopIndex}</b>
-                       <span>全港車站索引</span>
-                   </div>
-                   ${stats.stopIndex > 0 ? deleteBtnHTML('stopIndex') : ''}
-               </div>
-           </div>`;
+           let count = req.result;
+           box.innerHTML='<div class="cacheStatGrid"><div class="cacheStat" style="grid-column:1/-1"><b>IndexedDB 啟用中</b><span>LocalStorage 快取限制已移除，資料庫現有 '+count+' 個紀錄。</span></div><div class="cacheStat"><b>'+esc(getSaved().length)+'</b><span>Saved ETA monitors</span></div></div>';
        };
     }
 }
-
-async function deleteCacheCategory(prefix) {
-    if(!IDB.db) return;
-    status('Deleting cache...');
-    
-    if(prefix === 'all') {
-        await IDB.clear();
-        stopIndexMem = null;
-        nearbyStopMem = null;
-        suggestedRouteNearest.clear();
-        status('All cache removed.','ok');
-        renderOptions();
-        return;
-    }
-
-    return new Promise(resolve => {
-        let tx = IDB.db.transaction('kv', 'readwrite');
-        let store = tx.objectStore('kv');
-        let req = store.openCursor();
-        let count = 0;
-        
-        req.onsuccess = (e) => {
-            let cursor = e.target.result;
-            if(cursor) {
-                if(prefix === 'stopIndex' ? cursor.key === prefix : cursor.key.startsWith(prefix)) {
-                    cursor.delete();
-                    count++;
-                }
-                cursor.continue();
-            } else {
-                if(prefix === 'stopIndex') stopIndexMem = null;
-                status(`Deleted ${count} cache entries.`, 'ok');
-                renderOptions();
-                resolve();
-            }
-        };
-    });
-}
-
 async function refetchRouteData(){[API.KMB+'/route/',API.CTB+'/route/CTB',API.CTB+'/route/ctb',API.HKBUS].forEach(async u=>{await IDB.set('req_'+u, null);});await IDB.clear();stopIndexMem=null;nearbyStopMem=null;suggestedRouteNearest.clear();status('Re-fetching route and stop data...');try{await loadRoutes();active=mode==='BUS'?busRoutes:gmbRoutes;filter();status('Route data and IDB cache re-fetched.','ok')}catch(e){status('Re-fetch failed: '+e.message,'err')}}
-function gps(){if(!navigator.geolocation){status('GPS not supported.','err');return}status('Getting location...');navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude,ts:Date.now()};writeLS(LS_LAST_POS,pos);status('GPS ready. Using Bounding Box and Worker to check nearby stops.','ok');filter()},e=>status('GPS failed: '+e.message,'err'),{enableHighAccuracy:true,timeout:10000,maximumAge:60000})}
+function gps(silent=false){if(!navigator.geolocation){if(!silent)status('GPS not supported.','err');return}if(!silent)status('Getting location...');navigator.geolocation.getCurrentPosition(p=>{pos={lat:p.coords.latitude,lon:p.coords.longitude,ts:Date.now()};writeLS(LS_LAST_POS,pos);if(!silent)status('GPS ready. Using Bounding Box and Worker to check nearby stops.','ok');filter()},e=>{if(!silent)status('GPS failed: '+e.message,'err')},{enableHighAccuracy:true,timeout:10000,maximumAge:60000})}
 boot();
 </script></body></html>
