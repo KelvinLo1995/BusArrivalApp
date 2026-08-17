@@ -685,7 +685,7 @@ function handleWorkerMessage(e, workerId) {
             renderWorkerTimeout = setTimeout(()=> {
                 let sorted = sortCurrentFound();
                 renderRoutes(sorted, true);
-                currentPreviewItems = sorted.slice(0, 12);
+                currentPreviewItems = sorted;
             }, 100);
         }
     } else if(data.type === 'PROGRESS') {
@@ -699,7 +699,7 @@ function handleWorkerMessage(e, workerId) {
             if(currentFound.length > 0) {
                 let sorted = sortCurrentFound();
                 renderRoutes(sorted, true);
-                currentPreviewItems = sorted.slice(0, 12);
+                currentPreviewItems = sorted;
             } else {
                 $('routes').innerHTML='<div class="empty">Nearby stops found, but no route mapping matched.</div>';
                 currentPreviewItems = [];
@@ -708,7 +708,6 @@ function handleWorkerMessage(e, workerId) {
         }
     }
 }
-
 function distM(a,b,c,d){let R=6371000,rad=Math.PI/180,p1=a*rad,p2=c*rad,dp=(c-a)*rad,dl=(d-b)*rad,x=Math.sin(dp/2)**2+Math.cos(p1)*Math.cos(p2)*Math.sin(dl/2)**2;return 2*R*Math.atan2(Math.sqrt(x),Math.sqrt(1-x))}
 
 async function renderSuggestedRouteResults(data){
@@ -776,7 +775,6 @@ async function renderSuggestedRouteResults(data){
          currentPreviewItems = [];
     }
 }
-
 function filter(){
     if(active.length === 0) {
         $('count').textContent = 'Error';
@@ -792,7 +790,7 @@ function filter(){
         if(searchWorkers.length > 0) routeSearchSeq++; // terminate current worker processing
         $('count').textContent=data.length+' match(es)';
         renderRoutes(data.slice(0,120),false);
-        currentPreviewItems = data.slice(0,12); // set items for ETA auto-refresh
+        currentPreviewItems = data.slice(0,120); // set items for ETA auto-refresh
         return;
     }
     
@@ -805,7 +803,7 @@ function filter(){
     // No GPS, No Search
     $('count').textContent=active.length+' routes';
     renderRoutes(data.slice(0,25),false);
-    currentPreviewItems = data.slice(0,12);
+    currentPreviewItems = data.slice(0,25);
 }
 
 function stopIndexObj(type,x){let id=stopIdOf(x.stop||x.stop_id||x.id||x.code);let lat=+(x.lat||x.latitude||x.y||''),long=+(x.long||x.lng||x.longitude||x.x||'');if(!id||!Number.isFinite(lat)||!Number.isFinite(long)||lat===0||long===0)return null;return{type,stop:id,name_tc:toText(x.name_tc||x.name_zh||x.tc||x.zh||x.name),name_en:toText(x.name_en||x.en),lat,long}}
@@ -814,7 +812,7 @@ async function fetchCtbAllStops(){const urls=[`${API.CTB}/stop/CTB`,`${API.CTB}/
 function buildGmbStopIndex(){let out=[];if(!hkbDb)return out;Object.entries(hkbDb.stopList||hkbDb.stopMap||{}).forEach(([id,raw])=>{let s=Array.isArray(raw)?raw[0]:raw;if(s&&s.gmb)s=s.gmb;if(!s)return;let o=stopIndexObj('GMB',{...s,stop:id});if(o)out.push(o)});return out}
 async function buildStopIndex(force=false){if(stopIndexMem&&!force)return stopIndexMem;let cached=await IDB.get('stopIndex');if(!force&&cached&&Array.isArray(cached.stops)&&cached.stops.length){stopIndexMem=cached.stops;return stopIndexMem}let all=[];const jobs=[json(`${API.KMB}/stop`,86400000).then(d=>{all.push(...(d.data||[]).map(x=>({...x,type:'KMB'}))) }).catch(()=>{}),fetchCtbAllStops().then(arr=>{all.push(...arr.map(x=>({...x,type:'CTB'})))}).catch(()=>{})];await Promise.allSettled(jobs);all.push(...buildGmbStopIndex());stopIndexMem=normalizeStopIndex(all);await IDB.set('stopIndex',{ts:Date.now(),stops:stopIndexMem});return stopIndexMem}
 
-function renderRoutes(items,suggested=false){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}if(suggested)box.insertAdjacentHTML('beforeend','<div class="suggestedRouteNote">Suggested routes from stops within '+readRadius()+'m from GPS</div>');items.forEach((x,idx)=>{let d=document.createElement('div');d.className='routeCard';d.dataset.routeIdx=idx;let preview=pos?'<div class="routeEtaPreview muted" id="routeEtaPreview'+idx+'">Nearby ETA loading...</div>':'<div class="routeEtaPreview muted">Tap ⌖ to enable nearby ETA</div>';d.innerHTML='<div class="routeCardMain"><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div>'+preview+'</div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRouteFromSearch(x);box.appendChild(d)});if(pos)loadRouteEtaPreviews(items.slice(0,12))}
+function renderRoutes(items,suggested=false){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}if(suggested)box.insertAdjacentHTML('beforeend','<div class="suggestedRouteNote">Suggested routes from stops within '+readRadius()+'m from GPS</div>');items.forEach((x,idx)=>{let d=document.createElement('div');d.className='routeCard';d.dataset.routeIdx=idx;let preview=pos?'<div class="routeEtaPreview muted" id="routeEtaPreview'+idx+'">Nearby ETA loading...</div>':'<div class="routeEtaPreview muted">Tap ⌖ to enable nearby ETA</div>';d.innerHTML='<div class="routeCardMain"><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div>'+preview+'</div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRouteFromSearch(x);box.appendChild(d)});if(pos)loadRouteEtaPreviews(items)}
 function validStopCoord(s){return Number.isFinite(+s.lat)&&Number.isFinite(+s.long)&&+s.lat!==0&&+s.long!==0}
 async function routeStopsForPreview(r){const key='routeDetailCache_'+routeKey(r);const cached=await IDB.get(key);if(cached&&Array.isArray(cached.stops)&&cached.stops.length)return cached.stops;let lite=await (async function routeStopLiteMain(r){let k='lite_'+routeKey(r);let c=await IDB.get(k);if(c)return c; let out=[]; if(r.type==='GMB'){out=(r.stops||[]).map((raw,i)=>({type:'GMB',stop:stopIdOf(raw)}));}else if(r.type==='KMB'){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];for(const dir of dirs){try{let d=await json(API.KMB+'/route-stop/'+encodeURIComponent(r.route)+'/'+dir+'/'+(r.service_type||1),86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'KMB'}));break;}}catch(e){}}}else if(r.type==='CTB'){let dirs=[(r.bound==='I'?'inbound':'outbound'),(r.bound==='I'?'outbound':'inbound')];for(const dir of dirs){try{let d=await json(API.CTB+'/route-stop/CTB/'+encodeURIComponent(r.route)+'/'+dir,86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'CTB'}));break;}}catch(e){}}} await IDB.set(k,out);return out;})(r);let stops=await Promise.all(lite.map(async x=>{try{if(x.type==='KMB'){let st=(await json(`${API.KMB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='CTB'){let st=(await json(`${API.CTB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='GMB'){let si=hkbusStopInfo(x.stop);return{...x,name_tc:si.name_tc,name_en:si.name_en,lat:si.lat,long:si.long}}}catch(e){}return x}));await IDB.set(key, {route:r,stops,meta:routeMeta(r),ts:Date.now()});return stops}
 function nearestStop(stops){if(!pos)return null;let best=null,bd=Infinity;stops.filter(validStopCoord).forEach(s=>{let d=distM(pos.lat,pos.lon,+s.lat,+s.long);if(d<bd){bd=d;best=s}});return best?{stop:best,dist:bd}:null}
