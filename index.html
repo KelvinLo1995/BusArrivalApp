@@ -6,196 +6,198 @@
 <meta name="theme-color" content="#070910">
 <title>HK Transit ETA</title>
 <style>
-:root {
-    --bg: #070910;
-    --line: rgba(255,255,255,.12);
-    --text: #f8fbff;
-    --sub: #9aa8bf;
-    --green: #30d158;
-    --red: #ff453a;
-    --shadow: 0 24px 70px rgba(0,0,0,.38);
+:root{--bg:#070910;--line:rgba(255,255,255,.12);--text:#f8fbff;--sub:#9aa8bf;--green:#30d158;--red:#ff453a;--shadow:0 24px 70px rgba(0,0,0,.38)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;min-height:100%;background:radial-gradient(circle at 18% -8%,#24365c 0,#0d1321 34%,#070910 76%);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI","Noto Sans TC","Microsoft JhengHei",Arial,sans-serif}
+button,input,select,textarea{font:inherit}
+
+.app{width:min(430px,100%);min-height:100svh;margin:0 auto;padding:18px 14px calc(18px + env(safe-area-inset-bottom))}
+.top{display:flex;align-items:center;justify-content:space-between;margin:4px 2px 16px}
+.brand{display:flex;align-items:center;gap:12px}
+.icon{width:48px;height:48px;border-radius:16px;background:linear-gradient(145deg,#36a3ff,#6d5cff);display:grid;place-items:center;font-size:25px;box-shadow:0 14px 36px rgba(10,132,255,.35)}
+h1{font-size:28px;letter-spacing:-.8px;margin:0;line-height:1}
+.subtitle{font-size:12px;color:#b2c7e9;margin-top:2px}
+.circle{width:46px;height:46px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-size:20px;box-shadow:var(--shadow)}
+
+.glass{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.045));border-radius:30px;box-shadow:var(--shadow);overflow:hidden}
+.pad{padding:14px}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:rgba(0,0,0,.24);padding:5px;border-radius:22px}
+.seg button{border:0;border-radius:17px;color:var(--sub);background:transparent;padding:12px 8px;font-weight:900}
+.seg button.on{color:white;background:linear-gradient(135deg,#0a84ff,#5e5ce6)}
+.display{margin:12px 0 10px;border-radius:28px;background:rgba(0,0,0,.28);border:1px solid rgba(255,255,255,.08);padding:14px}
+.routeInput{width:100%;border:0;outline:0;background:transparent;color:white;text-align:center;font-size:46px;font-weight:950;letter-spacing:1px;text-transform:uppercase;padding:4px 0}
+.routeInput::placeholder{color:rgba(255,255,255,.20);font-size:34px}
+.hint{display:flex;gap:6px;justify-content:center;flex-wrap:wrap}
+.pill{border:1px solid var(--line);background:rgba(255,255,255,.07);color:var(--sub);font-size:11px;font-weight:700;border-radius:999px;padding:6px 8px}
+
+.keyboard{display:grid;grid-template-columns:1fr 1.28fr;gap:10px;align-items:stretch}
+.keyBox{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:9px;display:flex;flex-direction:column}
+.keyTitle{text-align:center;color:#aab4c8;font-size:10px;font-weight:950;letter-spacing:.7px;margin-bottom:8px}
+.numPad,.charPad{display:grid;gap:7px}
+.numPad{grid-template-columns:repeat(3,minmax(0,1fr))}
+.charPad{grid-template-columns:repeat(4,minmax(0,1fr))}
+.key{width:100%;height:42px;min-width:0;border-radius:15px;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));color:white;font-size:17px;font-weight:950;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);padding:0}
+.key:active{transform:scale(.96);filter:brightness(1.25)}
+.key.back{background:linear-gradient(180deg,#1d8cff,#0761c7)}
+.key.clear{background:linear-gradient(180deg,#ff5b70,#b3203f)}
+
+.titleRow{display:flex;align-items:end;justify-content:space-between;margin:18px 4px 10px}
+.titleRow b{font-size:20px}
+.count{font-size:12px;color:var(--sub)}
+.routes{display:flex;flex-direction:column;gap:10px}
+.routeCard{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border-radius:24px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.routeCard:active{transform:scale(.985)}
+.routeCardMain{min-width:0;flex:1}
+.rno{font-size:28px;font-weight:950;letter-spacing:-.4px}
+.meta{font-size:12px;color:var(--sub);line-height:1.35}
+.tag{border-radius:999px;padding:6px 9px;font-size:11px;font-weight:950;border:1px solid var(--line);white-space:nowrap}
+.kmb{background:rgba(255,159,10,.20);color:#ffd49e}
+.ctb{background:rgba(10,132,255,.22);color:#a9d3ff}
+.gmb{background:rgba(48,209,88,.18);color:#aaffc4}
+
+.routeEtaPreview{margin-top:8px;border-top:1px solid rgba(255,255,255,.08);padding-top:7px;color:#b8ffd0;font-size:11px;font-weight:850;line-height:1.35}
+.routeEtaPreview .routeEtaStop{color:#9aa8bf;font-weight:800;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.routeEtaPreview .routeEtaChips{display:flex;gap:5px;flex-wrap:wrap}
+.routeEtaPreview .routeEtaChip{border:1px solid rgba(48,209,88,.22);background:rgba(48,209,88,.10);color:#30d158;border-radius:999px;padding:3px 6px;font-size:11px;font-weight:950}
+.routeEtaPreview.muted{color:#9aa8bf}
+.routeEtaPreview.err{color:#ff8a82}
+.suggestedRouteNote{margin:0 0 10px;color:#b8ffd0;font-size:12px;font-weight:850;text-align:center}
+
+.empty{border:1px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.035);border-radius:24px;padding:24px 15px;text-align:center;color:var(--sub);font-size:14px;line-height:1.45}
+.status{margin-top:14px;border:1px solid rgba(255,255,255,.09);background:rgba(0,0,0,.18);border-radius:22px;padding:12px 13px;color:var(--sub);font-size:12px;line-height:1.45}
+.ok{color:var(--green)}
+.err{color:#ff8a82}
+.hidden{display:none!important}
+.bottomTabs{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(400px,calc(100vw - 28px));z-index:4;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;padding:7px;border:1px solid var(--line);border-radius:24px;background:rgba(7,9,16,.84);backdrop-filter:blur(22px);box-shadow:var(--shadow)}
+.bottomTabs button{border:0;border-radius:18px;background:transparent;color:var(--sub);padding:11px 4px;font-weight:950;font-size:13px}
+.bottomTabs button.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}
+.miniBtn{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.08);color:white;padding:10px 12px;font-weight:900}
+.miniBtn.danger{background:rgba(255,69,58,.18);color:#ffb0aa}
+.miniBtn.ok{background:rgba(48,209,88,.16);color:#b8ffd0}
+
+.rowBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.optBlock{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:24px;padding:14px;margin-bottom:12px}
+.optBlock h3{margin:0 0 8px;font-size:17px}
+.cacheStatGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.cacheStat{border:1px solid var(--line);background:rgba(255,255,255,.055);border-radius:16px;padding:10px}
+.cacheStat b{display:block;font-size:16px;color:white}
+.cacheStat span{display:block;margin-top:3px;font-size:11px;color:var(--sub);font-weight:800;margin-bottom:8px;}
+.cacheStat .miniBtn{width:100%;padding:6px;font-size:11px;}
+.saveAction{margin-top:9px;width:100%;border:1px solid var(--line);border-radius:21px;padding:13px;background:rgba(48,209,88,.16);color:#c8ffd7;font-size:15px;font-weight:950}
+.modalOverlay{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.48);backdrop-filter:blur(10px);padding:14px}
+.modalOverlay.show{display:flex}
+.modalCard{width:min(430px,100%);border:1px solid var(--line);border-radius:30px;background:rgba(14,18,27,.97);box-shadow:var(--shadow);padding:16px}
+.modalTitle{font-size:22px;font-weight:950;margin:0 0 4px}
+.modalSub{color:var(--sub);font-size:12px;line-height:1.4;margin-bottom:14px}
+
+.field{margin-top:12px}
+.field label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}
+.modalInput,.modalSelect,.modalTextArea{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:18px;padding:13px 14px;outline:0;font-size:15px}
+.modalTextArea{min-height:220px;resize:vertical;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;font-size:12px;line-height:1.35}
+.modalActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.modalBtn{border:0;border-radius:19px;padding:14px;font-size:15px;font-weight:950;color:white;background:rgba(255,255,255,.10)}
+.modalBtn.primary{background:linear-gradient(135deg,#0a84ff,#5e5ce6)}
+
+.sheet{position:fixed;left:50%;bottom:0;width:min(430px,100vw);max-height:88svh;overflow:auto;transform:translateX(-50%) translateY(110%);transition:.25s cubic-bezier(.2,.8,.2,1);z-index:9;padding:10px 14px calc(16px + env(safe-area-inset-bottom));border-radius:34px 34px 0 0;border:1px solid var(--line);border-bottom:0;background:rgba(14,18,27,.96);backdrop-filter:blur(30px);box-shadow:0 -30px 90px rgba(0,0,0,.55)}
+.sheet.show{transform:translateX(-50%) translateY(0)}
+.grab{width:44px;height:5px;background:rgba(255,255,255,.28);border-radius:99px;margin:4px auto 12px}
+.sheetHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.close{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.10);color:white;font-size:20px}
+.selectBox{margin-top:12px}
+.selectBox label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}
+select{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:19px;padding:14px;font-size:15px;outline:0}
+option{background:#111520}
+.primary{width:100%;margin-top:13px;border:0;border-radius:21px;padding:15px;background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white;font-size:16px;font-weight:950}
+
+.eta{margin-top:12px}
+.etaRow{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.075);border-radius:22px;padding:14px;margin-bottom:9px}
+.etaMin{font-size:35px;font-weight:950;color:var(--green);letter-spacing:-1px}
+.etaRow.actualDetail .etaMin{font-size:28px;letter-spacing:-.3px}
+.etaMin small{font-size:13px;color:var(--sub)}
+
+.groupBar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 0 8px}
+.groupChip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.07);color:var(--sub);padding:9px 13px;font-weight:950}
+.groupChip.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}
+.saveHeader{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px}
+.editHint{font-size:12px;color:var(--sub)}
+
+.savedMonitorCard{position:relative;display:grid;grid-template-columns:1fr 126px;gap:10px;align-items:center;width:100%;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border-radius:26px;padding:14px 40px 24px 14px;min-height:112px;touch-action:pan-y}
+.savedMonitorCard.dragging{opacity:.55;transform:scale(.98)}
+.savedMonitorCard.dropBefore{box-shadow:0 -3px 0 #0a84ff inset}
+.savedMonitorCard.editing{animation:jiggle .18s infinite alternate;cursor:grab}
+.savedMonitorCard.editing:active{cursor:grabbing}
+.dragGrip{display:none;position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#9aa8bf;font-size:18px;font-weight:900}
+.editing .dragGrip{display:block}
+.savedMonitorCard.editing{padding-left:34px}
+.savedRouteTitle{font-size:19px;font-weight:950;line-height:1.05;letter-spacing:-.2px;margin-bottom:7px}
+.savedPair{font-size:14px;line-height:1.42;color:#c8d4ea;font-weight:750}
+.savedPair .label{color:#8fa0bb;font-weight:900}
+.savedTrip{font-size:12px;line-height:1.35;margin-top:3px;color:#b7d6ff;font-weight:850}
+.savedTrip .label{color:#8fa0bb;font-weight:900}
+.savedTrip.warn{color:#ffd49e}
+
+.savedEta{display:flex;flex-direction:row;gap:8px;align-items:baseline;justify-content:flex-end;white-space:nowrap}
+.etaChip{text-align:right}
+.etaChip .min{font-size:13px;font-weight:950;color:var(--green)}
+.etaChip.first .min{font-size:27px}
+.etaChip.emptyEta{font-size:12px;color:var(--sub)}
+.savedEta.actualMode{flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;align-self:center;padding-top:0;padding-right:14px;min-height:72px}
+.savedEta.actualMode .etaChip{display:block;text-align:right;line-height:1.05}
+.savedEta.actualMode .etaChip .min,.savedEta.actualMode .etaChip.first .min{font-size:15.5px;letter-spacing:.15px;color:var(--green);white-space:nowrap}
+.savedEta.actualMode .etaChip .min.smallActual{font-size:13.5px;color:#9dffb8}
+.savedMonitorCard:has(.savedEta.actualMode),.savedMonitorCard.actualEtaCard{grid-template-columns:1fr 104px;align-items:center}
+.savedMore{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-weight:950;line-height:1}
+
+.savedMenu{position:absolute;top:42px;right:10px;z-index:20;display:none;flex-direction:column;gap:6px;min-width:130px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(11,15,24,.96);box-shadow:var(--shadow);backdrop-filter:blur(18px)}
+.savedMenu.show{display:flex}
+.savedMenu button{border:0;border-radius:13px;padding:10px 12px;text-align:left;background:rgba(255,255,255,.08);color:white;font-weight:900}
+.savedMenu button.danger{background:rgba(255,69,58,.20);color:#ffb0aa}
+.savedUpdated{position:absolute;right:14px;bottom:7px;font-size:10px;color:var(--sub)}
+
+.groupPicker{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(12px);z-index:30;width:min(400px,calc(100vw - 28px));display:none;gap:8px;overflow-x:auto;padding:10px;border:1px solid var(--line);border-radius:22px;background:rgba(9,12,20,.96);box-shadow:var(--shadow);backdrop-filter:blur(22px)}
+.groupPicker.show{display:flex;transform:translateX(-50%) translateY(0)}
+@keyframes jiggle{from{transform:rotate(-.35deg)}to{transform:rotate(.35deg)}}
+
+@media(max-width:370px){
+    .keyboard{grid-template-columns:1fr}
+    .routeInput{font-size:40px}
+    .savedMonitorCard{grid-template-columns:1fr 112px}
+    .savedRouteTitle{font-size:18px}
+    .savedPair{font-size:13px}
+    .etaChip.first .min{font-size:24px}
+    .etaChip .min{font-size:12px}
 }
-* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-html, body {
-    margin: 0; min-height: 100%;
-    background: radial-gradient(circle at 18% -8%, #24365c 0, #0d1321 34%, #070910 76%);
-    color: var(--text);
-    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
-}
-button, input, select { font: inherit; }
 
-.app { width: min(430px, 100%); min-height: 100svh; margin: 0 auto; padding: 18px 14px calc(18px + env(safe-area-inset-bottom)); }
-.top { display: flex; align-items: center; justify-content: space-between; margin: 4px 2px 16px; }
-.brand { display: flex; align-items: center; gap: 12px; }
-.icon { width: 48px; height: 48px; border-radius: 16px; background: linear-gradient(145deg, #36a3ff, #6d5cff); display: grid; place-items: center; font-size: 25px; box-shadow: 0 14px 36px rgba(10,132,255,.35); }
-h1 { font-size: 28px; letter-spacing: -.8px; margin: 0; line-height: 1; }
-.subtitle { font-size: 12px; color: #b2c7e9; margin-top: 2px; }
-.circle { width: 46px; height: 46px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,.08); color: white; font-size: 20px; box-shadow: var(--shadow); }
-.glass { border: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.11), rgba(255,255,255,.045)); border-radius: 30px; box-shadow: var(--shadow); overflow: hidden; }
-.pad { padding: 14px; }
-.seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; background: rgba(0,0,0,.24); padding: 5px; border-radius: 22px; }
-.seg button { border: 0; border-radius: 17px; color: var(--sub); background: transparent; padding: 12px 8px; font-weight: 900; }
-.seg button.on { color: white; background: linear-gradient(135deg, #0a84ff, #5e5ce6); }
+.batchToolbar{display:none;grid-template-columns:52px repeat(4,minmax(0,1fr));gap:6px;align-items:center;margin:0 0 8px;padding:7px;border:1px solid var(--line);border-radius:18px;background:rgba(10,132,255,.075)}
+.editing .batchToolbar{display:grid}
+.batchToolbar .miniBtn{min-width:0;padding:8px 4px;border-radius:13px;font-size:11px;line-height:1;font-weight:950;text-align:center;white-space:nowrap}
+.batchCount{font-size:10px;line-height:1.05;color:#c9d8f0;font-weight:900;text-align:left;white-space:normal}
+.selectBubble{display:none;position:absolute;left:10px;top:12px;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.10);color:white;font-size:13px;font-weight:950;z-index:2}
+.editing .selectBubble{display:grid;place-items:center}
+.selectBubble.on{background:linear-gradient(135deg,#30d158,#0a84ff);color:white}
+.editing .savedMonitorCard{padding-left:42px}
+.quickBtns{display:none;gap:5px;flex-wrap:wrap;margin-top:8px}
+.editing .quickBtns{display:flex}
+.quickBtn{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.08);color:white;padding:6px 8px;font-size:11px;font-weight:950}
+.quickBtn.danger{background:rgba(255,69,58,.18);color:#ffb0aa}
 
-.display { margin: 12px 0 10px; border-radius: 28px; background: rgba(0,0,0,.28); border: 1px solid rgba(255,255,255,.08); padding: 14px; }
-.routeInput { width: 100%; border: 0; outline: 0; background: transparent; color: white; text-align: center; font-size: 46px; font-weight: 950; letter-spacing: 1px; text-transform: uppercase; padding: 4px 0; }
-.routeInput::placeholder { color: rgba(255,255,255,.20); font-size: 34px; }
-.hint { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
-.pill { border: 1px solid var(--line); background: rgba(255,255,255,.07); color: var(--sub); font-size: 11px; font-weight: 700; border-radius: 999px; padding: 6px 8px; }
+.groupChip{position:relative;display:inline-flex;align-items:center;gap:6px;user-select:none;-webkit-user-select:none}
+.groupChip.dragging{opacity:.65;transform:scale(.96)}
+.groupChip.dropGroup{outline:2px solid #30d158;outline-offset:2px;color:white}
+.groupQuick{display:none;gap:4px}
+.editing .groupQuick{display:inline-flex}
+.groupMini{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.09);color:white;border-radius:999px;width:22px;height:22px;font-size:10px;font-weight:950;padding:0}
+.groupMini.danger{color:#ffb0aa;background:rgba(255,69,58,.18)}
+.dragToGroupHint{display:none;font-size:10px;line-height:1.25;color:#b8ffd0;margin:-2px 3px 8px}
+.editing .dragToGroupHint{display:block}
 
-.keyboard { display: grid; grid-template-columns: 1fr 1.28fr; gap: 10px; align-items: stretch; }
-.keyBox { background: rgba(0,0,0,.18); border: 1px solid rgba(255,255,255,.08); border-radius: 24px; padding: 9px; display: flex; flex-direction: column; }
-.keyTitle { text-align: center; color: #aab4c8; font-size: 10px; font-weight: 950; letter-spacing: .7px; margin-bottom: 8px; }
-.numPad, .charPad { display: grid; gap: 7px; }
-.numPad { grid-template-columns: repeat(3, minmax(0,1fr)); }
-.charPad { grid-template-columns: repeat(4, minmax(0,1fr)); }
-.key { width: 100%; height: 42px; min-width: 0; border-radius: 15px; border: 1px solid rgba(255,255,255,.13); background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08)); color: white; font-size: 17px; font-weight: 950; box-shadow: inset 0 1px 0 rgba(255,255,255,.08); padding: 0; }
-.key:active { transform: scale(.96); filter: brightness(1.25); }
-.key.back { background: linear-gradient(180deg, #1d8cff, #0761c7); }
-.key.clear { background: linear-gradient(180deg, #ff5b70, #b3203f); }
-
-.titleRow { display: flex; align-items: end; justify-content: space-between; margin: 18px 4px 10px; }
-.titleRow b { font-size: 20px; }
-.count { font-size: 12px; color: var(--sub); }
-.routes { display: flex; flex-direction: column; gap: 10px; }
-.routeCard { border: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.04)); border-radius: 24px; padding: 13px 14px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.routeCard:active { transform: scale(.985); }
-.routeCardMain { min-width: 0; flex: 1; }
-.routeEtaPreview { margin-top: 8px; border-top: 1px solid rgba(255,255,255,.08); padding-top: 7px; color: #b8ffd0; font-size: 11px; font-weight: 850; line-height: 1.35; }
-.routeEtaPreview .routeEtaStop { color: #9aa8bf; font-weight: 800; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.routeEtaPreview .routeEtaChips { display: flex; gap: 5px; flex-wrap: wrap; }
-.routeEtaPreview .routeEtaChip { border: 1px solid rgba(48,209,88,.22); background: rgba(48,209,88,.10); color: #30d158; border-radius: 999px; padding: 3px 6px; font-size: 11px; font-weight: 950; }
-.routeEtaPreview.muted { color: #9aa8bf; }
-.routeEtaPreview.err { color: #ff8a82; }
-.suggestedRouteNote { margin: 0 0 10px; color: #b8ffd0; font-size: 12px; font-weight: 850; text-align: center; }
-.rno { font-size: 28px; font-weight: 950; letter-spacing: -.4px; }
-.meta { font-size: 12px; color: var(--sub); line-height: 1.35; }
-
-.tag { border-radius: 999px; padding: 6px 9px; font-size: 11px; font-weight: 950; border: 1px solid var(--line); white-space: nowrap; }
-.kmb { background: rgba(255,159,10,.20); color: #ffd49e; }
-.ctb { background: rgba(10,132,255,.22); color: #a9d3ff; }
-.gmb { background: rgba(48,209,88,.18); color: #aaffc4; }
-.empty { border: 1px dashed rgba(255,255,255,.12); background: rgba(255,255,255,.035); border-radius: 24px; padding: 24px 15px; text-align: center; color: var(--sub); font-size: 14px; line-height: 1.45; }
-.status { margin-top: 14px; border: 1px solid rgba(255,255,255,.09); background: rgba(0,0,0,.18); border-radius: 22px; padding: 12px 13px; color: var(--sub); font-size: 12px; line-height: 1.45; }
-.ok { color: var(--green); }
-.err { color: #ff8a82; }
-.hidden { display: none !important; }
-
-.bottomTabs { position: fixed; bottom: 12px; left: 50%; transform: translateX(-50%); width: min(400px, calc(100vw - 28px)); z-index: 4; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 16px; padding: 7px; border: 1px solid var(--line); border-radius: 24px; background: rgba(7,9,16,.84); backdrop-filter: blur(22px); box-shadow: var(--shadow); }
-.bottomTabs button { border: 0; border-radius: 18px; background: transparent; color: var(--sub); padding: 11px 4px; font-weight: 950; font-size: 13px; }
-.bottomTabs button.on { background: linear-gradient(135deg, #0a84ff, #5e5ce6); color: white; }
-.miniBtn { border: 1px solid var(--line); border-radius: 16px; background: rgba(255,255,255,.08); color: white; padding: 10px 12px; font-weight: 900; }
-.miniBtn.danger { background: rgba(255,69,58,.18); color: #ffb0aa; }
-.miniBtn.ok { background: rgba(48,209,88,.16); color: #b8ffd0; }
-.rowBtns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
-.optBlock { border: 1px solid var(--line); background: rgba(255,255,255,.045); border-radius: 24px; padding: 14px; margin-bottom: 12px; }
-.optBlock h3 { margin: 0 0 8px; font-size: 17px; }
-.cacheStatGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-.cacheStat { border: 1px solid var(--line); background: rgba(255,255,255,.055); border-radius: 16px; padding: 10px; }
-.cacheStat b { display: block; font-size: 16px; color: white; }
-.cacheStat span { display: block; margin-top: 3px; font-size: 11px; color: var(--sub); font-weight: 800; margin-bottom: 8px; }
-.cacheStat .miniBtn { width: 100%; padding: 6px; font-size: 11px; }
-.saveAction { margin-top: 9px; width: 100%; border: 1px solid var(--line); border-radius: 21px; padding: 13px; background: rgba(48,209,88,.16); color: #c8ffd7; font-size: 15px; font-weight: 950; }
-
-.sheet { position: fixed; left: 50%; bottom: 0; width: min(430px, 100vw); max-height: 88svh; overflow: auto; transform: translateX(-50%) translateY(110%); transition: .25s cubic-bezier(.2,.8,.2,1); z-index: 9; padding: 10px 14px calc(16px + env(safe-area-inset-bottom)); border-radius: 34px 34px 0 0; border: 1px solid var(--line); border-bottom: 0; background: rgba(14,18,27,.96); backdrop-filter: blur(30px); box-shadow: 0 -30px 90px rgba(0,0,0,.55); }
-.sheet.show { transform: translateX(-50%) translateY(0); }
-.grab { width: 44px; height: 5px; background: rgba(255,255,255,.28); border-radius: 99px; margin: 4px auto 12px; }
-.sheetHead { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-.close { width: 34px; height: 34px; border-radius: 50%; border: 0; background: rgba(255,255,255,.10); color: white; font-size: 20px; }
-.selectBox { margin-top: 12px; }
-.selectBox label { display: block; color: var(--sub); font-size: 12px; font-weight: 900; margin: 0 0 6px 3px; }
-select { width: 100%; border: 1px solid var(--line); background: #1a2030; color: white; border-radius: 19px; padding: 14px; font-size: 15px; outline: 0; }
-option { background: #111520; }
-.primary { width: 100%; margin-top: 13px; border: 0; border-radius: 21px; padding: 15px; background: linear-gradient(135deg, #0a84ff, #5e5ce6); color: white; font-size: 16px; font-weight: 950; }
-.eta { margin-top: 12px; }
-.etaRow { display: flex; justify-content: space-between; align-items: center; border: 1px solid var(--line); background: rgba(255,255,255,.075); border-radius: 22px; padding: 14px; margin-bottom: 9px; }
-.etaMin { font-size: 35px; font-weight: 950; color: var(--green); letter-spacing: -1px; }
-.etaRow.actualDetail .etaMin { font-size: 28px; letter-spacing: -.3px; }
-.etaMin small { font-size: 13px; color: var(--sub); }
-
-.groupBar { display: flex; gap: 8px; overflow-x: auto; padding: 2px 2px 10px; margin: 0 0 8px; }
-.groupChip { flex: 0 0 auto; border: 1px solid var(--line); border-radius: 999px; background: rgba(255,255,255,.07); color: var(--sub); padding: 9px 13px; font-weight: 950; }
-.groupChip.on { background: linear-gradient(135deg, #0a84ff, #5e5ce6); color: white; }
-.saveHeader { display: flex; gap: 8px; align-items: center; justify-content: space-between; margin: 0 0 8px; }
-.editHint { font-size: 12px; color: var(--sub); }
-.savedMonitorCard { position: relative; display: grid; grid-template-columns: 1fr 126px; gap: 10px; align-items: center; width: 100%; border: 1px solid var(--line); background: linear-gradient(180deg, rgba(255,255,255,.085), rgba(255,255,255,.04)); border-radius: 26px; padding: 14px 40px 24px 14px; min-height: 112px; touch-action: pan-y; }
-.savedMonitorCard.dragging { opacity: .55; transform: scale(.98); }
-.savedMonitorCard.dropBefore { box-shadow: 0 -3px 0 #0a84ff inset; }
-.savedMonitorCard.editing { animation: jiggle .18s infinite alternate; cursor: grab; }
-.savedMonitorCard.editing:active { cursor: grabbing; }
-.dragGrip { display: none; position: absolute; left: 8px; top: 50%; transform: translateY(-50%); color: #9aa8bf; font-size: 18px; font-weight: 900; }
-.editing .dragGrip { display: block; }
-.savedMonitorCard.editing { padding-left: 34px; }
-.savedRouteTitle { font-size: 19px; font-weight: 950; line-height: 1.05; letter-spacing: -.2px; margin-bottom: 7px; }
-.savedPair { font-size: 14px; line-height: 1.42; color: #c8d4ea; font-weight: 750; }
-.savedPair .label { color: #8fa0bb; font-weight: 900; }
-.savedTrip { font-size: 12px; line-height: 1.35; margin-top: 3px; color: #b7d6ff; font-weight: 850; }
-.savedTrip .label { color: #8fa0bb; font-weight: 900; }
-.savedTrip.warn { color: #ffd49e; }
-.savedEta { display: flex; flex-direction: row; gap: 8px; align-items: baseline; justify-content: flex-end; white-space: nowrap; }
-.etaChip { text-align: right; }
-.etaChip .min { font-size: 13px; font-weight: 950; color: var(--green); }
-.etaChip.first .min { font-size: 27px; }
-.etaChip.emptyEta { font-size: 12px; color: var(--sub); }
-.savedEta.actualMode { flex-direction: column; align-items: flex-end; justify-content: center; gap: 4px; align-self: center; padding-top: 0; padding-right: 14px; min-height: 72px; }
-.savedEta.actualMode .etaChip { display: block; text-align: right; line-height: 1.05; }
-.savedEta.actualMode .etaChip .min, .savedEta.actualMode .etaChip.first .min { font-size: 15.5px; letter-spacing: .15px; color: var(--green); white-space: nowrap; }
-.savedEta.actualMode .etaChip .min.smallActual { font-size: 13.5px; color: #9dffb8; }
-.savedMonitorCard:has(.savedEta.actualMode), .savedMonitorCard.actualEtaCard { grid-template-columns: 1fr 104px; align-items: center; }
-
-.savedMore { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,.08); color: white; font-weight: 950; line-height: 1; }
-.savedMenu { position: absolute; top: 42px; right: 10px; z-index: 20; display: none; flex-direction: column; gap: 6px; min-width: 130px; padding: 8px; border: 1px solid var(--line); border-radius: 18px; background: rgba(11,15,24,.96); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
-.savedMenu.show { display: flex; }
-.savedMenu button { border: 0; border-radius: 13px; padding: 10px 12px; text-align: left; background: rgba(255,255,255,.08); color: white; font-weight: 900; }
-.savedMenu button.danger { background: rgba(255,69,58,.20); color: #ffb0aa; }
-.savedUpdated { position: absolute; right: 14px; bottom: 7px; font-size: 10px; color: var(--sub); }
-.groupPicker { position: fixed; left: 50%; bottom: 72px; transform: translateX(-50%) translateY(12px); z-index: 30; width: min(400px, calc(100vw - 28px)); display: none; gap: 8px; overflow-x: auto; padding: 10px; border: 1px solid var(--line); border-radius: 22px; background: rgba(9,12,20,.96); box-shadow: var(--shadow); backdrop-filter: blur(22px); }
-.groupPicker.show { display: flex; transform: translateX(-50%) translateY(0); }
-@keyframes jiggle { from { transform: rotate(-.35deg); } to { transform: rotate(.35deg); } }
-
-.modalOverlay { position: fixed; inset: 0; z-index: 50; display: none; align-items: flex-end; justify-content: center; background: rgba(0,0,0,.48); backdrop-filter: blur(10px); padding: 14px; }
-.modalOverlay.show { display: flex; }
-.modalCard { width: min(430px, 100%); border: 1px solid var(--line); border-radius: 30px; background: rgba(14,18,27,.97); box-shadow: var(--shadow); padding: 16px; }
-.modalTitle { font-size: 22px; font-weight: 950; margin: 0 0 4px; }
-.modalSub { color: var(--sub); font-size: 12px; line-height: 1.4; margin-bottom: 14px; }
-.field { margin-top: 12px; }
-.field label { display: block; color: var(--sub); font-size: 12px; font-weight: 900; margin: 0 0 6px 3px; }
-.modalInput, .modalSelect, .modalTextArea { width: 100%; border: 1px solid var(--line); background: #1a2030; color: white; border-radius: 18px; padding: 13px 14px; outline: 0; font-size: 15px; }
-.modalTextArea { min-height: 220px; resize: vertical; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.35; }
-.modalActions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 16px; }
-.modalBtn { border: 0; border-radius: 19px; padding: 14px; font-size: 15px; font-weight: 950; color: white; background: rgba(255,255,255,.10); }
-.modalBtn.primary { background: linear-gradient(135deg, #0a84ff, #5e5ce6); }
-
-@media(max-width:370px) { .keyboard{grid-template-columns:1fr} .routeInput{font-size:40px} .savedMonitorCard{grid-template-columns:1fr 112px} .savedRouteTitle{font-size:18px} .savedPair{font-size:13px} .etaChip.first .min{font-size:24px} .etaChip .min{font-size:12px} }
-.batchToolbar { display: none; grid-template-columns: 52px repeat(4, minmax(0,1fr)); gap: 6px; align-items: center; margin: 0 0 8px; padding: 7px; border: 1px solid var(--line); border-radius: 18px; background: rgba(10,132,255,.075); }
-.editing .batchToolbar { display: grid; }
-.batchToolbar .miniBtn { min-width: 0; padding: 8px 4px; border-radius: 13px; font-size: 11px; line-height: 1; font-weight: 950; text-align: center; white-space: nowrap; }
-.batchCount { font-size: 10px; line-height: 1.05; color: #c9d8f0; font-weight: 900; text-align: left; white-space: normal; }
-.selectBubble { display: none; position: absolute; left: 10px; top: 12px; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--line); background: rgba(255,255,255,.10); color: white; font-size: 13px; font-weight: 950; z-index: 2; }
-.editing .selectBubble { display: grid; place-items: center; }
-.selectBubble.on { background: linear-gradient(135deg, #30d158, #0a84ff); color: white; }
-.editing .savedMonitorCard { padding-left: 42px; }
-.quickBtns { display: none; gap: 5px; flex-wrap: wrap; margin-top: 8px; }
-.editing .quickBtns { display: flex; }
-.quickBtn { border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,.08); color: white; padding: 6px 8px; font-size: 11px; font-weight: 950; }
-.quickBtn.danger { background: rgba(255,69,58,.18); color: #ffb0aa; }
-.groupChip { position: relative; display: inline-flex; align-items: center; gap: 6px; user-select: none; -webkit-user-select: none; }
-.groupChip.dragging { opacity: .65; transform: scale(.96); }
-.groupChip.dropGroup { outline: 2px solid #30d158; outline-offset: 2px; color: white; }
-.groupQuick { display: none; gap: 4px; }
-.editing .groupQuick { display: inline-flex; }
-.groupMini { border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.09); color: white; border-radius: 999px; width: 22px; height: 22px; font-size: 10px; font-weight: 950; padding: 0; }
-.groupMini.danger { color: #ffb0aa; background: rgba(255,69,58,.18); }
-.dragToGroupHint { display: none; font-size: 10px; line-height: 1.25; color: #b8ffd0; margin: -2px 3px 8px; }
-.editing .dragToGroupHint { display: block; }
-
-body.noSelect, .noSelect * { user-select: none !important; -webkit-user-select: none !important; }
-.savedMonitorCard.editing { touch-action: pan-y !important; user-select: auto !important; -webkit-user-select: auto !important; }
-.savedMonitorCard.editing .dragGrip { touch-action: none !important; user-select: none !important; -webkit-user-select: none !important; display: grid; place-items: center; width: 34px; height: 70%; left: 4px; border-radius: 16px; background: rgba(255,255,255,.045); }
-.savedMonitorCard.editing .selectBubble, .savedMonitorCard.editing button { touch-action: manipulation !important; user-select: none !important; -webkit-user-select: none !important; }
-.savedMonitorCard.dragging { opacity: .92 !important; transform: scale(1.03); z-index: 80; box-shadow: 0 20px 60px rgba(0,0,0,.55); }
-.editing .savedMore { display: none; }
-.savedMonitorCard.dropBefore { box-shadow: 0 -3px 0 #0a84ff inset !important; }
+body.noSelect,.noSelect *{user-select:none!important;-webkit-user-select:none!important}
+.savedMonitorCard.editing{touch-action:pan-y!important;user-select:auto!important;-webkit-user-select:auto!important}
+.savedMonitorCard.editing .dragGrip{touch-action:none!important;user-select:none!important;-webkit-user-select:none!important;display:grid;place-items:center;width:34px;height:70%;left:4px;border-radius:16px;background:rgba(255,255,255,.045)}
+.savedMonitorCard.editing .selectBubble,.savedMonitorCard.editing button{touch-action:manipulation!important;user-select:none!important;-webkit-user-select:none!important}
+.savedMonitorCard.dragging{opacity:.92!important;transform:scale(1.03);z-index:80;box-shadow:0 20px 60px rgba(0,0,0,.55)}
+.editing .savedMore{display:none}
+.savedMonitorCard.dropBefore{box-shadow:0 -3px 0 #0a84ff inset!important}
 
 input[type=range] { -webkit-appearance: none; background: transparent; height: 16px; }
 input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; height: 24px; width: 24px; border-radius: 50%; background: #fff; cursor: pointer; border: 2px solid #30d158; box-shadow: 0 2px 6px rgba(0,0,0,.3); margin-top: -8px; }
@@ -203,18 +205,12 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
 </style>
 </head>
 <body>
+
 <main class="app">
     <header class="top">
-        <div class="brand">
-            <div class="icon">🚌</div>
-            <div>
-                <h1>Transit</h1>
-                <div class="subtitle">Single HTML · Bus + Mini Bus</div>
-            </div>
-        </div>
+        <div class="brand"><div class="icon">🚌</div><div><h1>Transit</h1><div class="subtitle">Single HTML · Bus + Mini Bus</div></div></div>
         <button class="circle" id="gpsBtn">⌖</button>
     </header>
-
     <section class="glass pad" id="searchPanel">
         <div class="seg">
             <button id="busBtn" class="on">Bus</button>
@@ -238,11 +234,11 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
     <section id="routes" class="routes">
         <div class="empty">Loading official route data...</div>
     </section>
-
+    
     <section id="savedView" class="routes hidden">
         <div class="empty">No saved ETA monitor yet.</div>
     </section>
-
+    
     <section id="optionView" class="hidden">
         <div class="optBlock">
             <h3>GPS Search Radius</h3>
@@ -296,6 +292,10 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
                 <div class="empty">Computing cache size...</div>
             </div>
         </div>
+        <div class="optBlock">
+            <h3>About App</h3>
+            <div class="meta">HK Transit ETA<br>Version: 2.1.0<br>Cache Schema: V2</div>
+        </div>
     </section>
 
     <nav class="bottomTabs">
@@ -303,6 +303,7 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
         <button id="tabSave">SAVE</button>
         <button id="tabOption">OPTION</button>
     </nav>
+    
     <div id="status" class="status">Ready.</div>
 </main>
 
@@ -312,18 +313,9 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
     <div class="modalCard">
         <div class="modalTitle">Save ETA Monitor</div>
         <div class="modalSub" id="saveModalSub">Choose a name and save group.</div>
-        <div class="field">
-            <label>Display name</label>
-            <input id="saveNameInput" class="modalInput" autocomplete="off">
-        </div>
-        <div class="field">
-            <label>Save group</label>
-            <select id="saveGroupSelect" class="modalSelect"></select>
-        </div>
-        <div class="field hidden" id="newGroupField">
-            <label>New group name</label>
-            <input id="newGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning">
-        </div>
+        <div class="field"><label>Display name</label><input id="saveNameInput" class="modalInput" autocomplete="off"></div>
+        <div class="field"><label>Save group</label><select id="saveGroupSelect" class="modalSelect"></select></div>
+        <div class="field hidden" id="newGroupField"><label>New group name</label><input id="newGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div>
         <div class="modalActions">
             <button id="saveCancelBtn" class="modalBtn">Cancel</button>
             <button id="saveConfirmBtn" class="modalBtn primary">Save</button>
@@ -335,18 +327,9 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
     <div class="modalCard">
         <div class="modalTitle" id="appModalTitle">Action</div>
         <div class="modalSub" id="appModalSub"></div>
-        <div class="field" id="appTextField">
-            <label id="appTextLabel">Input</label>
-            <input id="appTextInput" class="modalInput" autocomplete="off">
-        </div>
-        <div class="field hidden" id="appSelectField">
-            <label id="appSelectLabel">Select</label>
-            <select id="appSelectInput" class="modalSelect"></select>
-        </div>
-        <div class="field hidden" id="appNewGroupField">
-            <label>New group name</label>
-            <input id="appNewGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning">
-        </div>
+        <div class="field" id="appTextField"><label id="appTextLabel">Input</label><input id="appTextInput" class="modalInput" autocomplete="off"></div>
+        <div class="field hidden" id="appSelectField"><label id="appSelectLabel">Select</label><select id="appSelectInput" class="modalSelect"></select></div>
+        <div class="field hidden" id="appNewGroupField"><label>New group name</label><input id="appNewGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div>
         <div class="modalActions">
             <button id="appModalCancel" class="modalBtn">Cancel</button>
             <button id="appModalOk" class="modalBtn primary">OK</button>
@@ -358,10 +341,7 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
     <div class="modalCard">
         <div class="modalTitle" id="configModalTitle">Config</div>
         <div class="modalSub" id="configModalSub"></div>
-        <div class="field">
-            <label id="configTextLabel">Config text</label>
-            <textarea id="configTextArea" class="modalTextArea" autocomplete="off" spellcheck="false"></textarea>
-        </div>
+        <div class="field"><label id="configTextLabel">Config text</label><textarea id="configTextArea" class="modalTextArea" autocomplete="off" spellcheck="false"></textarea></div>
         <div class="modalActions">
             <button id="configCancelBtn" class="modalBtn">Cancel</button>
             <button id="configActionBtn" class="modalBtn primary">OK</button>
@@ -378,19 +358,11 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
         </div>
         <button id="close" class="close">×</button>
     </div>
-    <div class="selectBox">
-        <label>From stop</label>
-        <select id="fromStop"></select>
-    </div>
-    <div class="selectBox">
-        <label>To stop</label>
-        <select id="toStop"></select>
-    </div>
+    <div class="selectBox"><label>From stop</label><select id="fromStop"></select></div>
+    <div class="selectBox"><label>To stop</label><select id="toStop"></select></div>
     <button id="etaBtn" class="primary">Show ETA</button>
     <button id="saveBtn" class="saveAction">Save ETA Monitor</button>
-    <div id="eta" class="eta">
-        <div class="empty">Select From / To.</div>
-    </div>
+    <div id="eta" class="eta"><div class="empty">Select From / To.</div></div>
 </section>
 
 <script>
@@ -435,37 +407,48 @@ function readLS(k,d){let cur=parseLSKey(k); return !isEmptyVal(cur) ? cur : d;}
 function writeLS(k,v){localStorage.setItem(k,JSON.stringify(v))}
 function getEtaMode(){let m=readLS(LS_ETA_MODE,'remaining');return m==='actual'?'actual':'remaining'}
 function setEtaMode(m){writeLS(LS_ETA_MODE,m==='actual'?'actual':'remaining');renderSaved();status('ETA display mode: '+(getEtaMode()==='actual'?'Actual time':'Time remaining')+'.','ok')}
-function getGroups(){let g=readLS(LS_GROUPS,null);if(!g||!g.length)g=[{id:'default',name:'Default'}];return g}
-function setGroups(g){writeLS(LS_GROUPS,g)}
-function setActiveGroup(id){activeGroupId=id;writeLS(LS_ACTIVE_GROUP,id);updateSaveTabText()}
-function getSaved(){return readLS(LS_SAVED,[])}
-function setSaved(v){writeLS(LS_SAVED,v)}
-function getEtaHistory(){return readLS(LS_ETA_HISTORY,{})}
-function setEtaHistoryForKey(k,d){let h=getEtaHistory();h[k]={...d,ts:Date.now()};writeLS(LS_ETA_HISTORY,h)}
-function getEtaHistoryForKey(k){return getEtaHistory()[k]||null}
-function getJtHistory(){return readLS(LS_JT_HISTORY,{})}
-function setJtHistoryForKey(k,d){let h=getJtHistory();h[k]={...d,ts:Date.now()};writeLS(LS_JT_HISTORY,h)}
-function getJtHistoryForKey(k){return getJtHistory()[k]||null}
+function getGroups(){let g=readLS(LS_GROUPS,null);if(!g||!g.length)g=[{id:'default',name:'Default'}];return g}function setGroups(g){writeLS(LS_GROUPS,g)}function setActiveGroup(id){activeGroupId=id;writeLS(LS_ACTIVE_GROUP,id);updateSaveTabText()}function getSaved(){return readLS(LS_SAVED,[])}function setSaved(v){writeLS(LS_SAVED,v)}function getEtaHistory(){return readLS(LS_ETA_HISTORY,{})}function setEtaHistoryForKey(k,d){let h=getEtaHistory();h[k]={...d,ts:Date.now()};writeLS(LS_ETA_HISTORY,h)}function getEtaHistoryForKey(k){return getEtaHistory()[k]||null}function getJtHistory(){return readLS(LS_JT_HISTORY,{})}function setJtHistoryForKey(k,d){let h=getJtHistory();h[k]={...d,ts:Date.now()};writeLS(LS_JT_HISTORY,h)}function getJtHistoryForKey(k){return getJtHistory()[k]||null}
 function readRadius(){return parseInt(localStorage.getItem(LS_GPS_RADIUS)||'500', 10);}
 function writeRadius(v){localStorage.setItem(LS_GPS_RADIUS, v);}
 
-function routeKey(r){return [r.type,r.route,r.bound||'',r.service_type||'',r.hkbusId||'',r.gtfs_id||'',r.region||''].join('|')}
-function savedKey(route,from,to){return [routeKey(route),stopIdOf(from&&from.stop),stopIdOf(to&&to.stop)].join('||')}
-function routeTitle(r){return `${r.type} ${r.route}`}
-function routeMeta(r){return r.type==='GMB'?(r.desc_tc||r.desc_en||r.region||''):`${r.orig_tc||r.orig_en||''} → ${r.dest_tc||r.dest_en||''}`}
-function name(s){return toText(s.name_tc||s.stop_name_tc||s.name_zh||s.name_en||s.stop_name_en||s.name||s.stop||'')}
-function etaMin(x){let d=new Date(x);if(isNaN(d))return null;return Math.max(0,Math.round((d-Date.now())/60000))}
-function time(x){try{return new Date(x).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'})}catch{return ''}}
+function routeKey(r){return [r.type,r.route,r.bound||'',r.service_type||'',r.hkbusId||'',r.gtfs_id||'',r.region||''].join('|')}function savedKey(route,from,to){return [routeKey(route),stopIdOf(from&&from.stop),stopIdOf(to&&to.stop)].join('||')}function routeTitle(r){return `${r.type} ${r.route}`}function routeMeta(r){return r.type==='GMB'?(r.desc_tc||r.desc_en||r.region||''):`${r.orig_tc||r.orig_en||''} → ${r.dest_tc||r.dest_en||''}`}function name(s){return toText(s.name_tc||s.stop_name_tc||s.name_zh||s.name_en||s.stop_name_en||s.name||s.stop||'')}function etaMin(x){let d=new Date(x);if(isNaN(d))return null;return Math.max(0,Math.round((d-Date.now())/60000))}function time(x){try{return new Date(x).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'})}catch{return ''}}
 
 function buildKb(){const kb=$('keyboard');kb.innerHTML='';const make=k=>{let b=document.createElement('button');b.textContent=k;b.className='key '+(k==='⌫'?'back ':'')+(k==='CLR'?'clear ':'');b.onclick=()=>{let v=routeInput.value.toUpperCase();if(k==='CLR')v='';else if(k==='⌫')v=v.slice(0,-1);else v+=k;routeInput.value=v;filter()};return b};let l=document.createElement('div'),r=document.createElement('div');l.className=r.className='keyBox';l.innerHTML='<div class="keyTitle">NUMBER PAD</div><div class="numPad"></div>';r.innerHTML='<div class="keyTitle">CHARACTER PAD</div><div class="charPad"></div>';numKeys.forEach(k=>l.querySelector('.numPad').appendChild(make(k)));charKeys.forEach(k=>r.querySelector('.charPad').appendChild(make(k)));kb.append(l,r)}
 
-async function boot(){await IDB.init();activeGroupId=readLS(LS_ACTIVE_GROUP,'default');pos=readLS(LS_LAST_POS,null);buildKb();wireEvents();ensureActiveGroup();try{await loadRoutes();setMode('BUS');let hasCache=getSaved().length>0||Object.keys(getEtaHistory()).length>0;setMainTab(hasCache?'SAVE':'SEARCH');status('Ready. Route list loaded. IDB Cache Active.','ok')}catch(e){status('Route list failed: '+e.message,'err');$('routes').innerHTML=`<div class="empty">No route data available. Go to OPTION and Re-fetch.<br>Error: ${esc(e.message)}</div>`;setMainTab(getSaved().length?'SAVE':'SEARCH')}startAutoRefresh()}
+async function boot(){
+    await IDB.init();
+    
+    // Schema V2 Migration (Cleans old invalid CTB caches)
+    let cacheV = readLS('hkTransit_idb_ver', 1);
+    if(cacheV < 2) {
+        let tx = IDB.db.transaction('kv', 'readwrite');
+        let req = tx.objectStore('kv').openCursor();
+        req.onsuccess = e => {
+            let c = e.target.result;
+            if(c) {
+                let k = c.key;
+                if(k.startsWith('routeDetailCache_') && !k.startsWith('routeDetailCacheV2_')) c.delete();
+                else if(k.startsWith('lite_') && !k.startsWith('liteV2_')) c.delete();
+                else if(k.startsWith('previewStops_') && !k.startsWith('previewStopsV2_')) c.delete();
+                c.continue();
+            } else {
+                writeLS('hkTransit_idb_ver', 2);
+            }
+        };
+    }
+
+    activeGroupId=readLS(LS_ACTIVE_GROUP,'default');pos=readLS(LS_LAST_POS,null);buildKb();wireEvents();ensureActiveGroup();try{await loadRoutes();setMode('BUS');let hasCache=getSaved().length>0||Object.keys(getEtaHistory()).length>0;setMainTab(hasCache?'SAVE':'SEARCH');status('Ready. Route list loaded. IDB Cache Active.','ok')}catch(e){status('Route list failed: '+e.message,'err');$('routes').innerHTML=`<div class="empty">No route data available. Go to OPTION and Re-fetch.<br>Error: ${esc(e.message)}</div>`;setMainTab(getSaved().length?'SAVE':'SEARCH')}startAutoRefresh()
+}
 
 function wireEvents(){routeInput.oninput=()=>{routeInput.value=routeInput.value.toUpperCase().replace(/[^0-9A-Z]/g,'');filter()};$('busBtn').onclick=()=>setMode('BUS');$('gmbBtn').onclick=()=>setMode('GMB');$('close').onclick=()=>$('sheet').classList.remove('show');$('etaBtn').onclick=eta;$('saveBtn').onclick=saveCurrentRoute;$('saveCancelBtn').onclick=closeSaveModal;$('saveConfirmBtn').onclick=confirmSaveMonitor;$('saveGroupSelect').onchange=()=>{$('newGroupField').classList.toggle('hidden',$('saveGroupSelect').value!=='__new__')};$('appModalCancel').onclick=closeAppModal;$('appModalOk').onclick=confirmAppModal;$('appSelectInput').onchange=()=>{$('appNewGroupField').classList.toggle('hidden',$('appSelectInput').value!=='__new__')};$('tabSearch').onclick=()=>setMainTab('SEARCH');$('tabOption').onclick=()=>setMainTab('OPTION');$('tabSave').onclick=()=>setMainTab('SAVE');$('tabSave').addEventListener('pointerdown',()=>{saveHoldTimer=setTimeout(showGroupPicker,420)});['pointerup','pointerleave','pointercancel'].forEach(ev=>$('tabSave').addEventListener(ev,()=>{clearTimeout(saveHoldTimer)}));let etaSel=$('etaModeSelect');if(etaSel){etaSel.value=getEtaMode();etaSel.onchange=()=>setEtaMode(etaSel.value)}$('refetchBtn').onclick=refetchRouteData;$('exportJsonBtn').onclick=exportConfigJson;$('importJsonBtn').onclick=()=>$('importFileInput').click();$('importFileInput').onchange=importConfigJsonFile;$('exportTextBtn').onclick=exportConfigText;$('importTextBtn').onclick=importConfigText;$('configCancelBtn').onclick=closeConfigModal;$('configActionBtn').onclick=confirmConfigModal;$('clearHistoryBtn').onclick=()=>{writeLS(LS_ETA_HISTORY,{});renderSaved();status('ETA history cleared.','ok')};$('addGroupBtn').onclick=addGroup;$('renameGroupBtn').onclick=renameGroup;$('deleteGroupBtn').onclick=deleteGroup;$('gpsBtn').onclick=()=>gps(false);document.addEventListener('click',e=>{if(!e.target.closest('#groupPicker')&&!e.target.closest('#tabSave'))hideGroupPicker();if(e.target.id==='saveModal')closeSaveModal();if(e.target.id==='appModal')closeAppModal();if(e.target.id==='configModal')closeConfigModal();if(!e.target.closest('.savedMenu')&&!e.target.closest('.savedMore'))closeSavedMenus()});$('fromStop').onchange=()=>eta();$('toStop').onchange=()=>eta();}
-function ensureActiveGroup(){let groups=getGroups();if(!groups.find(g=>g.id===activeGroupId))activeGroupId=groups[0].id;writeLS(LS_ACTIVE_GROUP,activeGroupId);updateSaveTabText()}
-function updateSaveTabText(){let g=getGroups().find(x=>x.id===activeGroupId);$('tabSave').textContent=g?g.name:'SAVE'}
+function ensureActiveGroup(){let groups=getGroups();if(!groups.find(g=>g.id===activeGroupId))activeGroupId=groups[0].id;writeLS(LS_ACTIVE_GROUP,activeGroupId);updateSaveTabText()}function updateSaveTabText(){let g=getGroups().find(x=>x.id===activeGroupId);$('tabSave').textContent=g?g.name:'SAVE'}
 
-async function loadRoutes(){busRoutes=[];gmbRoutes=[];const kmbP=json(API.KMB+'/route/').then(k=>(k.data||[]).forEach(x=>busRoutes.push({type:'KMB',route:String(x.route).toUpperCase(),bound:x.bound,service_type:x.service_type||1,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));const ctbP=json(API.CTB+'/route/CTB').then(c=>(c.data||[]).forEach(x=>busRoutes.push({type:'CTB',route:String(x.route).toUpperCase(),bound:x.bound,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));const hkbP=json(API.HKBUS,86400000).then(db=>addGmbFromHkbusDb(db));const res=await Promise.allSettled([kmbP,ctbP,hkbP]);let fail=res.filter(x=>x.status==='rejected').map(x=>x.reason.message);if(!busRoutes.length&&fail.length)throw new Error(fail.join(' | '));}
+async function loadRoutes(){busRoutes=[];gmbRoutes=[];const kmbP=json(API.KMB+'/route/').then(k=>(k.data||[]).forEach(x=>busRoutes.push({type:'KMB',route:String(x.route).toUpperCase(),bound:x.bound,service_type:x.service_type||1,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));
+const ctbP=json(API.CTB+'/route/CTB').then(c=>(c.data||[]).forEach(x=>{
+    busRoutes.push({type:'CTB',route:String(x.route).toUpperCase(),bound:'O',orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x});
+    busRoutes.push({type:'CTB',route:String(x.route).toUpperCase(),bound:'I',orig_tc:x.dest_tc,orig_en:x.dest_en,dest_tc:x.orig_tc,dest_en:x.orig_en,raw:x});
+}));
+const hkbP=json(API.HKBUS,86400000).then(db=>addGmbFromHkbusDb(db));const res=await Promise.allSettled([kmbP,ctbP,hkbP]);let fail=res.filter(x=>x.status==='rejected').map(x=>x.reason.message);if(!busRoutes.length&&fail.length)throw new Error(fail.join(' | '));}
 function addGmbFromHkbusDb(db){hkbDb=db;Object.entries(db.routeList||{}).forEach(([id,e])=>{if(!e||!e.route||!e.stops||!e.stops.gmb)return;const route=String(e.route).toUpperCase(),dest=e.dest||{},orig=e.orig||{},bound=(e.bound&&e.bound.gmb)||'O';gmbRoutes.push({type:'GMB',route,hkbusId:id,gtfs_id:e.gtfsId||e.gtfs_id||e.gtfsID,bound,route_seq:bound==='I'?2:1,stops:e.stops.gmb,desc_tc:(orig.zh||orig.tc||'')+(dest.zh||dest.tc?' → '+(dest.zh||dest.tc):''),desc_en:(orig.en||'')+(dest.en?' → '+dest.en:''),raw:e})})}
 
 function setMode(m){mode=m;$('busBtn').classList.toggle('on',m==='BUS');$('gmbBtn').classList.toggle('on',m==='GMB');active=m==='BUS'?busRoutes:gmbRoutes;filter()}
@@ -498,10 +481,10 @@ function ctbDirWord(v){let s = String(v||'').toLowerCase();if(s==='o'||s==='outb
 function stopIdOf(v){if(v==null)return '';if(typeof v==='string'||typeof v==='number')return String(v);if(Array.isArray(v))return stopIdOf(v[0]);if(typeof v==='object')return stopIdOf(v.stop_id||v.stopId||v.stop||v.id||v.gmb||v.value||v.code||v.gtfs_stop_id||v.gtfsStopId||v.stopID||v[0]);return String(v)}
 function routeKey(r){return [r.type,r.route,r.bound||'',r.service_type||'',r.hkbusId||'',r.gtfs_id||'',r.region||''].join('|')}
 async function routeStopLite(r){
-    let k = 'lite_'+routeKey(r); let c = await IDB.get(k); if(c) return c; let out=[];
+    let k = 'liteV2_'+routeKey(r); let c = await IDB.get(k); if(c) return c; let out=[];
     if(r.type==='GMB'){ out=(r.stops||[]).map((raw,i)=>({type:'GMB',stop:stopIdOf(raw)}));
     } else if(r.type==='KMB'){ let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound']; let svcs=[String(r.service_type||1),'1','2','3'].filter((v,i,a)=>a.indexOf(v)===i); for(const dir of dirs){ for(const svc of svcs){ try{ let d=await json(API.KMB+'/route-stop/'+encodeURIComponent(r.route)+'/'+dir+'/'+svc, 86400000); let arr=d.data||[]; if(arr.length){out=arr.map(x=>({...x,type:'KMB'}));break;} }catch(e){} } if(out.length) break; }
-    } else if(r.type==='CTB'){ let dirs=[ctbDirWord(r.bound), ctbDirWord(r.bound)==='outbound'?'inbound':'outbound']; for(const dir of dirs){ try{ let d=await json(API.CTB+'/route-stop/CTB/'+encodeURIComponent(r.route)+'/'+dir, 86400000); let arr=d.data||[]; if(arr.length){out=arr.map(x=>({...x,type:'CTB'}));break;} }catch(e){} } }
+    } else if(r.type==='CTB'){ let dir=ctbDirWord(r.bound); try{ let d=await json(API.CTB+'/route-stop/CTB/'+encodeURIComponent(r.route)+'/'+dir, 86400000); let arr=d.data||[]; if(arr.length){out=arr.map(x=>({...x,type:'CTB'}));} }catch(e){} }
     await IDB.set(k, out); return out;
 }
 onmessage = async function(e) {
@@ -590,23 +573,23 @@ function handleWorkerMessage(e) {
     }
 }
 
-function renderRoutes(items,suggested=false){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}if(suggested)box.insertAdjacentHTML('beforeend','<div class="suggestedRouteNote">Suggested routes from stops within '+readRadius()+'m from GPS</div>');items.forEach((x,idx)=>{let d=document.createElement('div');d.className='routeCard';d.dataset.routeIdx=idx;let preview='<div class="routeEtaPreview muted" id="routeEtaPreview'+idx+'">ETA loading...</div>';d.innerHTML='<div class="routeCardMain"><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div>'+preview+'</div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRouteFromSearch(x, suggested);box.appendChild(d)});loadRouteEtaPreviews(items)}
+function renderRoutes(items,suggested=false){let box=$('routes');box.innerHTML='';if(!items.length){box.innerHTML='<div class="empty">No route matched.</div>';return}if(suggested)box.insertAdjacentHTML('beforeend','<div class="suggestedRouteNote">Suggested routes from stops within '+readRadius()+'m from GPS</div>');items.forEach((x,idx)=>{let d=document.createElement('div');d.className='routeCard';d.dataset.routeIdx=idx;let preview='<div class="routeEtaPreview muted" id="routeEtaPreview'+idx+'">ETA loading...</div>';d.innerHTML='<div class="routeCardMain"><div class="rno">'+esc(x.route)+'</div><div class="meta">'+esc(routeMeta(x))+'</div>'+preview+'</div><span class="tag '+x.type.toLowerCase()+'">'+esc(x.type)+'</span>';d.onclick=()=>openRouteFromSearch(x);box.appendChild(d)});loadRouteEtaPreviews(items)}
 function validStopCoord(s){return Number.isFinite(+s.lat)&&Number.isFinite(+s.long)&&+s.lat!==0&&+s.long!==0}
 
-async function routeStopsForPreview(r){const key='previewStops_'+routeKey(r);const cached=await IDB.get(key);if(cached&&Array.isArray(cached.stops)&&cached.stops.length)return cached.stops;let lite=await (async function routeStopLiteMain(r){let k='lite_'+routeKey(r);let c=await IDB.get(k);if(c)return c; let out=[]; if(r.type==='GMB'){out=(r.stops||[]).map((raw,i)=>({type:'GMB',stop:stopIdOf(raw)}));}else if(r.type==='KMB'){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];for(const dir of dirs){try{let d=await json(API.KMB+'/route-stop/'+encodeURIComponent(r.route)+'/'+dir+'/'+(r.service_type||1),86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'KMB'}));break;}}catch(e){}}}else if(r.type==='CTB'){let dirs=[(r.bound==='I'?'inbound':'outbound'),(r.bound==='I'?'outbound':'inbound')];for(const dir of dirs){try{let d=await json(API.CTB+'/route-stop/CTB/'+encodeURIComponent(r.route)+'/'+dir,86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'CTB'}));break;}}catch(e){}}} await IDB.set(k,out);return out;})(r);let stops=await Promise.all(lite.map(async x=>{try{if(x.type==='KMB'){let st=(await json(`${API.KMB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='CTB'){let st=(await json(`${API.CTB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='GMB'){let si=hkbusStopInfo(x.stop);return{...x,name_tc:si.name_tc,name_en:si.name_en,lat:si.lat,long:si.long}}}catch(e){}return x}));await IDB.set(key, {route:r,stops,meta:routeMeta(r),ts:Date.now()});return stops}
+async function routeStopsForPreview(r){const key='previewStopsV2_'+routeKey(r);const cached=await IDB.get(key);if(cached&&Array.isArray(cached.stops)&&cached.stops.length)return cached.stops;let lite=await (async function routeStopLiteMain(r){let k='liteV2_'+routeKey(r);let c=await IDB.get(k);if(c)return c; let out=[]; if(r.type==='GMB'){out=(r.stops||[]).map((raw,i)=>({type:'GMB',stop:stopIdOf(raw)}));}else if(r.type==='KMB'){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];for(const dir of dirs){try{let d=await json(API.KMB+'/route-stop/'+encodeURIComponent(r.route)+'/'+dir+'/'+(r.service_type||1),86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'KMB'}));break;}}catch(e){}}}else if(r.type==='CTB'){let dir=ctbDirWord(r.bound);try{let d=await json(API.CTB+'/route-stop/CTB/'+encodeURIComponent(r.route)+'/'+dir,86400000);let arr=d.data||[];if(arr.length){out=arr.map(x=>({...x,type:'CTB'}));}}catch(e){}} await IDB.set(k,out);return out;})(r);let stops=await Promise.all(lite.map(async x=>{try{if(x.type==='KMB'){let st=(await json(`${API.KMB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='CTB'){let st=(await json(`${API.CTB}/stop/${x.stop}`,86400000)).data||{};return{...x,name_tc:st.name_tc,name_en:st.name_en,lat:+st.lat,long:+st.long}}if(x.type==='GMB'){let si=hkbusStopInfo(x.stop);return{...x,name_tc:si.name_tc,name_en:si.name_en,lat:si.lat,long:si.long}}}catch(e){}return x}));await IDB.set(key, {route:r,stops,meta:routeMeta(r),ts:Date.now()});return stops}
 function nearestStop(stops){if(!pos)return null;let best=null,bd=Infinity;stops.filter(validStopCoord).forEach(s=>{let d=distM(pos.lat,pos.lon,+s.lat,+s.long);if(d<bd){bd=d;best=s}});return best?{stop:best,dist:bd}:null}
 function formatDistance(m){if(!Number.isFinite(m))return '';return m<950?Math.round(m)+'m':(m/1000).toFixed(1)+'km'}
-function renderRouteEtaPreview(el,near,rows){if(!el)return;if(!near){el.className='routeEtaPreview muted';el.innerHTML='No stop location.';return}let stopName=name(near.stop)||stopIdOf(near.stop&&near.stop.stop);let chips=(rows||[]).slice(0,3).map(r=>'<span class="routeEtaChip">'+esc(etaText(r))+'</span>').join('');el.className='routeEtaPreview';let distText=near.dist!=null?' · '+esc(formatDistance(near.dist)):'';el.innerHTML='<div class="routeEtaStop">'+(near.dist!=null?'Nearest: ':'From: ')+esc(stopName)+distText+'</div><div class="routeEtaChips">'+(chips||'<span class="routeEtaChip">No ETA</span>')+'</div>'}
+function renderRouteEtaPreview(el,stopData,rows,isNearest){if(!el)return;if(!stopData){el.className='routeEtaPreview muted';el.innerHTML='No stops found.';return}let stopName=name(stopData.stop)||stopIdOf(stopData.stop&&stopData.stop.stop);let chips=(rows||[]).slice(0,3).map(r=>'<span class="routeEtaChip">'+esc(etaText(r))+'</span>').join('');el.className='routeEtaPreview';el.innerHTML='<div class="routeEtaStop">'+(isNearest?'Nearest: ':'From: ')+esc(stopName)+(isNearest?' · '+esc(formatDistance(stopData.dist)):'')+'</div><div class="routeEtaChips">'+(chips||'<span class="routeEtaChip">No ETA</span>')+'</div>'}
 
-async function loadRouteEtaPreview(r,idx){let el=$('routeEtaPreview'+idx);if(!el)return;try{let near=suggestedRouteNearest.get(routeKey(r));if(!near){let stops=await routeStopsForPreview(r);near=nearestStop(stops);if(!near&&stops.length>0)near={stop:stops[0],dist:null};}if(!near){renderRouteEtaPreview(el,null,[]);return}let res=await fetchEtaRows(near.stop, r, false);renderRouteEtaPreview(el,near,res.rows||[])}catch(e){if(el){el.className='routeEtaPreview err';el.textContent='ETA failed'}}}
+async function loadRouteEtaPreview(r,idx){let el=$('routeEtaPreview'+idx);if(!el)return;try{let near=suggestedRouteNearest.get(routeKey(r));let isNearest=false;let stops=await routeStopsForPreview(r);if(!stops.length){renderRouteEtaPreview(el,null,[],false);return;}if(!near&&pos){near=nearestStop(stops);}if(near){isNearest=true;}let targetStopData=isNearest?near:{stop:stops[0],dist:0};let res=await fetchEtaRows(targetStopData.stop, r, false);renderRouteEtaPreview(el,targetStopData,res.rows||[],isNearest)}catch(e){if(el){el.className='routeEtaPreview err';el.textContent='ETA preview failed'}}}
 async function loadRouteEtaPreviews(items){for(let i=0;i<items.length;i++){let el=$('routeEtaPreview'+i);if(!el)continue;loadRouteEtaPreview(items[i],i);await new Promise(r=>setTimeout(r,50))}}
-function applyGpsNearestSelection(){if(!pos||!currentStops.length)return false;let near=suggestedRouteNearest.get(routeKey(currentRoute))||nearestStop(currentStops);if(!near)return false;let fromIdx=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(near.stop&&near.stop.stop));if(fromIdx<0)return false;let toIdx=fromIdx<currentStops.length-1?fromIdx+1:Math.max(0,fromIdx-1);$('fromStop').value=fromIdx;$('toStop').value=toIdx;let fromName=name(currentStops[fromIdx])||stopIdOf(currentStops[fromIdx].stop);let toName=name(currentStops[toIdx])||stopIdOf(currentStops[toIdx].stop);$('eta').innerHTML='<div class="empty">GPS nearest From applied:<br>'+esc(fromName)+' → '+esc(toName)+'<br>Loading ETA...</div>';status('GPS nearest From applied: '+fromName+' ('+formatDistance(near.dist)+').','ok');return true}
+function applyGpsNearestSelection(){if(!pos||!currentStops.length)return false;let near=suggestedRouteNearest.get(routeKey(currentRoute))||nearestStop(currentStops);if(!near)return false;let fromIdx=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(near.stop&&near.stop.stop));if(fromIdx<0)return false;let toIdx=fromIdx<currentStops.length-1?fromIdx+1:Math.max(0,fromIdx-1);$('fromStop').value=fromIdx;$('toStop').value=toIdx;let fromName=name(currentStops[fromIdx])||stopIdOf(currentStops[fromIdx].stop);let toName=name(currentStops[toIdx])||stopIdOf(currentStops[toIdx].stop);$('eta').innerHTML='<div class="empty">Nearest From applied:<br>'+esc(fromName)+' → '+esc(toName)+'<br>Loading ETA...</div>';status('Nearest From applied: '+fromName+' ('+formatDistance(near.dist)+').','ok');return true}
 
-async function openRouteFromSearch(r, suggested=false){await openRoute(r);let applied=false;if(suggested)applied=applyGpsNearestSelection();if(!applied)setTimeout(()=>eta(),80)}
+async function openRouteFromSearch(r){await openRoute(r);let appliedNearest=applyGpsNearestSelection();setTimeout(()=>eta(),80)}
 async function openRoute(r){
     currentRoute=r;currentStops=[];$('fromStop').innerHTML='';$('toStop').innerHTML='';
     $('sheet').classList.add('show');$('sheetRoute').textContent=routeTitle(r);$('sheetMeta').textContent='Loading stops...';$('eta').innerHTML='<div class="empty">Loading stops...</div>';
-    const key='routeDetailCache_'+routeKey(r);
+    const key='routeDetailCacheV2_'+routeKey(r);
     const cached=await IDB.get(key);
     let isValidCache = false;
     if(cached&&Array.isArray(cached.stops)&&cached.stops.length>0){
@@ -621,13 +604,9 @@ async function openRoute(r){
         fillStops(); $('sheetMeta').textContent=routeMeta(r); status('Stops loaded and cached to DB.','ok');
     }catch(e){ $('eta').innerHTML='<div class="empty err">Cannot load stops: '+esc(e.message)+'</div>'; status('Cannot load stops. '+e.message,'err'); }
 }
-
-async function kmbStops(r){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];let svcs=[String(r.service_type||1),'1','2','3'].filter((v,i,a)=>a.indexOf(v)===i);let err=null;for(const dir of dirs)for(const svc of svcs){try{let rs=await json(`${API.KMB}/route-stop/${r.route}/${dir}/${svc}`),arr=rs.data||[];if(!arr.length)continue;let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.KMB}/stop/${x.stop}`)).data||{};return {...x,type:'KMB',route:r.route,bound:boundCode,service_type:svc,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('KMB stops not found')}
-function ctbDirCode(v){v=String(v||'').toLowerCase();if(v==='o'||v==='outbound')return'O';if(v==='i'||v==='inbound')return'I';return''}
-function ctbDirWord(v){let c=ctbDirCode(v);return c==='I'?'inbound':'outbound'}
-async function ctbStops(r){let preferred=ctbDirWord(r.bound);let dirs=[preferred,preferred==='outbound'?'inbound':'outbound'];let err=null;for(const dir of dirs){try{let rs=await json(`${API.CTB}/route-stop/CTB/${encodeURIComponent(r.route)}/${dir}`),arr=rs.data||[];if(!arr.length)continue;let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.CTB}/stop/${x.stop}`)).data||{};return {...x,type:'CTB',route:r.route,bound:boundCode,dir:boundCode,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('Citybus stops not found')}
-function hkbusStopInfo(stopId){stopId=stopIdOf(stopId);if(!hkbDb)return{};let s=(hkbDb.stopList||{})[stopId]||(hkbDb.stopMap||{})[stopId]||{};if(Array.isArray(s))s=s[0]||{};if(typeof s==='string')return{name_tc:s,name_en:s};if(s.gmb)s=s.gmb;return{name_tc:toText(s.name_tc||s.name_zh||s.zh||s.tc||s.name),name_en:toText(s.name_en||s.en),lat:+(s.lat||s.latitude||s.y||''),long:+(s.long||s.lng||s.longitude||s.x||'')}}
-async function gmbStops(r){if(r.hkbusId&&hkbDb&&hkbDb.routeList&&hkbDb.routeList[r.hkbusId]){let e=hkbDb.routeList[r.hkbusId],ids=(e.stops&&e.stops.gmb)||[],bound=(e.bound&&e.bound.gmb)||r.bound||'O',routeSeq=bound==='I'?2:1,gtfs=e.gtfsId||e.gtfs_id||e.gtfsID||r.gtfs_id;return ids.map((raw,i)=>{let id=stopIdOf(raw),si=hkbusStopInfo(id),nm=toText(si.name_tc)||toText(si.name_en)||id;return{type:'GMB',route:r.route,gtfs_id:gtfs,route_id:gtfs,route_seq:routeSeq,bound,stop:id,stop_seq:i+1,seq:i+1,name_tc:nm,name_en:toText(si.name_en)||'',lat:si.lat,long:si.long}}).filter(x=>x.stop)}throw new Error('GMB route mapping missing')}
+async function kmbStops(r){let dirs=r.bound==='O'?['outbound','inbound']:r.bound==='I'?['inbound','outbound']:['outbound','inbound'];let svcs=[String(r.service_type||1),'1','2','3'].filter((v,i,a)=>a.indexOf(v)===i);let err=null;for(const dir of dirs)for(const svc of svcs){try{let rs=await json(`${API.KMB}/route-stop/${r.route}/${dir}/${svc}`),arr=rs.data||[];if(!arr.length)continue;let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.KMB}/stop/${x.stop}`)).data||{};return {...x,type:'KMB',route:r.route,bound:boundCode,service_type:svc,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){err=e}}throw err||new Error('KMB stops not found')}function ctbDirCode(v){v=String(v||'').toLowerCase();if(v==='o'||v==='outbound')return'O';if(v==='i'||v==='inbound')return'I';return''}function ctbDirWord(v){let c=ctbDirCode(v);return c==='I'?'inbound':'outbound'}
+async function ctbStops(r){let dir=ctbDirWord(r.bound);try{let rs=await json(`${API.CTB}/route-stop/CTB/${encodeURIComponent(r.route)}/${dir}`);let arr=rs.data||[];if(!arr.length)throw new Error('此方向沒有車站資料');let boundCode=dir==='outbound'?'O':'I';return Promise.all(arr.map(async x=>{let s=(await json(`${API.CTB}/stop/${x.stop}`)).data||{};return {...x,type:'CTB',route:r.route,bound:boundCode,dir:boundCode,name_tc:s.name_tc,name_en:s.name_en,lat:+s.lat,long:+s.long,seq:+x.seq}}))}catch(e){throw e||new Error('Citybus stops not found')}}
+function hkbusStopInfo(stopId){stopId=stopIdOf(stopId);if(!hkbDb)return{};let s=(hkbDb.stopList||{})[stopId]||(hkbDb.stopMap||{})[stopId]||{};if(Array.isArray(s))s=s[0]||{};if(typeof s==='string')return{name_tc:s,name_en:s};if(s.gmb)s=s.gmb;return{name_tc:toText(s.name_tc||s.name_zh||s.zh||s.tc||s.name),name_en:toText(s.name_en||s.en),lat:+(s.lat||s.latitude||s.y||''),long:+(s.long||s.lng||s.longitude||s.x||'')}}async function gmbStops(r){if(r.hkbusId&&hkbDb&&hkbDb.routeList&&hkbDb.routeList[r.hkbusId]){let e=hkbDb.routeList[r.hkbusId],ids=(e.stops&&e.stops.gmb)||[],bound=(e.bound&&e.bound.gmb)||r.bound||'O',routeSeq=bound==='I'?2:1,gtfs=e.gtfsId||e.gtfs_id||e.gtfsID||r.gtfs_id;return ids.map((raw,i)=>{let id=stopIdOf(raw),si=hkbusStopInfo(id),nm=toText(si.name_tc)||toText(si.name_en)||id;return{type:'GMB',route:r.route,gtfs_id:gtfs,route_id:gtfs,route_seq:routeSeq,bound,stop:id,stop_seq:i+1,seq:i+1,name_tc:nm,name_en:toText(si.name_en)||'',lat:si.lat,long:si.long}}).filter(x=>x.stop)}throw new Error('GMB route mapping missing')}
 function fillStops(){let f=$('fromStop'),t=$('toStop');f.innerHTML='';t.innerHTML='';currentStops.forEach((s,i)=>{let txt=(s.seq||i+1)+'. '+name(s);f.add(new Option(txt,i));t.add(new Option(txt,i))});f.value=0;t.value=Math.min(currentStops.length-1,1);$('eta').innerHTML='<div class="empty">From and To loaded. Tap Show ETA.</div>'}
 
 function etaUrlForStop(s, rObj){
@@ -658,7 +637,6 @@ async function fetchEtaRows(s, rObj, force=false){
         let raw=normalizeEtaRows(d.data);
         let want=ctbDirCode(s.bound||s.dir||(rObj&&rObj.bound));
         rows=raw.filter(x=>!want||!x.dir||ctbDirCode(x.dir)===want);
-        if(!rows.length&&raw.length)rows=raw;
         rows=rows.filter(x=>x.eta||x.timestamp);
     }else{
         let want = s.bound || (rObj && rObj.bound);
@@ -680,7 +658,6 @@ function renderGroupBar(){let groups=getGroups();ensureActiveGroup();return '<di
 function renderBatchToolbar(list){if(!editMode)return '';let selected=list.filter(x=>selectedKeys.has(x.key)).length;return '<div class="batchToolbar"><div class="batchCount">'+selected+' selected</div><button id="batchMoveBtn" class="miniBtn">Move</button><button id="batchDeleteBtn" class="miniBtn danger">Delete</button><button id="selectAllBtn" class="miniBtn">Select all</button><button id="clearSelectBtn" class="miniBtn">Clear</button></div><div class="dragToGroupHint">Tip: drag using the left handle only. Drag onto a group chip to move route. Scroll on the card body normally.</div>'}
 function bindGroupBar(box){box.querySelectorAll('[data-g]').forEach(b=>{b.onclick=e=>{if(e.target.closest('.groupMini'))return;if(editMode){setActiveGroup(b.dataset.g);renderSaved()}else{setActiveGroup(b.dataset.g);renderSaved()}};b.addEventListener('pointerdown',e=>startGroupPointerDrag(e,b,b.dataset.g))});box.querySelectorAll('[data-grename]').forEach(b=>b.onclick=e=>{e.stopPropagation();renameGroupById(b.dataset.grename)});box.querySelectorAll('[data-gdelete]').forEach(b=>b.onclick=e=>{e.stopPropagation();deleteGroupById(b.dataset.gdelete)});let add=box.querySelector('[data-add]');if(add)add.onclick=addGroup}
 function setupBatchButtons(list){let move=$('batchMoveBtn'),del=$('batchDeleteBtn'),all=$('selectAllBtn'),clear=$('clearSelectBtn');if(move)move.onclick=()=>batchMoveSelected();if(del)del.onclick=()=>batchDeleteSelected();if(all)all.onclick=()=>{list.forEach(x=>selectedKeys.add(x.key));renderSaved()};if(clear)clear.onclick=()=>{selectedKeys.clear();renderSaved()}}
-
 function renderSaved(){let box=$('savedView'),list=getSaved().filter(x=>(x.groupId||'default')===activeGroupId);box.classList.toggle('editing',editMode);for(const k of [...selectedKeys])if(!getSaved().find(x=>x.key===k))selectedKeys.delete(k);box.innerHTML='<div class="saveHeader"><div class="editHint">'+(editMode?'Edit mode: drag left handle to reorder/move, scroll anywhere else':'Hold SAVE tab to choose group')+'</div><button id="editSavedBtn" class="miniBtn '+(editMode?'ok':'')+'">'+(editMode?'Done':'Edit')+'</button></div>'+renderGroupBar()+renderBatchToolbar(list);$('editSavedBtn').onclick=()=>{editMode=!editMode;if(!editMode)selectedKeys.clear();document.body.classList.toggle('noSelect',editMode);renderSaved()};bindGroupBar(box);setupBatchButtons(list);if(!list.length){box.insertAdjacentHTML('beforeend','<div class="empty">No ETA monitor in this group.</div>');return}list.forEach((x,idx)=>{let r=x.route||{},f=x.from||{},t=x.to||{},title=x.customName||routeTitle(r),checked=selectedKeys.has(x.key);let d=document.createElement('div');d.className='savedMonitorCard '+(editMode?'editing ':'')+(getEtaMode()==='actual'?'actualEtaCard':'');d.dataset.key=x.key;d.innerHTML='<button class="selectBubble '+(checked?'on':'')+'" data-select="1">'+(checked?'✓':'')+'</button><div class="dragGrip">☰</div><div class="savedMain"><div class="savedRouteTitle">'+esc(title)+'</div><div class="savedPair"><span class="label">From:</span> '+esc(name(f))+'<br><span class="label">To:</span> '+esc(name(t))+'<div class="savedTrip" id="savedTrip'+idx+'"><span class="label">Trip:</span> calculating...</div></div><div class="quickBtns"><button class="quickBtn" data-q="rename">Rename</button><button class="quickBtn" data-q="move">Move</button><button class="quickBtn danger" data-q="delete">Delete</button></div></div><div class="savedEta '+(getEtaMode()==='actual'?'actualMode':'')+'" id="savedEta'+idx+'"><div class="etaChip emptyEta">Loading</div></div><button class="savedMore" id="savedMore'+idx+'">...</button><div class="savedMenu" id="savedMenu'+idx+'"><button data-act="open">Open</button><button data-act="refresh">Refresh</button><button data-act="rename">Rename</button><button data-act="move">Move group</button><button class="danger" data-act="remove">Remove</button></div><div class="savedUpdated" id="savedUpdated'+idx+'">--</div>';d.querySelector('[data-select]').onclick=e=>{e.stopPropagation();toggleSavedSelection(x.key)};d.querySelectorAll('[data-q]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();let a=btn.dataset.q;if(a==='rename')renameSaved(x.key);else if(a==='move')moveSaved(x.key);else removeSaved(x.key)});d.querySelector('#savedMore'+idx).onclick=e=>{e.stopPropagation();if(!editMode)toggleSavedMenu(idx)};bindMenu(d,'open',()=>openSavedMonitor(x));bindMenu(d,'refresh',()=>{loadSavedEta(x,idx,true);loadJourneyTime(x,idx,true)});bindMenu(d,'rename',()=>renameSaved(x.key));bindMenu(d,'move',()=>moveSaved(x.key));bindMenu(d,'remove',()=>removeSaved(x.key));d.addEventListener('pointerdown',e=>startCardPointerDrag(e,d,x.key));box.appendChild(d);renderSavedEtaHistory(x,idx);renderJourneyTimeHistory(x,idx);if(!editMode){loadSavedEta(x,idx,false);loadJourneyTime(x,idx,false)}})}
 
 function bindMenu(card,act,fn){let el=card.querySelector('[data-act="'+act+'"]');if(el)el.onclick=e=>{e.stopPropagation();closeSavedMenus();fn()}}
@@ -691,7 +668,6 @@ function moveKeysToGroup(keys,groupId){let groups=getGroups(),g=groups.find(x=>x
 function deleteSavedKeys(keys){if(!keys.length)return;let set=new Set(keys);setSaved(getSaved().filter(x=>!set.has(x.key)));let h=getEtaHistory();keys.forEach(k=>delete h[k]);writeLS(LS_ETA_HISTORY,h);let j=getJtHistory();keys.forEach(k=>delete j[k]);writeLS(LS_JT_HISTORY,j);selectedKeys.clear();renderSaved();status('Deleted '+keys.length+' route(s).','ok')}
 function batchMoveSelected(){let items=selectedSavedItems();if(!items.length){status('Select route(s) first.','err');return}let opts=getGroups().map(g=>({text:g.name,value:g.id}));opts.push({text:'+ create new group',value:'__new__'});openSelectModal('Move Selected Routes','Move '+items.length+' saved ETA monitor(s) to another group.','Group',opts,activeGroupId,'Move',(val,newName)=>{let groups=getGroups(),group=null;if(val==='__new__'){if(!newName){status('Please enter new group name.','err');$('appNewGroupInput').focus();return}group=groups.find(g=>g.name===newName);if(!group){group={id:'g'+Date.now(),name:newName};groups.push(group);setGroups(groups)}}else group=groups.find(g=>g.id===val)||groups[0];closeAppModal();moveKeysToGroup(items.map(x=>x.key),group.id)})}
 function batchDeleteSelected(){let items=selectedSavedItems();if(!items.length){status('Select route(s) first.','err');return}openConfirmModal('Delete Selected Routes','Delete '+items.length+' saved ETA monitor(s) and ETA history.','Delete',()=>{closeAppModal();deleteSavedKeys(items.map(x=>x.key))})}
-
 function startCardPointerDrag(e,card,key){if(!editMode)return;if(!e.target.closest('.dragGrip'))return;e.preventDefault();e.stopPropagation();pointerDrag={key,card,startY:e.clientY,startX:e.clientX};card.setPointerCapture?.(e.pointerId);card.classList.add('dragging');document.body.classList.add('noSelect');const move=ev=>moveCardPointerDrag(ev);const up=ev=>endCardPointerDrag(ev,move,up);card.addEventListener('pointermove',move);card.addEventListener('pointerup',up,{once:true});card.addEventListener('pointercancel',up,{once:true})}
 function moveCardPointerDrag(e){if(!pointerDrag)return;e.preventDefault();let card=pointerDrag.card;card.style.transform='translate('+(e.clientX-pointerDrag.startX)+'px,'+(e.clientY-pointerDrag.startY)+'px) scale(1.03)';card.style.position='relative';card.style.zIndex='90';document.querySelectorAll('.dropBefore,.dropGroup').forEach(el=>el.classList.remove('dropBefore','dropGroup'));let group=[...document.querySelectorAll('.groupChip[data-g]')].find(el=>{let r=el.getBoundingClientRect();return e.clientX>=r.left&&e.clientX<=r.right&&e.clientY>=r.top&&e.clientY<=r.bottom});if(group&&group.dataset.g){group.classList.add('dropGroup');return}let target=[...document.querySelectorAll('.savedMonitorCard.editing')].find(el=>{if(el===card)return false;let r=el.getBoundingClientRect();return e.clientY>=r.top&&e.clientY<=r.bottom});if(target)target.classList.add('dropBefore')}
 function endCardPointerDrag(e,move,up){if(!pointerDrag)return;let card=pointerDrag.card;card.removeEventListener('pointermove',move);card.classList.remove('dragging');card.style.transform='';card.style.position='';card.style.zIndex='';let group=document.querySelector('.groupChip.dropGroup');let target=document.querySelector('.savedMonitorCard.dropBefore');document.querySelectorAll('.dropBefore,.dropGroup').forEach(el=>el.classList.remove('dropBefore','dropGroup'));if(group&&group.dataset.g&&group.dataset.g!==activeGroupId){moveKeysToGroup([pointerDrag.key],group.dataset.g)}else if(target&&target.dataset.key&&target.dataset.key!==pointerDrag.key){reorderSavedInGroup(pointerDrag.key,target.dataset.key)}pointerDrag=null;document.body.classList.toggle('noSelect',editMode)}
@@ -702,12 +678,7 @@ function moveGroupPointerDrag(e){if(!groupDrag)return;e.preventDefault();let chi
 function endGroupPointerDrag(e,move,up){if(!groupDrag)return;let chip=groupDrag.chip;chip.removeEventListener('pointermove',move);chip.classList.remove('dragging');chip.style.transform='';chip.style.zIndex='';let target=document.querySelector('.groupChip.dropGroup');document.querySelectorAll('.groupChip.dropGroup').forEach(el=>el.classList.remove('dropGroup'));if(target&&target.dataset.g&&target.dataset.g!==groupDrag.id)reorderGroups(groupDrag.id,target.dataset.g);groupDrag=null;document.body.classList.toggle('noSelect',editMode)}
 function reorderGroups(fromId,toId){let groups=getGroups();let from=groups.findIndex(g=>g.id===fromId),to=groups.findIndex(g=>g.id===toId);if(from<0||to<0)return;let [m]=groups.splice(from,1);groups.splice(to,0,m);setGroups(groups);renderSaved();status('Group order updated.','ok')}
 
-function openTextModal(title,sub,label,value,okText,cb){appModalOkCb=()=>cb($('appTextInput').value.trim());$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appTextLabel').textContent=label||'Input';$('appTextInput').value=value||'';$('appTextField').classList.remove('hidden');$('appSelectField').classList.add('hidden');$('appNewGroupField').classList.add('hidden');$('appModalOk').textContent=okText||'OK';$('appModal').classList.add('show');setTimeout(()=>$('appTextInput').focus(),60)}
-function openSelectModal(title,sub,label,options,selected,okText,cb){appModalOkCb=()=>cb($('appSelectInput').value,$('appNewGroupInput').value.trim());$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appSelectLabel').textContent=label||'Select';const sel=$('appSelectInput');sel.innerHTML='';options.forEach(o=>sel.add(new Option(o.text,o.value)));if(selected)sel.value=selected;$('appTextField').classList.add('hidden');$('appSelectField').classList.remove('hidden');$('appNewGroupField').classList.toggle('hidden',sel.value!=='__new__');$('appModalOk').textContent=okText||'OK';$('appModal').classList.add('show')}
-function openConfirmModal(title,sub,okText,cb){appModalOkCb=cb;$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appTextField').classList.add('hidden');$('appSelectField').classList.add('hidden');$('appNewGroupField').classList.add('hidden');$('appModalOk').textContent=okText||'Confirm';$('appModal').classList.add('show')}
-function closeAppModal(){$('appModal').classList.remove('show');appModalOkCb=null}
-function confirmAppModal(){if(appModalOkCb){let cb=appModalOkCb;cb()}}
-
+function openTextModal(title,sub,label,value,okText,cb){appModalOkCb=()=>cb($('appTextInput').value.trim());$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appTextLabel').textContent=label||'Input';$('appTextInput').value=value||'';$('appTextField').classList.remove('hidden');$('appSelectField').classList.add('hidden');$('appNewGroupField').classList.add('hidden');$('appModalOk').textContent=okText||'OK';$('appModal').classList.add('show');setTimeout(()=>$('appTextInput').focus(),60)}function openSelectModal(title,sub,label,options,selected,okText,cb){appModalOkCb=()=>cb($('appSelectInput').value,$('appNewGroupInput').value.trim());$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appSelectLabel').textContent=label||'Select';const sel=$('appSelectInput');sel.innerHTML='';options.forEach(o=>sel.add(new Option(o.text,o.value)));if(selected)sel.value=selected;$('appTextField').classList.add('hidden');$('appSelectField').classList.remove('hidden');$('appNewGroupField').classList.toggle('hidden',sel.value!=='__new__');$('appModalOk').textContent=okText||'OK';$('appModal').classList.add('show')}function openConfirmModal(title,sub,okText,cb){appModalOkCb=cb;$('appModalTitle').textContent=title;$('appModalSub').textContent=sub||'';$('appTextField').classList.add('hidden');$('appSelectField').classList.add('hidden');$('appNewGroupField').classList.add('hidden');$('appModalOk').textContent=okText||'Confirm';$('appModal').classList.add('show')}function closeAppModal(){$('appModal').classList.remove('show');appModalOkCb=null}function confirmAppModal(){if(appModalOkCb){let cb=appModalOkCb;cb()}}
 function toggleSavedMenu(idx){closeSavedMenus();let m=$('savedMenu'+idx);if(m)m.classList.add('show')}
 function renameSaved(key){let list=getSaved(),it=list.find(x=>x.key===key);if(!it)return;openTextModal('Rename ETA Monitor','Set a friendly name for this saved ETA.','Display name',it.customName||routeTitle(it.route),'Save',v=>{if(!v){status('Name cannot be empty.','err');return}it.customName=v;setSaved(list);closeAppModal();renderSaved();status('ETA monitor renamed.','ok')})}
 function moveSaved(key){let groups=getGroups(),it=getSaved().find(x=>x.key===key);if(!it)return;let opts=groups.map(g=>({text:g.name,value:g.id}));opts.push({text:'+ create new group',value:'__new__'});openSelectModal('Move ETA Monitor','Choose a group for this saved ETA monitor.','Group',opts,it.groupId||activeGroupId,'Move',(val,newName)=>{let group=null;if(val==='__new__'){if(!newName){status('Please enter new group name.','err');$('appNewGroupInput').focus();return}group=groups.find(g=>g.name===newName);if(!group){group={id:'g'+Date.now(),name:newName};groups.push(group);setGroups(groups)}}else group=groups.find(g=>g.id===val)||groups[0];closeAppModal();moveKeysToGroup([key],group.id)})}
@@ -718,26 +689,18 @@ function renameGroup(){renameGroupById(activeGroupId)}
 function deleteGroupById(id){let groups=getGroups(),cur=groups.find(x=>x.id===id);if(!cur)return;let remaining=groups.filter(x=>x.id!==id),target=remaining[0];let targetName=target?target.name:'New Group';openConfirmModal('Delete Group','Saved ETA monitors in '+cur.name+' will move to '+targetName+'.','Delete',()=>{let g=getGroups().filter(x=>x.id!==id),list=getSaved();if(!g.length){target={id:'g'+Date.now(),name:'New Group'};g=[target]}else target=g[0];list.forEach(x=>{if((x.groupId||'default')===id)x.groupId=target.id});setGroups(g);setSaved(list);if(activeGroupId===id)setActiveGroup(target.id);closeAppModal();renderSaved();renderOptions();status('Group deleted. Routes moved to '+target.name+'.','ok')})}
 function deleteGroup(){deleteGroupById(activeGroupId)}
 
-function stopPrefix(id){id=stopIdOf(id);return id.slice(0,2)||id.slice(0,1)||'all'}
-function normalizeJourneyValue(v){if(v==null)return null;if(typeof v==='number')return v;if(typeof v==='string'){let n=parseFloat(v);return Number.isFinite(n)?n:null}if(typeof v==='object'){for(const k of ['time','seconds','sec','duration','journeyTime','jt','value','avg']){if(v[k]!=null){let n=normalizeJourneyValue(v[k]);if(n!=null)return n}}}return null}
-function extractJourneySeconds(data,start,end){if(!data)return null;for(const sk of [start,stopIdOf(start),String(start)]){const row=data[sk];if(row!=null){if(typeof row==='number')return row;for(const ek of [end,stopIdOf(end),String(end)]){const n=normalizeJourneyValue(row[ek]);if(n!=null)return n}}}for(const k of [start+'-'+end,start+'_'+end,start+'|'+end,start+','+end]){const n=normalizeJourneyValue(data[k]);if(n!=null)return n}return null}
-async function fetchJourneySegmentSeconds(start,end){const d=new Date(),day=(d.getDay()+6)%7,hour=d.getHours(),prefix=stopPrefix(start),urls=[`https://raw.githubusercontent.com/HK-Bus-ETA/hk-bus-time-between-stops/refs/heads/pages/times_hourly/${day}/${hour}/${prefix}.json`,`https://raw.githubusercontent.com/HK-Bus-ETA/hk-bus-time-between-stops/refs/heads/pages/times/${prefix}.json`,`https://timeinterval.hkbuseta.com/times_hourly/${day}/${hour}/${prefix}.json`,`https://timeinterval.hkbuseta.com/times/${prefix}.json`];for(const u of urls){try{let data=await json(u,15*60*1000),sec=extractJourneySeconds(data,stopIdOf(start),stopIdOf(end));if(sec!=null)return{sec,source:u.includes('times_hourly')?'hourly':'avg'}}catch(e){}}return{sec:240,source:'fallback'}}
-
+function stopPrefix(id){id=stopIdOf(id);return id.slice(0,2)||id.slice(0,1)||'all'}function normalizeJourneyValue(v){if(v==null)return null;if(typeof v==='number')return v;if(typeof v==='string'){let n=parseFloat(v);return Number.isFinite(n)?n:null}if(typeof v==='object'){for(const k of ['time','seconds','sec','duration','journeyTime','jt','value','avg']){if(v[k]!=null){let n=normalizeJourneyValue(v[k]);if(n!=null)return n}}}return null}function extractJourneySeconds(data,start,end){if(!data)return null;for(const sk of [start,stopIdOf(start),String(start)]){const row=data[sk];if(row!=null){if(typeof row==='number')return row;for(const ek of [end,stopIdOf(end),String(end)]){const n=normalizeJourneyValue(row[ek]);if(n!=null)return n}}}for(const k of [start+'-'+end,start+'_'+end,start+'|'+end,start+','+end]){const n=normalizeJourneyValue(data[k]);if(n!=null)return n}return null}async function fetchJourneySegmentSeconds(start,end){const d=new Date(),day=(d.getDay()+6)%7,hour=d.getHours(),prefix=stopPrefix(start),urls=[`https://raw.githubusercontent.com/HK-Bus-ETA/hk-bus-time-between-stops/refs/heads/pages/times_hourly/${day}/${hour}/${prefix}.json`,`https://raw.githubusercontent.com/HK-Bus-ETA/hk-bus-time-between-stops/refs/heads/pages/times/${prefix}.json`,`https://timeinterval.hkbuseta.com/times_hourly/${day}/${hour}/${prefix}.json`,`https://timeinterval.hkbuseta.com/times/${prefix}.json`];for(const u of urls){try{let data=await json(u,15*60*1000),sec=extractJourneySeconds(data,stopIdOf(start),stopIdOf(end));if(sec!=null)return{sec,source:u.includes('times_hourly')?'hourly':'avg'}}catch(e){}}return{sec:240,source:'fallback'}}
 async function getRouteStopsForSaved(item){
-    const c=await IDB.get('routeDetailCache_'+routeKey(item.route||{}));
+    const c=await IDB.get('routeDetailCacheV2_'+routeKey(item.route||{}));
     if(c&&Array.isArray(c.stops)&&c.stops.length>0) return c.stops;
     let fallback = item.route.type==='KMB'?await kmbStops(item.route):item.route.type==='CTB'?await ctbStops(item.route):await gmbStops(item.route);
-    if(fallback.length) await IDB.set('routeDetailCache_'+routeKey(item.route), {route:item.route, stops:fallback, meta:routeMeta(item.route), ts:Date.now()});
+    if(fallback.length) await IDB.set('routeDetailCacheV2_'+routeKey(item.route), {route:item.route, stops:fallback, meta:routeMeta(item.route), ts:Date.now()});
     return fallback;
 }
-
-async function estimateJourneyTimeMinutes(item){const stops=await getRouteStopsForSaved(item);let fi=stops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=stops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi<0&&item.from&&item.from.seq)fi=Number(item.from.seq)-1;if(ti<0&&item.to&&item.to.seq)ti=Number(item.to.seq)-1;if(fi<0||ti<0||ti<=fi)return{minutes:null,source:'invalid'};let total=0,sources=[];for(let i=fi;i<ti;i++){let seg=await fetchJourneySegmentSeconds(stopIdOf(stops[i].stop),stopIdOf(stops[i+1].stop));total+=seg.sec;sources.push(seg.source)}return{minutes:Math.max(1,Math.round(total/60)),source:sources.includes('hourly')?'hourly':sources.includes('avg')?'avg':'fallback'}}
-function renderJourneyTimeHistory(item,idx){const el=$('savedTrip'+idx);if(!el)return false;const h=getJtHistoryForKey(item.key);if(!h||h.minutes==null)return false;el.classList.toggle('warn',h.source==='fallback');el.innerHTML='<span class="label">Trip:</span> ~'+esc(h.minutes)+'m '+(h.source==='fallback'?'approx':'est.');return true}
-async function loadJourneyTime(item,idx,force=false){const el=$('savedTrip'+idx);if(!el)return;if(!force&&renderJourneyTimeHistory(item,idx))return;try{const r=await estimateJourneyTimeMinutes(item);if(r.minutes==null){el.innerHTML='<span class="label">Trip:</span> --';return}setJtHistoryForKey(item.key,r);el.classList.toggle('warn',r.source==='fallback');el.innerHTML='<span class="label">Trip:</span> ~'+esc(r.minutes)+'m '+(r.source==='fallback'?'approx':'est.')}catch(e){if(!renderJourneyTimeHistory(item,idx))el.innerHTML='<span class="label">Trip:</span> --'}}
+async function estimateJourneyTimeMinutes(item){const stops=await getRouteStopsForSaved(item);let fi=stops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=stops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi<0&&item.from&&item.from.seq)fi=Number(item.from.seq)-1;if(ti<0&&item.to&&item.to.seq)ti=Number(item.to.seq)-1;if(fi<0||ti<0||ti<=fi)return{minutes:null,source:'invalid'};let total=0,sources=[];for(let i=fi;i<ti;i++){let seg=await fetchJourneySegmentSeconds(stopIdOf(stops[i].stop),stopIdOf(stops[i+1].stop));total+=seg.sec;sources.push(seg.source)}return{minutes:Math.max(1,Math.round(total/60)),source:sources.includes('hourly')?'hourly':sources.includes('avg')?'avg':'fallback'}}function renderJourneyTimeHistory(item,idx){const el=$('savedTrip'+idx);if(!el)return false;const h=getJtHistoryForKey(item.key);if(!h||h.minutes==null)return false;el.classList.toggle('warn',h.source==='fallback');el.innerHTML='<span class="label">Trip:</span> ~'+esc(h.minutes)+'m '+(h.source==='fallback'?'approx':'est.');return true}async function loadJourneyTime(item,idx,force=false){const el=$('savedTrip'+idx);if(!el)return;if(!force&&renderJourneyTimeHistory(item,idx))return;try{const r=await estimateJourneyTimeMinutes(item);if(r.minutes==null){el.innerHTML='<span class="label">Trip:</span> --';return}setJtHistoryForKey(item.key,r);el.classList.toggle('warn',r.source==='fallback');el.innerHTML='<span class="label">Trip:</span> ~'+esc(r.minutes)+'m '+(r.source==='fallback'?'approx':'est.')}catch(e){if(!renderJourneyTimeHistory(item,idx))el.innerHTML='<span class="label">Trip:</span> --'}}
 
 function etaText(r){let iso=r.eta||r.timestamp;if(getEtaMode()==='actual')return time(iso)||'--';if(typeof r.diff==='number'&&isFinite(r.diff))return r.diff<=0?'Now':String(Math.round(r.diff))+'m';let m=etaMin(iso);return m==null?'--':m===0?'Now':m+'m'}
 function renderSavedEtaHistory(item,idx){let box=$('savedEta'+idx),upd=$('savedUpdated'+idx);if(!box)return false;let h=getEtaHistoryForKey(item.key);if(!h||!Array.isArray(h.rows))return false;box.classList.toggle('actualMode',getEtaMode()==='actual');box.innerHTML=renderSavedEtaRows(h.rows);box.dataset.lastGood=box.innerHTML;if(upd)upd.textContent='Last updated '+new Date(h.ts||Date.now()).toLocaleTimeString('zh-HK',{hour:'2-digit',minute:'2-digit'});return true}
-
 async function loadSavedEta(item,idx,force){
     let box=$('savedEta'+idx),upd=$('savedUpdated'+idx);
     if(!box)return;
@@ -755,8 +718,7 @@ async function loadSavedEta(item,idx,force){
         else{box.innerHTML='<div class="etaChip emptyEta">ETA failed</div>';if(upd)upd.textContent='Fetch failed'}
     }
 }
-function renderSavedEtaRows(rows){if(!rows||!rows.length)return '<div class="etaChip emptyEta">No ETA</div>';let actual=getEtaMode()==='actual';return rows.slice(0,3).map((r,i)=>'<div class="etaChip '+(!actual&&i===0?'first':'')+'"><div class="min '+(actual&&i>0?'smallActual':'')+'">'+esc(etaText(r))+'</div></div>').join('')}
-async function openSavedMonitor(item){await openRoute(item.route);setTimeout(()=>{let fi=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi>=0)$('fromStop').value=fi;if(ti>=0)$('toStop').value=ti},80)}
+function renderSavedEtaRows(rows){if(!rows||!rows.length)return '<div class="etaChip emptyEta">No ETA</div>';let actual=getEtaMode()==='actual';return rows.slice(0,3).map((r,i)=>'<div class="etaChip '+(!actual&&i===0?'first':'')+'"><div class="min '+(actual&&i>0?'smallActual':'')+'">'+esc(etaText(r))+'</div></div>').join('')}async function openSavedMonitor(item){await openRoute(item.route);setTimeout(()=>{let fi=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi>=0)$('fromStop').value=fi;if(ti>=0)$('toStop').value=ti},80)}
 
 let configModalMode='export';
 function collectConfig(){ return {app:'HK Transit ETA Single HTML',schema:2,exportedAt:new Date().toISOString(),groups:getGroups(),activeGroupId:activeGroupId,saved:getSaved(),etaHistory:getEtaHistory(),journeyTimeHistory:getJtHistory(),etaMode:getEtaMode()}; }
@@ -764,7 +726,6 @@ function serializeConfig(){ return 'HKTRANSIT1:'+btoa(unescape(encodeURIComponen
 function deserializeConfig(text){let t=(text||'').trim();if(!t)throw new Error('Empty config text');if(t.startsWith('HKTRANSIT1:')){return JSON.parse(decodeURIComponent(escape(atob(t.slice('HKTRANSIT1:'.length)))));}return JSON.parse(t);}
 function exportConfigJson(){const blob=new Blob([JSON.stringify(collectConfig(),null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hk-transit-config-'+new Date().toISOString().slice(0,10)+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);status('Config JSON exported.','ok');}
 function importConfigJsonFile(){const input=$('importFileInput');const file=input.files&&input.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{applyConfig(JSON.parse(String(r.result||'')))}catch(e){status('Import failed: '+e.message,'err')}input.value='';};r.onerror=()=>{status('File read failed.','err');input.value=''};r.readAsText(file);}
-
 function openConfigModal(title,sub,text,mode){configModalMode=mode;$('configModalTitle').textContent=title;$('configModalSub').textContent=sub||'';$('configTextArea').value=text||'';$('configTextArea').readOnly=mode==='export';$('configActionBtn').textContent=mode==='export'?'Copy':'Import';$('configModal').classList.add('show');setTimeout(()=>{$('configTextArea').focus();$('configTextArea').select()},60);}
 function closeConfigModal(){$('configModal').classList.remove('show');}
 async function confirmConfigModal(){if(configModalMode==='export'){try{await navigator.clipboard.writeText($('configTextArea').value);status('Config text copied.','ok')}catch{status('Copy blocked by browser. Please select and copy manually.','err')}return;}try{applyConfig(deserializeConfig($('configTextArea').value));closeConfigModal()}catch(e){status('Import failed: '+e.message,'err')}}
@@ -772,27 +733,8 @@ function exportConfigText(){openConfigModal('Export Config Text','Copy this text
 function importConfigText(){openConfigModal('Import Config Text','Paste exported config text here. Import will combine with existing data, not overwrite it. The text can be HKTRANSIT1 serialized text or raw JSON.','','import');}
 function applyConfig(cfg){if(!cfg||typeof cfg!=='object')throw new Error('Invalid config object');const groupIdMap={};const importedGroups=Array.isArray(cfg.groups)?cfg.groups.filter(g=>g&&g.name):[];const localGroups=getGroups().slice();const mergedGroups=[];const usedLocalIds=new Set();importedGroups.forEach(g=>{let existingById=localGroups.find(x=>x.id===g.id);let existingByName=localGroups.find(x=>x.name===g.name);let newId;if(existingById){newId=existingById.id;usedLocalIds.add(existingById.id);mergedGroups.push({...existingById,...g,id:newId});}else if(existingByName){newId=existingByName.id;usedLocalIds.add(existingByName.id);mergedGroups.push({...existingByName,...g,id:newId});}else{newId=g.id||('g'+Date.now());mergedGroups.push({...g,id:newId});}if(g.id)groupIdMap[g.id]=newId;});localGroups.forEach(g=>{if(!usedLocalIds.has(g.id)&&!mergedGroups.find(x=>x.id===g.id))mergedGroups.push(g);});if(!mergedGroups.length)mergedGroups.push({id:'default',name:'Default'});setGroups(mergedGroups);const localSaved=getSaved().slice();const importedSaved=Array.isArray(cfg.saved)?cfg.saved.filter(x=>x&&x.key):[];const localByKey=new Map(localSaved.map(x=>[x.key,x]));const usedKeys=new Set();const mergedSaved=[];let added=0,updated=0;importedSaved.forEach(item=>{const mappedGroupId=groupIdMap[item.groupId]||item.groupId||'default';const existing=localByKey.get(item.key);const incoming={...item,groupId:mappedGroupId};if(existing){mergedSaved.push({...existing,...incoming,customName:incoming.customName||existing.customName,groupId:mappedGroupId});updated++;}else{mergedSaved.push(incoming);added++;}usedKeys.add(item.key);});localSaved.forEach(item=>{if(!usedKeys.has(item.key))mergedSaved.push(item);});setSaved(mergedSaved);let groups=getGroups();let importedTarget=cfg.activeGroupId?(groupIdMap[cfg.activeGroupId]||cfg.activeGroupId):activeGroupId;let target=groups.find(g=>g.id===importedTarget)?importedTarget:(groups.find(g=>g.id===activeGroupId)?activeGroupId:groups[0].id);setActiveGroup(target);selectedKeys.clear();editMode=false;renderSaved();renderOptions();setMainTab('SAVE');status('Config combined. Imported order/name restored. Added '+added+', updated '+updated+'.','ok');}
 
-function showGroupPicker(){let gp=$('groupPicker'),groups=getGroups();gp.innerHTML=groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋ New</button>';gp.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);hideGroupPicker();setMainTab('SAVE')});let add=gp.querySelector('[data-add]');if(add)add.onclick=()=>{hideGroupPicker();addGroup();setMainTab('SAVE')};gp.classList.add('show')}
-function hideGroupPicker(){$('groupPicker').classList.remove('show')}
-
-function setMainTab(tab){
-    let search=tab==='SEARCH',save=tab==='SAVE',opt=tab==='OPTION';
-    $('searchPanel').classList.toggle('hidden',!search);
-    $('searchTitle').classList.toggle('hidden',!search);
-    $('routes').classList.toggle('hidden',!search);
-    $('savedView').classList.toggle('hidden',!save);
-    $('optionView').classList.toggle('hidden',!opt);
-    $('tabSearch').classList.toggle('on',search);
-    $('tabSave').classList.toggle('on',save);
-    $('tabOption').classList.toggle('on',opt);
-    updateSaveTabText();
-    if(save){
-        renderSaved();
-    }else{
-        editMode=false; selectedKeys.clear(); document.body.classList.remove('noSelect');
-    }
-    if(opt) renderOptions();
-}
+function showGroupPicker(){let gp=$('groupPicker'),groups=getGroups();gp.innerHTML=groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋ New</button>';gp.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);hideGroupPicker();setMainTab('SAVE')});let add=gp.querySelector('[data-add]');if(add)add.onclick=()=>{hideGroupPicker();addGroup();setMainTab('SAVE')};gp.classList.add('show')}function hideGroupPicker(){$('groupPicker').classList.remove('show')}
+function setMainTab(tab){let search=tab==='SEARCH',save=tab==='SAVE',opt=tab==='OPTION';$('searchPanel').classList.toggle('hidden',!search);$('searchTitle').classList.toggle('hidden',!search);$('routes').classList.toggle('hidden',!search);$('savedView').classList.toggle('hidden',!save);$('optionView').classList.toggle('hidden',!opt);$('tabSearch').classList.toggle('on',search);$('tabSave').classList.toggle('on',save);$('tabOption').classList.toggle('on',opt);updateSaveTabText();if(save){renderSaved();}else{editMode=false;selectedKeys.clear();document.body.classList.remove('noSelect');}if(opt)renderOptions()}
 
 async function renderOptions() {
     let sel=$('etaModeSelect');if(sel)sel.value=getEtaMode();
@@ -813,8 +755,8 @@ async function renderOptions() {
         if(cursor) {
             let k = cursor.key, size = JSON.stringify(cursor.value).length;
             if(k.startsWith('req_')) { stats.req.c++; stats.req.b += size; }
-            else if(k.startsWith('routeDetailCache_') || k.startsWith('previewStops_')) { stats.detail.c++; stats.detail.b += size; }
-            else if(k.startsWith('lite_')) { stats.lite.c++; stats.lite.b += size; }
+            else if(k.startsWith('routeDetailCacheV2_') || k.startsWith('previewStopsV2_')) { stats.detail.c++; stats.detail.b += size; }
+            else if(k.startsWith('liteV2_')) { stats.lite.c++; stats.lite.b += size; }
             else if(k === 'stopIndex') { stats.idx.c++; stats.idx.b += size; }
             else { stats.other.c++; stats.other.b += size; }
             cursor.continue();
@@ -823,21 +765,20 @@ async function renderOptions() {
             box.innerHTML = `
             <div class="cacheStatGrid">
                 <div class="cacheStat"><b>API Request Cache</b><span>${stats.req.c} items · ${fmt(stats.req.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('req_')">Delete</button></div>
-                <div class="cacheStat"><b>Route Details</b><span>${stats.detail.c} items · ${fmt(stats.detail.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('routeDetailCache_')">Delete</button></div>
-                <div class="cacheStat"><b>Lite Match Data</b><span>${stats.lite.c} items · ${fmt(stats.lite.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('lite_')">Delete</button></div>
+                <div class="cacheStat"><b>Route Details</b><span>${stats.detail.c} items · ${fmt(stats.detail.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('routeDetailCacheV2_')">Delete</button></div>
+                <div class="cacheStat"><b>Lite Match Data</b><span>${stats.lite.c} items · ${fmt(stats.lite.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('liteV2_')">Delete</button></div>
                 <div class="cacheStat"><b>Stop Location Index</b><span>${stats.idx.c} items · ${fmt(stats.idx.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('stopIndex')">Delete</button></div>
             </div>`;
         }
     };
 }
-
 async function clearCachePrefix(prefix) {
     status('Clearing cache: ' + prefix + '...');
     let tx = IDB.db.transaction('kv', 'readwrite'), store = tx.objectStore('kv'), req = store.openCursor();
     req.onsuccess = e => {
         let cursor = e.target.result;
         if(cursor) { if(cursor.key.startsWith(prefix) || cursor.key === prefix) cursor.delete(); cursor.continue(); } 
-        else { status('Cache cleared: ' + (prefix==='routeDetailCache_'?'routeDetails':prefix), 'ok'); renderOptions(); }
+        else { status('Cache cleared: ' + (prefix==='routeDetailCacheV2_'?'routeDetails':prefix), 'ok'); renderOptions(); }
     };
 }
 
@@ -848,22 +789,9 @@ function startAutoRefresh() {
     if(previewInterval) clearInterval(previewInterval);
     if(saveRefreshTimer) clearInterval(saveRefreshTimer);
     
-    // GPS auto refresh is only executed when user isn't actively searching
     gpsInterval = setInterval(() => { if (!$('searchPanel').classList.contains('hidden') && routeInput.value.trim().length === 0) gps(true); }, 60000);
-    
-    // ETA previews strictly restricted when not actively searching 
-    previewInterval = setInterval(() => { 
-        if (!$('searchPanel').classList.contains('hidden') && currentPreviewItems.length > 0 && routeInput.value.trim().length === 0) {
-            loadRouteEtaPreviews(currentPreviewItems); 
-        }
-    }, 30000);
-    
-    // Auto refresh saved entries ETAs periodically
-    saveRefreshTimer = setInterval(() => { 
-        if (!$('savedView').classList.contains('hidden') && !editMode) {
-            getSaved().filter(x=>(x.groupId||'default')===activeGroupId).forEach((x,idx)=>loadSavedEta(x,idx,false)); 
-        }
-    }, 30000);
+    previewInterval = setInterval(() => { if (!$('searchPanel').classList.contains('hidden') && currentPreviewItems.length > 0) loadRouteEtaPreviews(currentPreviewItems); }, 30000);
+    saveRefreshTimer = setInterval(() => { if (!$('savedView').classList.contains('hidden') && !editMode) getSaved().filter(x=>(x.groupId||'default')===activeGroupId).forEach((x,idx)=>loadSavedEta(x,idx,false)); }, 30000);
 }
 
 function gps(silent=false){
