@@ -7,7 +7,7 @@
 .keyboard{display:grid;grid-template-columns:1fr 1.28fr;gap:10px;align-items:stretch}.keyBox{background:rgba(0,0,0,.18);border:1px solid rgba(255,255,255,.08);border-radius:24px;padding:9px;display:flex;flex-direction:column}.keyTitle{text-align:center;color:#aab4c8;font-size:10px;font-weight:950;letter-spacing:.7px;margin-bottom:8px}.numPad,.charPad{display:grid;gap:7px}.numPad{grid-template-columns:repeat(3,minmax(0,1fr))}.charPad{grid-template-columns:repeat(4,minmax(0,1fr))}.key{width:100%;height:42px;min-width:0;border-radius:15px;border:1px solid rgba(255,255,255,.13);background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.08));color:white;font-size:17px;font-weight:950;box-shadow:inset 0 1px 0 rgba(255,255,255,.08);padding:0}.key:active{transform:scale(.96);filter:brightness(1.25)}.key.back{background:linear-gradient(180deg,#1d8cff,#0761c7)}.key.clear{background:linear-gradient(180deg,#ff5b70,#b3203f)}
 .titleRow{display:flex;align-items:end;justify-content:space-between;margin:18px 4px 10px}.titleRow b{font-size:20px}.count{font-size:12px;color:var(--sub)}.routes{display:flex;flex-direction:column;gap:10px}.routeCard{border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.04));border-radius:24px;padding:13px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px}.routeCard:active{transform:scale(.985)}.routeCardMain{min-width:0;flex:1}.routeEtaPreview{margin-top:8px;border-top:1px solid rgba(255,255,255,.08);padding-top:7px;color:#b8ffd0;font-size:11px;font-weight:850;line-height:1.35}.routeEtaPreview .routeEtaStop{color:#9aa8bf;font-weight:800;margin-bottom:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.routeEtaPreview .routeEtaChips{display:flex;gap:5px;flex-wrap:wrap}.routeEtaPreview .routeEtaChip{border:1px solid rgba(48,209,88,.22);background:rgba(48,209,88,.10);color:#30d158;border-radius:999px;padding:3px 6px;font-size:11px;font-weight:950}.routeEtaPreview.muted{color:#9aa8bf}.routeEtaPreview.err{color:#ff8a82}.suggestedRouteNote{margin:0 0 10px;color:#b8ffd0;font-size:12px;font-weight:850;text-align:center}.rno{font-size:28px;font-weight:950;letter-spacing:-.4px}.meta{font-size:12px;color:var(--sub);line-height:1.35}.tag{border-radius:999px;padding:6px 9px;font-size:11px;font-weight:950;border:1px solid var(--line);white-space:nowrap}.kmb{background:rgba(255,159,10,.20);color:#ffd49e}.lwb{background:rgba(255,149,0,.20);color:#ffd19e}.ctb{background:rgba(10,132,255,.22);color:#a9d3ff}.gmb{background:rgba(48,209,88,.18);color:#aaffc4}.nlb{background:rgba(0,190,165,.22);color:#a8ffee}.empty{border:1px dashed rgba(255,255,255,.12);background:rgba(255,255,255,.035);border-radius:24px;padding:24px 15px;text-align:center;color:var(--sub);font-size:14px;line-height:1.45}.status{margin-top:14px;border:1px solid rgba(255,255,255,.09);background:rgba(0,0,0,.18);border-radius:22px;padding:12px 13px;color:var(--sub);font-size:12px;line-height:1.45}.ok{color:var(--green)}.err{color:#ff8a82}.hidden{display:none!important}.bottomTabs{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(400px,calc(100vw - 28px));z-index:4;display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:16px;padding:7px;border:1px solid var(--line);border-radius:24px;background:rgba(7,9,16,.84);backdrop-filter:blur(22px);box-shadow:var(--shadow)}.bottomTabs button{border:0;border-radius:18px;background:transparent;color:var(--sub);padding:11px 4px;font-weight:950;font-size:13px}.bottomTabs button.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.miniBtn{border:1px solid var(--line);border-radius:16px;background:rgba(255,255,255,.08);color:white;padding:10px 12px;font-weight:900}.miniBtn.danger{background:rgba(255,69,58,.18);color:#ffb0aa}.miniBtn.ok{background:rgba(48,209,88,.16);color:#b8ffd0}.rowBtns{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.optBlock{border:1px solid var(--line);background:rgba(255,255,255,.045);border-radius:24px;padding:14px;margin-bottom:12px}.optBlock h3{margin:0 0 8px;font-size:17px}.cacheStatGrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.cacheStat{border:1px solid var(--line);background:rgba(255,255,255,.055);border-radius:16px;padding:10px}.cacheStat b{display:block;font-size:16px;color:white}.cacheStat span{display:block;margin-top:3px;font-size:11px;color:var(--sub);font-weight:800;margin-bottom:8px;}.cacheStat .miniBtn{width:100%;padding:6px;font-size:11px;}.saveAction{margin-top:9px;width:100%;border:1px solid var(--line);border-radius:21px;padding:13px;background:rgba(48,209,88,.16);color:#c8ffd7;font-size:15px;font-weight:950}
 .sheet{position:fixed;left:50%;bottom:0;width:min(430px,100vw);max-height:88svh;overflow:auto;transform:translateX(-50%) translateY(110%);transition:.25s cubic-bezier(.2,.8,.2,1);z-index:9;padding:10px 14px calc(16px + env(safe-area-inset-bottom));border-radius:34px 34px 0 0;border:1px solid var(--line);border-bottom:0;background:rgba(14,18,27,.96);backdrop-filter:blur(30px);box-shadow:0 -30px 90px rgba(0,0,0,.55)}.sheet.show{transform:translateX(-50%) translateY(0)}.grab{width:44px;height:5px;background:rgba(255,255,255,.28);border-radius:99px;margin:4px auto 12px}.sheetHead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}.close{width:34px;height:34px;border-radius:50%;border:0;background:rgba(255,255,255,.10);color:white;font-size:20px}.selectBox{margin-top:12px}.selectBox label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}select{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:19px;padding:14px;font-size:15px;outline:0}option{background:#111520}.primary{width:100%;margin-top:13px;border:0;border-radius:21px;padding:15px;background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white;font-size:16px;font-weight:950}.eta{margin-top:12px}.etaRow{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);background:rgba(255,255,255,.075);border-radius:22px;padding:14px;margin-bottom:9px}.etaMin{font-size:35px;font-weight:950;color:var(--green);letter-spacing:-1px}.etaRow.actualDetail .etaMin{font-size:28px;letter-spacing:-.3px}.etaMin small{font-size:13px;color:var(--sub)}
-.groupBar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 0 8px}.groupChip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.07);color:var(--sub);padding:9px 13px;font-weight:950}.groupChip.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.saveHeader{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px}.editHint{font-size:12px;color:var(--sub)}.savedMonitorCard{position:relative;display:grid;grid-template-columns:1fr 126px;gap:10px;align-items:center;width:100%;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border-radius:26px;padding:14px 40px 24px 14px;min-height:112px;touch-action:pan-y}.savedMonitorCard.dragging{opacity:.55;transform:scale(.98)}.savedMonitorCard.dropBefore{box-shadow:0 -3px 0 #0a84ff inset}.savedMonitorCard.editing{animation:jiggle .18s infinite alternate;cursor:grab}.savedMonitorCard.editing:active{cursor:grabbing}.dragGrip{display:none;position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#9aa8bf;font-size:18px;font-weight:900}.editing .dragGrip{display:block}.savedMonitorCard.editing{padding-left:34px}.savedRouteTitle{font-size:19px;font-weight:950;line-height:1.05;letter-spacing:-.2px;margin-bottom:7px}.savedPair{font-size:14px;line-height:1.42;color:#c8d4ea;font-weight:750}.savedPair .label{color:#8fa0bb;font-weight:900}.savedTrip{font-size:12px;line-height:1.35;margin-top:3px;color:#b7d6ff;font-weight:850}.savedTrip .label{color:#8fa0bb;font-weight:900}.savedTrip.warn{color:#ffd49e}.savedEta{display:flex;flex-direction:row;gap:8px;align-items:baseline;justify-content:flex-end;white-space:nowrap}.etaChip{text-align:right}.etaChip .min{font-size:13px;font-weight:950;color:var(--green)}.etaChip.first .min{font-size:27px}.etaChip.emptyEta{font-size:12px;color:var(--sub)}.savedEta.actualMode{flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;align-self:center;padding-top:0;padding-right:14px;min-height:72px}.savedEta.actualMode .etaChip{display:block;text-align:right;line-height:1.05}.savedEta.actualMode .etaChip .min,.savedEta.actualMode .etaChip.first .min{font-size:15.5px;letter-spacing:.15px;color:var(--green);white-space:nowrap}.savedEta.actualMode .etaChip .min.smallActual{font-size:13.5px;color:#9dffb8}.savedMonitorCard:has(.savedEta.actualMode),.savedMonitorCard.actualEtaCard{grid-template-columns:1fr 104px;align-items:center}.savedMore{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-weight:950;line-height:1}.savedMenu{position:absolute;top:42px;right:10px;z-index:20;display:none;flex-direction:column;gap:6px;min-width:130px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(11,15,24,.96);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.savedMenu.show{display:flex}.savedMenu button{border:0;border-radius:13px;padding:10px 12px;text-align:left;background:rgba(255,255,255,.08);color:white;font-weight:900}.savedMenu button.danger{background:rgba(255,69,58,.20);color:#ffb0aa}.savedUpdated{position:absolute;right:14px;bottom:7px;font-size:10px;color:var(--sub)}.groupPicker{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(12px);z-index:30;width:min(400px,calc(100vw - 28px));display:none;gap:8px;overflow-x:auto;padding:10px;border:1px solid var(--line);border-radius:22px;background:rgba(9,12,20,.96);box-shadow:var(--shadow);backdrop-filter:blur(22px)}.groupPicker.show{display:flex;transform:translateX(-50%) translateY(0)}@keyframes jiggle{from{transform:rotate(-.35deg)}to{transform:rotate(.35deg)}}
+.groupBar{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 10px;margin:0 0 8px}.groupChip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.07);color:var(--sub);padding:9px 13px;font-weight:950}.groupChip.on{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.saveHeader{display:flex;gap:8px;align-items:center;justify-content:space-between;margin:0 0 8px}.editHint{font-size:12px;color:var(--sub)}.savedMonitorCard{position:relative;display:grid;grid-template-columns:1fr 126px;gap:10px;align-items:center;width:100%;border:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.085),rgba(255,255,255,.04));border-radius:26px;padding:14px 40px 24px 14px;min-height:112px;touch-action:pan-y}.savedMonitorCard.dragging{opacity:.55;transform:scale(.98)}.savedMonitorCard.dropBefore{box-shadow:0 -3px 0 #0a84ff inset}.savedMonitorCard.editing{animation:jiggle .18s infinite alternate;cursor:grab}.savedMonitorCard.editing:active{cursor:grabbing}.dragGrip{display:none;position:absolute;left:8px;top:50%;transform:translateY(-50%);color:#9aa8bf;font-size:18px;font-weight:900}.editing .dragGrip{display:block}.savedMonitorCard.editing{padding-left:34px}.savedRouteTitle{font-size:19px;font-weight:950;line-height:1.05;letter-spacing:-.2px;margin-bottom:7px}.savedPair{font-size:14px;line-height:1.42;color:#c8d4ea;font-weight:750}.savedPair .label{color:#8fa0bb;font-weight:900}.savedTrip{font-size:12px;line-height:1.35;margin-top:3px;color:#b7d6ff;font-weight:850}.savedTrip .label{color:#8fa0bb;font-weight:900}.savedTrip.warn{color:#ffd49e}.savedEta{display:flex;flex-direction:row;gap:8px;align-items:baseline;justify-content:flex-end;white-space:nowrap}.etaChip{text-align:right}.etaChip .min{font-size:13px;font-weight:950;color:var(--green)}.etaChip.first .min{font-size:27px}.etaChip.emptyEta{font-size:12px;color:var(--sub)}.savedEta.actualMode{flex-direction:column;align-items:flex-end;justify-content:center;gap:4px;align-self:center;padding-top:0;padding-right:14px;min-height:72px}.savedEta.actualMode .etaChip{display:block;text-align:right;line-height:1.05}.savedEta.actualMode .etaChip .min,.savedEta.actualMode .etaChip.first .min{font-size:15.5px;letter-spacing:.15px;color:var(--green);white-space:nowrap}.savedEta.actualMode .etaChip .min.smallActual{font-size:13.5px;color:#9dffb8}.savedMonitorCard:has(.savedEta.actualMode),.savedMonitorCard.actualEtaCard{grid-template-columns:1fr 104px;align-items:center}.savedMore{position:absolute;top:10px;right:10px;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.08);color:white;font-weight:950;line-height:1}.savedMenu{position:absolute;top:42px;right:10px;z-index:20;display:none;flex-direction:column;gap:6px;min-width:130px;padding:8px;border:1px solid var(--line);border-radius:18px;background:rgba(11,15,24,.96);box-shadow:var(--shadow);backdrop-filter:blur(18px)}.savedMenu.show{display:flex}.savedMenu button{border:0;border-radius:13px;padding:10px 12px;text-align:left;background:rgba(255,255,255,.08);color:white;font-weight:900}.savedMenu button.danger{background:rgba(255,69,58,.20);color:#ffb0aa}.savedMenu button.shareBtn{background:linear-gradient(135deg,#0a84ff,#5e5ce6);color:white}.savedUpdated{position:absolute;right:14px;bottom:7px;font-size:10px;color:var(--sub)}.groupPicker{position:fixed;left:50%;bottom:72px;transform:translateX(-50%) translateY(12px);z-index:30;width:min(400px,calc(100vw - 28px));display:none;gap:8px;overflow-x:auto;padding:10px;border:1px solid var(--line);border-radius:22px;background:rgba(9,12,20,.96);box-shadow:var(--shadow);backdrop-filter:blur(22px)}.groupPicker.show{display:flex;transform:translateX(-50%) translateY(0)}@keyframes jiggle{from{transform:rotate(-.35deg)}to{transform:rotate(.35deg)}}
 .modalOverlay{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end;justify-content:center;background:rgba(0,0,0,.48);backdrop-filter:blur(10px);padding:14px}.modalOverlay.show{display:flex}.modalCard{width:min(430px,100%);border:1px solid var(--line);border-radius:30px;background:rgba(14,18,27,.97);box-shadow:var(--shadow);padding:16px}.modalTitle{font-size:22px;font-weight:950;margin:0 0 4px}.modalSub{color:var(--sub);font-size:12px;line-height:1.4;margin-bottom:14px}.field{margin-top:12px}.field label{display:block;color:var(--sub);font-size:12px;font-weight:900;margin:0 0 6px 3px}.modalInput,.modalSelect,.modalTextArea{width:100%;border:1px solid var(--line);background:#1a2030;color:white;border-radius:18px;padding:13px 14px;outline:0;font-size:15px}.modalTextArea{min-height:220px;resize:vertical;font-family:ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;font-size:12px;line-height:1.35}.modalActions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.modalBtn{border:0;border-radius:19px;padding:14px;font-size:15px;font-weight:950;color:white;background:rgba(255,255,255,.10)}.modalBtn.primary{background:linear-gradient(135deg,#0a84ff,#5e5ce6)}
 @media(max-width:370px){.keyboard{grid-template-columns:1fr}.routeInput{font-size:40px}.savedMonitorCard{grid-template-columns:1fr 112px}.savedRouteTitle{font-size:18px}.savedPair{font-size:13px}.etaChip.first .min{font-size:24px}.etaChip .min{font-size:12px}}
 .batchToolbar{display:none;grid-template-columns:52px repeat(4,minmax(0,1fr));gap:6px;align-items:center;margin:0 0 8px;padding:7px;border:1px solid var(--line);border-radius:18px;background:rgba(10,132,255,.075)}.editing .batchToolbar{display:grid}.batchToolbar .miniBtn{min-width:0;padding:8px 4px;border-radius:13px;font-size:11px;line-height:1;font-weight:950;text-align:center;white-space:nowrap}.batchCount{font-size:10px;line-height:1.05;color:#c9d8f0;font-weight:900;text-align:left;white-space:normal}.selectBubble{display:none;position:absolute;left:10px;top:12px;width:24px;height:24px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.10);color:white;font-size:13px;font-weight:950;z-index:2}.editing .selectBubble{display:grid;place-items:center}.selectBubble.on{background:linear-gradient(135deg,#30d158,#0a84ff);color:white}.editing .savedMonitorCard{padding-left:42px}.quickBtns{display:none;gap:5px;flex-wrap:wrap;margin-top:8px}.editing .quickBtns{display:flex}.quickBtn{border:1px solid var(--line);border-radius:12px;background:rgba(255,255,255,.08);color:white;padding:6px 8px;font-size:11px;font-weight:950}.quickBtn.danger{background:rgba(255,69,58,.18);color:#ffb0aa}.groupChip{position:relative;display:inline-flex;align-items:center;gap:6px;user-select:none;-webkit-user-select:none}.groupChip.dragging{opacity:.65;transform:scale(.96)}.groupChip.dropGroup{outline:2px solid #30d158;outline-offset:2px;color:white}.groupQuick{display:none;gap:4px}.editing .groupQuick{display:inline-flex}.groupMini{border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.09);color:white;border-radius:999px;width:22px;height:22px;font-size:10px;font-weight:950;padding:0}.groupMini.danger{color:#ffb0aa;background:rgba(255,69,58,.18)}.dragToGroupHint{display:none;font-size:10px;line-height:1.25;color:#b8ffd0;margin:-2px 3px 8px}.editing .dragToGroupHint{display:block}
@@ -20,7 +20,9 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
     
     <div class="optBlock"><h3>GPS Search Radius</h3><div class="meta">Configure distance to look for bus stops when using ⌖.</div><div style="display:flex;align-items:center;gap:14px;margin-top:12px;"><input type="range" id="radiusSlider" min="100" max="1000" step="50" style="flex:1;"><span id="radiusDisplay" style="font-size:14px;font-weight:900;color:#30d158;width:55px;text-align:right;"></span></div></div>
     
-    <div class="optBlock"><h3>Save groups</h3><div class="meta">Create custom save tabs to organise ETA monitors.</div><div class="rowBtns"><button id="addGroupBtn" class="miniBtn ok">Add save tab</button><button id="renameGroupBtn" class="miniBtn">Rename current tab</button><button id="deleteGroupBtn" class="miniBtn danger">Delete current tab</button></div></div><div class="optBlock"><h3>Share config</h3><div class="meta">Export / combine-import saved ETA monitors, groups, order, names, selected group and ETA history.</div><div class="rowBtns"><button id="exportJsonBtn" class="miniBtn ok">Export All JSON</button><button id="exportGroupJsonBtn" class="miniBtn ok">Export Group JSON</button><button id="exportTextBtn" class="miniBtn ok">Export All Text</button><button id="exportGroupTextBtn" class="miniBtn ok">Export Group Text</button><button id="importJsonBtn" class="miniBtn">Import JSON file</button><button id="importTextBtn" class="miniBtn">Import Text</button><input id="importFileInput" type="file" accept="application/json,.json" class="hidden"></div></div><div class="optBlock"><h3>ETA display mode</h3><div class="meta">Choose how ETA is shown in route detail and saved monitor cards.</div><div class="selectBox"><label>ETA mode</label><select id="etaModeSelect"><option value="remaining">Time remaining</option><option value="actual">Actual time</option></select></div></div><div class="optBlock"><h3>Route data</h3><div class="rowBtns"><button id="refetchBtn" class="miniBtn ok">Re-fetch route data</button><button id="clearHistoryBtn" class="miniBtn danger">Clear ETA history</button></div></div><div class="optBlock"><h3>Database Cache (IndexedDB)</h3><div id="cacheList" class="routes" style="margin-top:12px"><div class="empty">Computing cache size...</div></div></div><div class="optBlock" style="border-color:transparent;background:transparent;text-align:center;padding:10px 14px 20px;"><h3>About App</h3><div class="meta">Version: 2.3.0 (Group Share & Image Share)</div></div></section><nav class="bottomTabs"><button id="tabSearch" class="on">SEARCH</button><button id="tabSave">SAVE</button><button id="tabOption">OPTION</button></nav><div id="status" class="status">Ready.</div></main><div id="groupPicker" class="groupPicker"></div><div id="saveModal" class="modalOverlay"><div class="modalCard"><div class="modalTitle">Save ETA Monitor</div><div class="modalSub" id="saveModalSub">Choose a name and save group.</div><div class="field"><label>Display name</label><input id="saveNameInput" class="modalInput" autocomplete="off"></div><div class="field"><label>Save group</label><select id="saveGroupSelect" class="modalSelect"></select></div><div class="field hidden" id="newGroupField"><label>New group name</label><input id="newGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div><div class="modalActions"><button id="saveCancelBtn" class="modalBtn">Cancel</button><button id="saveConfirmBtn" class="modalBtn primary">Save</button></div></div></div><div id="appModal" class="modalOverlay"><div class="modalCard"><div class="modalTitle" id="appModalTitle">Action</div><div class="modalSub" id="appModalSub"></div><div class="field" id="appTextField"><label id="appTextLabel">Input</label><input id="appTextInput" class="modalInput" autocomplete="off"></div><div class="field hidden" id="appSelectField"><label id="appSelectLabel">Select</label><select id="appSelectInput" class="modalSelect"></select></div><div class="field hidden" id="appNewGroupField"><label>New group name</label><input id="appNewGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div><div class="modalActions"><button id="appModalCancel" class="modalBtn">Cancel</button><button id="appModalOk" class="modalBtn primary">OK</button></div></div></div><div id="configModal" class="modalOverlay"><div class="modalCard"><div class="modalTitle" id="configModalTitle">Config</div><div class="modalSub" id="configModalSub"></div><div class="field"><label id="configTextLabel">Config text</label><textarea id="configTextArea" class="modalTextArea" autocomplete="off" spellcheck="false"></textarea></div><div class="modalActions"><button id="configCancelBtn" class="modalBtn">Cancel</button><button id="configActionBtn" class="modalBtn primary">OK</button></div></div></div><section class="sheet" id="sheet"><div class="grab"></div><div class="sheetHead"><div><div id="sheetRoute" class="rno">Route</div><div id="sheetMeta" class="meta">Loading stops...</div></div><button id="close" class="close">×</button></div><div class="selectBox"><label>From stop</label><select id="fromStop"></select></div><div class="selectBox"><label>To stop</label><select id="toStop"></select></div><button id="etaBtn" class="primary">Show ETA</button><button id="saveBtn" class="saveAction">Save ETA Monitor</button><div id="eta" class="eta"><div class="empty">Select From / To.</div></div></section>
+    <div class="optBlock"><h3>Save groups</h3><div class="meta">Create custom save tabs to organise ETA monitors.</div><div class="rowBtns"><button id="addGroupBtn" class="miniBtn ok">Add save tab</button><button id="renameGroupBtn" class="miniBtn">Rename current tab</button><button id="deleteGroupBtn" class="miniBtn danger">Delete current tab</button></div></div>
+    <div class="optBlock"><h3>Share config</h3><div class="meta">Export / import saved ETA monitors, groups, order, names, selected group and ETA history.</div><div class="rowBtns"><button id="exportJsonBtn" class="miniBtn ok">Export ALL JSON</button><button id="exportGroupJsonBtn" class="miniBtn ok">Export THIS GROUP JSON</button><button id="importJsonBtn" class="miniBtn">Import JSON file</button><input id="importFileInput" type="file" accept="application/json,.json" class="hidden"></div></div>
+    <div class="optBlock"><h3>ETA display mode</h3><div class="meta">Choose how ETA is shown in route detail and saved monitor cards.</div><div class="selectBox"><label>ETA mode</label><select id="etaModeSelect"><option value="remaining">Time remaining</option><option value="actual">Actual time</option></select></div></div><div class="optBlock"><h3>Route data</h3><div class="rowBtns"><button id="refetchBtn" class="miniBtn ok">Re-fetch route data</button><button id="clearHistoryBtn" class="miniBtn danger">Clear ETA history</button></div></div><div class="optBlock"><h3>Database Cache (IndexedDB)</h3><div id="cacheList" class="routes" style="margin-top:12px"><div class="empty">Computing cache size...</div></div></div><div class="optBlock" style="border-color:transparent;background:transparent;text-align:center;padding:10px 14px 20px;"><h3>About App</h3><div class="meta">Version: 2.3.3 (Cleaned Share UI)</div></div></section><nav class="bottomTabs"><button id="tabSearch" class="on">SEARCH</button><button id="tabSave">SAVE</button><button id="tabOption">OPTION</button></nav><div id="status" class="status">Ready.</div></main><div id="groupPicker" class="groupPicker"></div><div id="saveModal" class="modalOverlay"><div class="modalCard"><div class="modalTitle">Save ETA Monitor</div><div class="modalSub" id="saveModalSub">Choose a name and save group.</div><div class="field"><label>Display name</label><input id="saveNameInput" class="modalInput" autocomplete="off"></div><div class="field"><label>Save group</label><select id="saveGroupSelect" class="modalSelect"></select></div><div class="field hidden" id="newGroupField"><label>New group name</label><input id="newGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div><div class="modalActions"><button id="saveCancelBtn" class="modalBtn">Cancel</button><button id="saveConfirmBtn" class="modalBtn primary">Save</button></div></div></div><div id="appModal" class="modalOverlay"><div class="modalCard"><div class="modalTitle" id="appModalTitle">Action</div><div class="modalSub" id="appModalSub"></div><div class="field" id="appTextField"><label id="appTextLabel">Input</label><input id="appTextInput" class="modalInput" autocomplete="off"></div><div class="field hidden" id="appSelectField"><label id="appSelectLabel">Select</label><select id="appSelectInput" class="modalSelect"></select></div><div class="field hidden" id="appNewGroupField"><label>New group name</label><input id="appNewGroupInput" class="modalInput" autocomplete="off" placeholder="e.g. Work, Home, Morning"></div><div class="modalActions"><button id="appModalCancel" class="modalBtn">Cancel</button><button id="appModalOk" class="modalBtn primary">OK</button></div></div></div><section class="sheet" id="sheet"><div class="grab"></div><div class="sheetHead"><div><div id="sheetRoute" class="rno">Route</div><div id="sheetMeta" class="meta">Loading stops...</div></div><button id="close" class="close">×</button></div><div class="selectBox"><label>From stop</label><select id="fromStop"></select></div><div class="selectBox"><label>To stop</label><select id="toStop"></select></div><button id="etaBtn" class="primary">Show ETA</button><button id="saveBtn" class="saveAction">Save ETA Monitor</button><div id="eta" class="eta"><div class="empty">Select From / To.</div></div></section>
 <script>
 'use strict';
 const API={KMB:'https://data.etabus.gov.hk/v1/transport/kmb',CTB:'https://rt.data.gov.hk/v2/transport/citybus',GMB:'https://data.etagmb.gov.hk',HKBUS:'https://data.hkbus.app/routeFareList.min.json',NLB:'https://rt.data.gov.hk/v2/transport/nlb'};
@@ -98,10 +100,13 @@ async function boot(){
 
 async function checkAndMigrateCacheV2() {
     let ver = localStorage.getItem(CACHE_VER_KEY);
-    if (ver !== '2') {
-        status('Upgrading cache to V2...');
-        if (IDB.db) {
-            let tx = IDB.db.transaction('kv', 'readwrite'), store = tx.objectStore('kv'), req = store.openCursor();
+    if (ver === '2') return;
+    status('Upgrading cache to V2...');
+    if (IDB.db) {
+        await new Promise((resolve) => {
+            let tx = IDB.db.transaction('kv', 'readwrite');
+            let store = tx.objectStore('kv');
+            let req = store.openCursor();
             req.onsuccess = e => {
                 let cursor = e.target.result;
                 if(cursor) {
@@ -111,16 +116,16 @@ async function checkAndMigrateCacheV2() {
                     }
                     cursor.continue();
                 } else {
-                    localStorage.setItem(CACHE_VER_KEY, '2');
+                    resolve();
                 }
             };
-        } else {
-            localStorage.setItem(CACHE_VER_KEY, '2');
-        }
+            req.onerror = () => resolve();
+        });
     }
+    localStorage.setItem(CACHE_VER_KEY, '2');
 }
 
-function wireEvents(){routeInput.oninput=()=>{routeInput.value=routeInput.value.toUpperCase().replace(/[^0-9A-Z]/g,'');filter()};$('busBtn').onclick=()=>setMode('BUS');$('gmbBtn').onclick=()=>setMode('GMB');$('close').onclick=()=>$('sheet').classList.remove('show');$('etaBtn').onclick=eta;$('saveBtn').onclick=saveCurrentRoute;$('saveCancelBtn').onclick=closeSaveModal;$('saveConfirmBtn').onclick=confirmSaveMonitor;$('saveGroupSelect').onchange=()=>{$('newGroupField').classList.toggle('hidden',$('saveGroupSelect').value!=='__new__')};$('appModalCancel').onclick=closeAppModal;$('appModalOk').onclick=confirmAppModal;$('appSelectInput').onchange=()=>{$('appNewGroupField').classList.toggle('hidden',$('appSelectInput').value!=='__new__')};$('tabSearch').onclick=()=>setMainTab('SEARCH');$('tabOption').onclick=()=>setMainTab('OPTION');$('tabSave').onclick=()=>setMainTab('SAVE');$('tabSave').addEventListener('pointerdown',()=>{saveHoldTimer=setTimeout(showGroupPicker,420)});['pointerup','pointerleave','pointercancel'].forEach(ev=>$('tabSave').addEventListener(ev,()=>{clearTimeout(saveHoldTimer)}));let etaSel=$('etaModeSelect');if(etaSel){etaSel.value=getEtaMode();etaSel.onchange=()=>setEtaMode(etaSel.value)}$('refetchBtn').onclick=refetchRouteData;$('exportJsonBtn').onclick=()=>exportConfigJson(false);$('exportGroupJsonBtn').onclick=()=>exportConfigJson(true);$('exportTextBtn').onclick=()=>exportConfigText(false);$('exportGroupTextBtn').onclick=()=>exportConfigText(true);$('importJsonBtn').onclick=()=>$('importFileInput').click();$('importFileInput').onchange=importConfigJsonFile;$('importTextBtn').onclick=importConfigText;$('configCancelBtn').onclick=closeConfigModal;$('configActionBtn').onclick=confirmConfigModal;$('clearHistoryBtn').onclick=()=>{writeLS(LS_ETA_HISTORY,{});renderSaved();status('ETA history cleared.','ok')};$('addGroupBtn').onclick=addGroup;$('renameGroupBtn').onclick=renameGroup;$('deleteGroupBtn').onclick=deleteGroup;$('gpsBtn').onclick=()=>gps(false);document.addEventListener('click',e=>{if(!e.target.closest('#groupPicker')&&!e.target.closest('#tabSave'))hideGroupPicker();if(e.target.id==='saveModal')closeSaveModal();if(e.target.id==='appModal')closeAppModal();if(e.target.id==='configModal')closeConfigModal();if(!e.target.closest('.savedMenu')&&!e.target.closest('.savedMore'))closeSavedMenus()});$('fromStop').onchange=()=>eta();$('toStop').onchange=()=>eta();}
+function wireEvents(){routeInput.oninput=()=>{routeInput.value=routeInput.value.toUpperCase().replace(/[^0-9A-Z]/g,'');filter()};$('busBtn').onclick=()=>setMode('BUS');$('gmbBtn').onclick=()=>setMode('GMB');$('close').onclick=()=>$('sheet').classList.remove('show');$('etaBtn').onclick=eta;$('saveBtn').onclick=saveCurrentRoute;$('saveCancelBtn').onclick=closeSaveModal;$('saveConfirmBtn').onclick=confirmSaveMonitor;$('saveGroupSelect').onchange=()=>{$('newGroupField').classList.toggle('hidden',$('saveGroupSelect').value!=='__new__')};$('appModalCancel').onclick=closeAppModal;$('appModalOk').onclick=confirmAppModal;$('appSelectInput').onchange=()=>{$('appNewGroupField').classList.toggle('hidden',$('appSelectInput').value!=='__new__')};$('tabSearch').onclick=()=>setMainTab('SEARCH');$('tabOption').onclick=()=>setMainTab('OPTION');$('tabSave').onclick=()=>setMainTab('SAVE');$('tabSave').addEventListener('pointerdown',()=>{saveHoldTimer=setTimeout(showGroupPicker,420)});['pointerup','pointerleave','pointercancel'].forEach(ev=>$('tabSave').addEventListener(ev,()=>{clearTimeout(saveHoldTimer)}));let etaSel=$('etaModeSelect');if(etaSel){etaSel.value=getEtaMode();etaSel.onchange=()=>setEtaMode(etaSel.value)}$('refetchBtn').onclick=refetchRouteData;$('exportJsonBtn').onclick=()=>exportConfigJson(false);$('exportGroupJsonBtn').onclick=()=>exportConfigJson(true);$('importJsonBtn').onclick=()=>$('importFileInput').click();$('importFileInput').onchange=importConfigJsonFile;$('clearHistoryBtn').onclick=()=>{writeLS(LS_ETA_HISTORY,{});renderSaved();status('ETA history cleared.','ok')};$('addGroupBtn').onclick=addGroup;$('renameGroupBtn').onclick=renameGroup;$('deleteGroupBtn').onclick=deleteGroup;$('gpsBtn').onclick=()=>gps(false);document.addEventListener('click',e=>{if(!e.target.closest('#groupPicker')&&!e.target.closest('#tabSave'))hideGroupPicker();if(e.target.id==='saveModal')closeSaveModal();if(e.target.id==='appModal')closeAppModal();if(!e.target.closest('.savedMenu')&&!e.target.closest('.savedMore'))closeSavedMenus()});$('fromStop').onchange=()=>eta();$('toStop').onchange=()=>eta();}
 function ensureActiveGroup(){let groups=getGroups();if(!groups.find(g=>g.id===activeGroupId))activeGroupId=groups[0].id;writeLS(LS_ACTIVE_GROUP,activeGroupId);updateSaveTabText()}function updateSaveTabText(){let g=getGroups().find(x=>x.id===activeGroupId);$('tabSave').textContent=g?g.name:'SAVE'}
 
 async function loadRoutes(){busRoutes=[];gmbRoutes=[];const kmbP=json(API.KMB+'/route/').then(k=>(k.data||[]).forEach(x=>busRoutes.push({type:'KMB',route:String(x.route).toUpperCase(),bound:x.bound,service_type:x.service_type||1,orig_tc:x.orig_tc,orig_en:x.orig_en,dest_tc:x.dest_tc,dest_en:x.dest_en,raw:x})));
@@ -356,7 +361,132 @@ function renderGroupBar(){let groups=getGroups();ensureActiveGroup();return '<di
 function renderBatchToolbar(list){if(!editMode)return '';let selected=list.filter(x=>selectedKeys.has(x.key)).length;return '<div class="batchToolbar"><div class="batchCount">'+selected+' selected</div><button id="batchMoveBtn" class="miniBtn">Move</button><button id="batchDeleteBtn" class="miniBtn danger">Delete</button><button id="selectAllBtn" class="miniBtn">Select all</button><button id="clearSelectBtn" class="miniBtn">Clear</button></div><div class="dragToGroupHint">Tip: drag using the left handle only. Drag onto a group chip to move route. Scroll on the card body normally.</div>'}
 function bindGroupBar(box){box.querySelectorAll('[data-g]').forEach(b=>{b.onclick=e=>{if(e.target.closest('.groupMini'))return;if(editMode){setActiveGroup(b.dataset.g);renderSaved()}else{setActiveGroup(b.dataset.g);renderSaved()}};b.addEventListener('pointerdown',e=>startGroupPointerDrag(e,b,b.dataset.g))});box.querySelectorAll('[data-grename]').forEach(b=>b.onclick=e=>{e.stopPropagation();renameGroupById(b.dataset.grename)});box.querySelectorAll('[data-gdelete]').forEach(b=>b.onclick=e=>{e.stopPropagation();deleteGroupById(b.dataset.gdelete)});let add=box.querySelector('[data-add]');if(add)add.onclick=addGroup}
 function setupBatchButtons(list){let move=$('batchMoveBtn'),del=$('batchDeleteBtn'),all=$('selectAllBtn'),clear=$('clearSelectBtn');if(move)move.onclick=()=>batchMoveSelected();if(del)del.onclick=()=>batchDeleteSelected();if(all)all.onclick=()=>{list.forEach(x=>selectedKeys.add(x.key));renderSaved()};if(clear)clear.onclick=()=>{selectedKeys.clear();renderSaved()}}
-function renderSaved(){let box=$('savedView'),list=getSaved().filter(x=>(x.groupId||'default')===activeGroupId);box.classList.toggle('editing',editMode);for(const k of [...selectedKeys])if(!getSaved().find(x=>x.key===k))selectedKeys.delete(k);box.innerHTML='<div class="saveHeader"><div class="editHint">'+(editMode?'Edit mode: drag left handle to reorder/move, scroll anywhere else':'Hold SAVE tab to choose group')+'</div><button id="editSavedBtn" class="miniBtn '+(editMode?'ok':'')+'">'+(editMode?'Done':'Edit')+'</button></div>'+renderGroupBar()+renderBatchToolbar(list);$('editSavedBtn').onclick=()=>{editMode=!editMode;if(!editMode)selectedKeys.clear();document.body.classList.toggle('noSelect',editMode);renderSaved()};bindGroupBar(box);setupBatchButtons(list);if(!list.length){box.insertAdjacentHTML('beforeend','<div class="empty">No ETA monitor in this group.</div>');return}list.forEach((x,idx)=>{let r=x.route||{},f=x.from||{},t=x.to||{},title=x.customName||routeTitle(r),checked=selectedKeys.has(x.key);let d=document.createElement('div');d.className='savedMonitorCard '+(editMode?'editing ':'')+(getEtaMode()==='actual'?'actualEtaCard':'');d.dataset.key=x.key;d.innerHTML='<button class="selectBubble '+(checked?'on':'')+'" data-select="1">'+(checked?'✓':'')+'</button><div class="dragGrip">☰</div><div class="savedMain"><div class="savedRouteTitle">'+esc(title)+'</div><div class="savedPair"><span class="label">From:</span> '+esc(name(f))+'<br><span class="label">To:</span> '+esc(name(t))+'<div class="savedTrip" id="savedTrip'+idx+'"><span class="label">Trip:</span> calculating...</div></div><div class="quickBtns"><button class="quickBtn" data-q="rename">Rename</button><button class="quickBtn" data-q="move">Move</button><button class="quickBtn danger" data-q="delete">Delete</button></div></div><div class="savedEta '+(getEtaMode()==='actual'?'actualMode':'')+'" id="savedEta'+idx+'"><div class="etaChip emptyEta">Loading</div></div><button class="savedMore" id="savedMore'+idx+'">...</button><div class="savedMenu" id="savedMenu'+idx+'"><button data-act="open">Open</button><button data-act="refresh">Refresh</button><button data-act="share">Share Image</button><button data-act="rename">Rename</button><button data-act="move">Move group</button><button class="danger" data-act="remove">Remove</button></div><div class="savedUpdated" id="savedUpdated'+idx+'">--</div>';d.querySelector('[data-select]').onclick=e=>{e.stopPropagation();toggleSavedSelection(x.key)};d.querySelectorAll('[data-q]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();let a=btn.dataset.q;if(a==='rename')renameSaved(x.key);else if(a==='move')moveSaved(x.key);else removeSaved(x.key)});d.querySelector('#savedMore'+idx).onclick=e=>{e.stopPropagation();if(!editMode)toggleSavedMenu(idx)};bindMenu(d,'open',()=>openSavedMonitor(x));bindMenu(d,'refresh',()=>{loadSavedEta(x,idx,true);loadJourneyTime(x,idx,true)});bindMenu(d,'share',()=>shareSavedMonitorImage(x,idx));bindMenu(d,'rename',()=>renameSaved(x.key));bindMenu(d,'move',()=>moveSaved(x.key));bindMenu(d,'remove',()=>removeSaved(x.key));d.addEventListener('pointerdown',e=>startCardPointerDrag(e,d,x.key));box.appendChild(d);renderSavedEtaHistory(x,idx);renderJourneyTimeHistory(x,idx);if(!editMode){loadSavedEta(x,idx,false);loadJourneyTime(x,idx,false)}})}
+
+async function shareSavedImage(item, idx) {
+    status('Generating image...', 'ok');
+    try {
+        let canvas = document.createElement('canvas');
+        let ctx = canvas.getContext('2d');
+        
+        let title = item.customName || routeTitle(item.route);
+        ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, sans-serif';
+        let titleW = ctx.measureText(title).width;
+        
+        ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, sans-serif';
+        let fromW = ctx.measureText(name(item.from)).width;
+        let toW = ctx.measureText(name(item.to)).width;
+        let leftColW = 130 + Math.max(fromW, toW); 
+        
+        let maxLeftW = Math.max(titleW + 50, leftColW);
+        
+        let h = getEtaHistoryForKey(item.key) || {rows:[]};
+        let rows = (h.rows || []).slice(0, 3);
+        let mode = getEtaMode();
+        let etaW = 0;
+        
+        if (!rows.length) {
+            ctx.font = 'bold 26px sans-serif';
+            etaW = ctx.measureText('No ETA').width;
+        } else {
+            if (mode === 'actual') {
+                rows.forEach((r, i) => {
+                    ctx.font = 'bold '+(i===0?30:24)+'px sans-serif';
+                    etaW = Math.max(etaW, ctx.measureText(etaText(r)).width);
+                });
+            } else {
+                ctx.font = 'bold 54px sans-serif';
+                etaW = ctx.measureText(etaText(rows[0])).width;
+                if(rows.length > 1) {
+                    ctx.font = 'bold 26px sans-serif';
+                    let subsequent = rows.slice(1).map(r => etaText(r)).join('    ');
+                    etaW = Math.max(etaW, ctx.measureText(subsequent).width);
+                }
+            }
+        }
+        
+        let canvasWidth = Math.max(380, maxLeftW + 60 + etaW + 50); 
+        
+        canvas.width = canvasWidth;
+        canvas.height = 240;
+        ctx = canvas.getContext('2d');
+        
+        ctx.fillStyle = '#0e121b';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        let grad = ctx.createLinearGradient(0, 0, 0, canvas.height);
+        grad.addColorStop(0, 'rgba(255,255,255,0.085)');
+        grad.addColorStop(1, 'rgba(255,255,255,0.04)');
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.roundRect(20, 20, canvas.width - 40, 200, 36);
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 36px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillText(title, 50, 75);
+        
+        ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillStyle = '#8fa0bb';
+        ctx.fillText('From:', 50, 125);
+        ctx.fillText('To:', 50, 165);
+        
+        ctx.fillStyle = '#c8d4ea';
+        ctx.font = 'bold 22px -apple-system, BlinkMacSystemFont, sans-serif';
+        ctx.fillText(name(item.from), 130, 125);
+        ctx.fillText(name(item.to), 130, 165);
+
+        let rightX = canvas.width - 50;
+        
+        if (!rows.length) {
+            ctx.fillStyle = '#9aa8bf';
+            ctx.font = 'bold 26px sans-serif';
+            ctx.textAlign = 'right';
+            ctx.fillText('No ETA', rightX, 130);
+        } else {
+            ctx.textAlign = 'right';
+            if (mode === 'actual') {
+                rows.forEach((r, i) => {
+                    ctx.fillStyle = i === 0 ? '#30d158' : '#9dffb8';
+                    ctx.font = 'bold '+(i===0?30:24)+'px sans-serif';
+                    ctx.fillText(etaText(r), rightX, 85 + i * 40);
+                });
+            } else {
+                ctx.fillStyle = '#30d158';
+                ctx.font = 'bold 54px sans-serif';
+                ctx.fillText(etaText(rows[0]), rightX, 105);
+                if(rows.length > 1) {
+                    ctx.font = 'bold 26px sans-serif';
+                    let subsequent = rows.slice(1).map(r => etaText(r)).join('    ');
+                    ctx.fillText(subsequent, rightX, 165);
+                }
+            }
+        }
+
+        canvas.toBlob(async (blob) => {
+            if(!blob) return;
+            let file = new File([blob], title+'.png', {type: 'image/png'});
+            if (navigator.canShare && navigator.canShare({files: [file]})) {
+                try {
+                    await navigator.share({ files: [file], title: title + ' ETA' });
+                    status('Image shared!', 'ok');
+                } catch(e) { status('Share cancelled.', 'ok'); }
+            } else {
+                let a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = title+'.png';
+                a.click();
+                status('Image downloaded!', 'ok');
+            }
+        }, 'image/png');
+    } catch(e) {
+        status('Canvas failed: ' + e.message, 'err');
+    }
+}
+
+function renderSaved(){let box=$('savedView'),list=getSaved().filter(x=>(x.groupId||'default')===activeGroupId);box.classList.toggle('editing',editMode);for(const k of [...selectedKeys])if(!getSaved().find(x=>x.key===k))selectedKeys.delete(k);box.innerHTML='<div class="saveHeader"><div class="editHint">'+(editMode?'Edit mode: drag left handle to reorder/move, scroll anywhere else':'Hold SAVE tab to choose group')+'</div><div style="display:flex;gap:6px;"><button id="quickExportGroupBtn" class="miniBtn ok" style="padding:6px 10px;">Export</button><button id="editSavedBtn" class="miniBtn '+(editMode?'ok':'')+'" style="padding:6px 10px;">'+(editMode?'Done':'Edit')+'</button></div></div>'+renderGroupBar()+renderBatchToolbar(list);$('editSavedBtn').onclick=()=>{editMode=!editMode;if(!editMode)selectedKeys.clear();document.body.classList.toggle('noSelect',editMode);renderSaved()};$('quickExportGroupBtn').onclick=()=>exportConfigJson(true);bindGroupBar(box);setupBatchButtons(list);if(!list.length){box.insertAdjacentHTML('beforeend','<div class="empty">No ETA monitor in this group.</div>');return}list.forEach((x,idx)=>{let r=x.route||{},f=x.from||{},t=x.to||{},title=x.customName||routeTitle(r),checked=selectedKeys.has(x.key);let d=document.createElement('div');d.className='savedMonitorCard '+(editMode?'editing ':'')+(getEtaMode()==='actual'?'actualEtaCard':'');d.dataset.key=x.key;d.innerHTML='<button class="selectBubble '+(checked?'on':'')+'" data-select="1">'+(checked?'✓':'')+'</button><div class="dragGrip">☰</div><div class="savedMain"><div class="savedRouteTitle">'+esc(title)+'</div><div class="savedPair"><span class="label">From:</span> '+esc(name(f))+'<br><span class="label">To:</span> '+esc(name(t))+'<div class="savedTrip" id="savedTrip'+idx+'"><span class="label">Trip:</span> calculating...</div></div><div class="quickBtns"><button class="quickBtn" data-q="rename">Rename</button><button class="quickBtn" data-q="move">Move</button><button class="quickBtn danger" data-q="delete">Delete</button></div></div><div class="savedEta '+(getEtaMode()==='actual'?'actualMode':'')+'" id="savedEta'+idx+'"><div class="etaChip emptyEta">Loading</div></div><button class="savedMore" id="savedMore'+idx+'">...</button><div class="savedMenu" id="savedMenu'+idx+'"><button data-act="open">Open</button><button data-act="refresh">Refresh</button><button class="shareBtn" data-act="share">Share Image</button><button data-act="rename">Rename</button><button data-act="move">Move group</button><button class="danger" data-act="remove">Remove</button></div><div class="savedUpdated" id="savedUpdated'+idx+'">--</div>';d.querySelector('[data-select]').onclick=e=>{e.stopPropagation();toggleSavedSelection(x.key)};d.querySelectorAll('[data-q]').forEach(btn=>btn.onclick=e=>{e.stopPropagation();let a=btn.dataset.q;if(a==='rename')renameSaved(x.key);else if(a==='move')moveSaved(x.key);else removeSaved(x.key)});d.querySelector('#savedMore'+idx).onclick=e=>{e.stopPropagation();if(!editMode)toggleSavedMenu(idx)};bindMenu(d,'open',()=>openSavedMonitor(x));bindMenu(d,'refresh',()=>{loadSavedEta(x,idx,true);loadJourneyTime(x,idx,true)});bindMenu(d,'share',()=>shareSavedImage(x,idx));bindMenu(d,'rename',()=>renameSaved(x.key));bindMenu(d,'move',()=>moveSaved(x.key));bindMenu(d,'remove',()=>removeSaved(x.key));d.addEventListener('pointerdown',e=>startCardPointerDrag(e,d,x.key));box.appendChild(d);renderSavedEtaHistory(x,idx);renderJourneyTimeHistory(x,idx);if(!editMode){loadSavedEta(x,idx,false);loadJourneyTime(x,idx,false)}})}
 function bindMenu(card,act,fn){let el=card.querySelector('[data-act="'+act+'"]');if(el)el.onclick=e=>{e.stopPropagation();closeSavedMenus();fn()}}
 function closeSavedMenus(){document.querySelectorAll('.savedMenu.show').forEach(m=>m.classList.remove('show'))}
 function toggleSavedSelection(key){if(selectedKeys.has(key))selectedKeys.delete(key);else selectedKeys.add(key);renderSaved()}
@@ -415,149 +545,38 @@ async function loadSavedEta(item,idx,force){
 }
 function renderSavedEtaRows(rows){if(!rows||!rows.length)return '<div class="etaChip emptyEta">No ETA</div>';let actual=getEtaMode()==='actual';return rows.slice(0,3).map((r,i)=>'<div class="etaChip '+(!actual&&i===0?'first':'')+'"><div class="min '+(actual&&i>0?'smallActual':'')+'">'+esc(etaText(r))+'</div></div>').join('')}async function openSavedMonitor(item){await openRoute(item.route);setTimeout(()=>{let fi=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.from&&item.from.stop)),ti=currentStops.findIndex(s=>stopIdOf(s.stop)===stopIdOf(item.to&&item.to.stop));if(fi>=0)$('fromStop').value=fi;if(ti>=0)$('toStop').value=ti},80)}
 
-function shareSavedMonitorImage(item, idx) {
-    status('Generating image...', 'ok');
-    const cvs = document.createElement('canvas');
-    cvs.width = 1080; cvs.height = 1080;
-    const ctx = cvs.getContext('2d');
+function collectConfig(onlyActiveGroup = false) { 
+    let g = getGroups();
+    let s = getSaved();
+    let h = getEtaHistory();
+    let j = getJtHistory();
     
-    let grd = ctx.createRadialGradient(200, -100, 0, 540, 540, 1200);
-    grd.addColorStop(0, '#24365c');
-    grd.addColorStop(0.4, '#0d1321');
-    grd.addColorStop(1, '#070910');
-    ctx.fillStyle = grd;
-    ctx.fillRect(0,0,1080,1080);
-    
-    ctx.fillStyle = 'rgba(255,255,255,0.06)';
-    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
-    ctx.lineWidth = 4;
-    if(ctx.roundRect) ctx.roundRect(80, 200, 920, 680, 60);
-    else ctx.rect(80, 200, 920, 680);
-    ctx.fill(); ctx.stroke();
-    
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 50px sans-serif';
-    ctx.fillText('🚌 HK Transit ETA', 80, 120);
-    
-    let upd = $('savedUpdated'+idx)?.textContent || '';
-    ctx.fillStyle = '#9aa8bf';
-    ctx.font = '34px sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillText(upd, 1000, 120);
-    ctx.textAlign = 'left';
-    
-    let title = item.customName || routeTitle(item.route);
-    ctx.fillStyle = '#ffffff';
-    ctx.font = 'bold 90px sans-serif';
-    ctx.fillText(title, 140, 330, 800);
-    
-    let co = getCo(item.route);
-    ctx.fillStyle = co==='KMB'?'#ffd49e':co==='CTB'?'#a9d3ff':co==='GMB'?'#aaffc4':co==='NLB'?'#a8ffee':co==='LWB'?'#ffd19e':'#b2c7e9';
-    ctx.font = 'bold 40px sans-serif';
-    ctx.fillText(co + '  ·  ' + (item.route.type==='GMB'?(item.route.desc_tc||''):(item.route.orig_tc+' → '+item.route.dest_tc)), 140, 400, 800);
-    
-    ctx.fillStyle = '#8fa0bb';
-    ctx.font = 'bold 45px sans-serif';
-    ctx.fillText('From:', 140, 510);
-    ctx.fillText('To:', 140, 580);
-    
-    ctx.fillStyle = '#c8d4ea';
-    ctx.fillText(name(item.from), 300, 510, 640);
-    ctx.fillText(name(item.to), 300, 580, 640);
-    
-    let jt = getJtHistoryForKey(item.key);
-    if(jt && jt.minutes != null){
-         ctx.fillStyle = '#8fa0bb';
-         ctx.fillText('Trip:', 140, 650);
-         ctx.fillStyle = '#ffd49e';
-         ctx.fillText('~' + jt.minutes + 'm ' + (jt.source==='fallback'?'(approx)':''), 300, 650);
-    }
-    
-    let h = getEtaHistoryForKey(item.key);
-    let rows = h && h.rows ? h.rows : [];
-    if(rows.length === 0){
-        ctx.fillStyle = '#ff8a82';
-        ctx.font = 'bold 70px sans-serif';
-        ctx.fillText('No ETA', 140, 800);
-    } else {
-        let startX = 140;
-        rows.slice(0,3).forEach((r, i) => {
-            let txt = etaText(r);
-            ctx.fillStyle = i===0 ? '#30d158' : '#ffffff';
-            ctx.font = i===0 ? 'bold 110px sans-serif' : 'bold 70px sans-serif';
-            ctx.fillText(txt, startX, 800);
-            startX += ctx.measureText(txt).width + 50;
-        });
-    }
-    
-    cvs.toBlob(blob => {
-        if(!blob){ status('Image generation failed','err'); return; }
-        const file = new File([blob], 'eta_share.png', { type: 'image/png' });
-        if(navigator.canShare && navigator.canShare({files: [file]})){
-            navigator.share({ files: [file], title: title + ' ETA', text: 'Latest ETA for ' + title })
-            .then(() => status('Shared successfully.','ok')).catch(()=>status('Share ready.',''));
-        } else {
-            const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
-            a.download = 'eta_'+Date.now()+'.png'; a.click(); status('Image downloaded.','ok');
+    if (onlyActiveGroup) {
+        g = g.filter(x => x.id === activeGroupId);
+        s = s.filter(x => (x.groupId || 'default') === activeGroupId);
+        let sKeys = new Set(s.map(x => x.key));
+        let newH = {}, newJ = {};
+        for(let k of sKeys) {
+            if(h[k]) newH[k] = h[k];
+            if(j[k]) newJ[k] = j[k];
         }
-    }, 'image/png');
-}
-
-let configModalMode='export';
-function collectConfig(targetGroupId=null){ 
-    let cfg = {app:'HK Transit ETA Single HTML',schema:2,exportedAt:new Date().toISOString(),etaMode:getEtaMode()}; 
-    let grps = getGroups();
-    if(targetGroupId) {
-        cfg.groups = grps.filter(g => g.id === targetGroupId);
-        cfg.activeGroupId = targetGroupId;
-        cfg.saved = getSaved().filter(x => (x.groupId||'default') === targetGroupId);
-        let eh = getEtaHistory(), jh = getJtHistory();
-        cfg.etaHistory = {}; cfg.journeyTimeHistory = {};
-        cfg.saved.forEach(s => {
-            if(eh[s.key]) cfg.etaHistory[s.key] = eh[s.key];
-            if(jh[s.key]) cfg.journeyTimeHistory[s.key] = jh[s.key];
-        });
-    } else {
-        cfg.groups = grps; cfg.activeGroupId = activeGroupId;
-        cfg.saved = getSaved(); cfg.etaHistory = getEtaHistory(); cfg.journeyTimeHistory = getJtHistory();
+        h = newH; j = newJ;
     }
-    return cfg;
+
+    return {app:'HK Transit ETA Single HTML', schema:2, exportedAt:new Date().toISOString(), groups:g, activeGroupId:activeGroupId, saved:s, etaHistory:h, journeyTimeHistory:j, etaMode:getEtaMode()}; 
 }
 
-function serializeConfig(targetGroupId=null){ 
-    return JSON.stringify(collectConfig(targetGroupId), null, 2); 
-}
-
-function deserializeConfig(text){
-    let t=(text||'').trim();
-    if(!t)throw new Error('Empty config text');
-    if(t.startsWith('HKTRANSIT1:')){
-        return JSON.parse(decodeURIComponent(escape(atob(t.slice('HKTRANSIT1:'.length)))));
-    }
-    return JSON.parse(t);
-}
-
-function exportConfigJson(groupOnly=false){
-    const blob=new Blob([JSON.stringify(collectConfig(groupOnly ? activeGroupId : null),null,2)],{type:'application/json'});
+function exportConfigJson(onlyActiveGroup = false){
+    const blob=new Blob([JSON.stringify(collectConfig(onlyActiveGroup),null,2)],{type:'application/json'});
     const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-    let prefix = groupOnly ? 'hk-transit-group-' : 'hk-transit-config-';
-    a.download=prefix+new Date().toISOString().slice(0,10)+'.json';
-    document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
-    status(groupOnly ? 'Group config JSON exported.' : 'All config JSON exported.','ok');
+    let title = onlyActiveGroup ? (getGroups().find(x=>x.id===activeGroupId)||{}).name || 'group' : 'all';
+    a.download='hk-transit-'+title+'-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a);a.click();a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    status('Config JSON exported.','ok');
 }
-
 function importConfigJsonFile(){const input=$('importFileInput');const file=input.files&&input.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{applyConfig(JSON.parse(String(r.result||'')))}catch(e){status('Import failed: '+e.message,'err')}input.value='';};r.onerror=()=>{status('File read failed.','err');input.value=''};r.readAsText(file);}
-function openConfigModal(title,sub,text,mode){configModalMode=mode;$('configModalTitle').textContent=title;$('configModalSub').textContent=sub||'';$('configTextArea').value=text||'';$('configTextArea').readOnly=mode==='export';$('configActionBtn').textContent=mode==='export'?'Copy':'Import';$('configModal').classList.add('show');setTimeout(()=>{$('configTextArea').focus();$('configTextArea').select()},60);}
-function closeConfigModal(){$('configModal').classList.remove('show');}
-async function confirmConfigModal(){if(configModalMode==='export'){try{await navigator.clipboard.writeText($('configTextArea').value);status('Config JSON copied.','ok')}catch{status('Copy blocked by browser. Please select and copy manually.','err')}return;}try{applyConfig(deserializeConfig($('configTextArea').value));closeConfigModal()}catch(e){status('Import failed: '+e.message,'err')}}
 
-function exportConfigText(groupOnly=false){
-    let title = groupOnly ? 'Export Group Text' : 'Export All Text';
-    let desc = groupOnly ? 'Copy this JSON text to share ONLY the current group and its routes.' : 'Copy this JSON text to share ALL groups, monitors, and ETA history.';
-    openConfigModal(title,desc,serializeConfig(groupOnly ? activeGroupId : null),'export');
-}
-
-function importConfigText(){openConfigModal('Import Config Text','Paste exported JSON config text here. Import will combine with existing data, not overwrite it. Old HKTRANSIT1 format is also supported.','','import');}
 function applyConfig(cfg){if(!cfg||typeof cfg!=='object')throw new Error('Invalid config object');const groupIdMap={};const importedGroups=Array.isArray(cfg.groups)?cfg.groups.filter(g=>g&&g.name):[];const localGroups=getGroups().slice();const mergedGroups=[];const usedLocalIds=new Set();importedGroups.forEach(g=>{let existingById=localGroups.find(x=>x.id===g.id);let existingByName=localGroups.find(x=>x.name===g.name);let newId;if(existingById){newId=existingById.id;usedLocalIds.add(existingById.id);mergedGroups.push({...existingById,...g,id:newId});}else if(existingByName){newId=existingByName.id;usedLocalIds.add(existingByName.id);mergedGroups.push({...existingByName,...g,id:newId});}else{newId=g.id||('g'+Date.now());mergedGroups.push({...g,id:newId});}if(g.id)groupIdMap[g.id]=newId;});localGroups.forEach(g=>{if(!usedLocalIds.has(g.id)&&!mergedGroups.find(x=>x.id===g.id))mergedGroups.push(g);});if(!mergedGroups.length)mergedGroups.push({id:'default',name:'Default'});setGroups(mergedGroups);const localSaved=getSaved().slice();const importedSaved=Array.isArray(cfg.saved)?cfg.saved.filter(x=>x&&x.key):[];const localByKey=new Map(localSaved.map(x=>[x.key,x]));const usedKeys=new Set();const mergedSaved=[];let added=0,updated=0;importedSaved.forEach(item=>{const mappedGroupId=groupIdMap[item.groupId]||item.groupId||'default';const existing=localByKey.get(item.key);const incoming={...item,groupId:mappedGroupId};if(existing){mergedSaved.push({...existing,...incoming,customName:incoming.customName||existing.customName,groupId:mappedGroupId});updated++;}else{mergedSaved.push(incoming);added++;}usedKeys.add(item.key);});localSaved.forEach(item=>{if(!usedKeys.has(item.key))mergedSaved.push(item);});setSaved(mergedSaved);let groups=getGroups();let importedTarget=cfg.activeGroupId?(groupIdMap[cfg.activeGroupId]||cfg.activeGroupId):activeGroupId;let target=groups.find(g=>g.id===importedTarget)?importedTarget:(groups.find(g=>g.id===activeGroupId)?activeGroupId:groups[0].id);setActiveGroup(target);selectedKeys.clear();editMode=false;renderSaved();renderOptions();setMainTab('SAVE');status('Config combined. Imported order/name restored. Added '+added+', updated '+updated+'.','ok');}
 
 function showGroupPicker(){let gp=$('groupPicker'),groups=getGroups();gp.innerHTML=groups.map(g=>'<button class="groupChip '+(g.id===activeGroupId?'on':'')+'" data-g="'+esc(g.id)+'">'+esc(g.name)+'</button>').join('')+'<button class="groupChip" data-add="1">＋ New</button>';gp.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{setActiveGroup(b.dataset.g);hideGroupPicker();setMainTab('SAVE')});let add=gp.querySelector('[data-add]');if(add)add.onclick=()=>{hideGroupPicker();addGroup();setMainTab('SAVE')};gp.classList.add('show')}function hideGroupPicker(){$('groupPicker').classList.remove('show')}
