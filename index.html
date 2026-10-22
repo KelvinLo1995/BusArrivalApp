@@ -303,9 +303,26 @@ input[type=range]::-webkit-slider-runnable-track { width: 100%; height: 8px; cur
                 <div class="empty">Computing cache size...</div>
             </div>
         </div>
+
+        <div class="optBlock" id="consoleOptBlock">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div>
+                    <h3 style="margin:0;">Console Output</h3>
+                    <div class="meta" style="margin-top:2px;">View real-time application and network logs.</div>
+                </div>
+                <div style="display:flex;gap:6px;">
+                    <button id="toggleConsoleBtn" class="miniBtn" style="padding:6px 10px;font-size:12px;">Show Log</button>
+                    <button id="clearConsoleBtn" class="miniBtn danger hidden" style="padding:6px 10px;font-size:12px;">Clear</button>
+                </div>
+            </div>
+            <div id="consoleContainer" class="hidden" style="margin-top:12px;">
+                <div id="consoleLogOutput" style="background:#090d16;border:1px solid var(--line);border-radius:16px;padding:10px 12px;max-height:240px;overflow-y:auto;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:11px;line-height:1.45;color:#c8d4ea;white-space:pre-wrap;word-break:break-all;"></div>
+            </div>
+        </div>
+
         <div class="optBlock" style="border-color:transparent;background:transparent;text-align:center;padding:10px 14px 20px;">
             <h3>About App</h3>
-            <div class="meta">Version: 2.4.2 (Optimise Worker)</div>
+            <div class="meta">Version: 2.6.2 (Console Logging Instrumented)</div>
         </div>
     </section>
 
@@ -417,60 +434,186 @@ const API = {
 
 const $ = id => document.getElementById(id), routeInput = $('routeInput');
 
+const AppConsole = {
+    logs: [],
+    maxLogs: 300,
+    visible: false,
+    init: function() {
+        const origLog = console.log.bind(console);
+        const origWarn = console.warn.bind(console);
+        const origError = console.error.bind(console);
+        const origInfo = console.info.bind(console);
+
+        const append = (type, args) => {
+            const timeStr = new Date().toLocaleTimeString('zh-HK', {hour12: false});
+            const text = args.map(a => {
+                if (typeof a === 'object' && a !== null) {
+                    try { return JSON.stringify(a); } catch { return String(a); }
+                }
+                return String(a);
+            }).join(' ');
+            
+            AppConsole.logs.push({type, timeStr, text});
+            if (AppConsole.logs.length > AppConsole.maxLogs) {
+                AppConsole.logs.shift();
+            }
+            if (AppConsole.visible) {
+                AppConsole.renderEntry({type, timeStr, text});
+            }
+        };
+
+        console.log = (...args) => { origLog(...args); append('log', args); };
+        console.warn = (...args) => { origWarn(...args); append('warn', args); };
+        console.error = (...args) => { origError(...args); append('error', args); };
+        console.info = (...args) => { origInfo(...args); append('info', args); };
+
+        window.addEventListener('error', e => {
+            append('error', [e.message || 'Script error', e.filename ? `(${e.filename}:${e.lineno})` : '']);
+        });
+        window.addEventListener('unhandledrejection', e => {
+            append('error', ['[UNHANDLED]', e.reason?.stack || e.reason?.message || String(e.reason)]);
+        });
+
+        console.info('Transit app console initialized.');
+    },
+    renderEntry: function(item) {
+        const out = $('consoleLogOutput');
+        if (!out) return;
+        if (out.innerHTML.includes('No console logs yet.')) {
+            out.innerHTML = '';
+        }
+        const color = item.type === 'error' ? '#ff6b6b' : item.type === 'warn' ? '#ffd166' : item.type === 'info' ? '#70d6ff' : '#9aa8bf';
+        const line = document.createElement('div');
+        line.style.marginBottom = '4px';
+        line.innerHTML = `<span style="color:#576574;">[${esc(item.timeStr)}]</span> <span style="color:${color};font-weight:700;">[${item.type.toUpperCase()}]</span> <span>${esc(item.text)}</span>`;
+        out.appendChild(line);
+        out.scrollTop = out.scrollHeight;
+    },
+    renderAll: function() {
+        const out = $('consoleLogOutput');
+        if (!out) return;
+        out.innerHTML = '';
+        if (AppConsole.logs.length === 0) {
+            out.innerHTML = '<div style="color:#576574;">No console logs yet.</div>';
+            return;
+        }
+        AppConsole.logs.forEach(item => AppConsole.renderEntry(item));
+        out.scrollTop = out.scrollHeight;
+    },
+    clear: function() {
+        AppConsole.logs = [];
+        const out = $('consoleLogOutput');
+        if (out) out.innerHTML = '<div style="color:#576574;">Logs cleared.</div>';
+    },
+    toggle: function() {
+        AppConsole.visible = !AppConsole.visible;
+        const container = $('consoleContainer');
+        const toggleBtn = $('toggleConsoleBtn');
+        const clearBtn = $('clearConsoleBtn');
+        if (container) container.classList.toggle('hidden', !AppConsole.visible);
+        if (clearBtn) clearBtn.classList.toggle('hidden', !AppConsole.visible);
+        if (toggleBtn) {
+            toggleBtn.textContent = AppConsole.visible ? 'Hide Log' : 'Show Log';
+            toggleBtn.classList.toggle('ok', AppConsole.visible);
+        }
+        if (AppConsole.visible) {
+            AppConsole.renderAll();
+        }
+    }
+};
+
+AppConsole.init();
+
 let mode = 'BUS', busRoutes = [], gmbRoutes = [], active = [], currentStops = [], currentRoute = null, pos = null;
 let hkbDb = null, activeGroupId = 'default', saveRefreshTimer = null, saveHoldTimer = null, appModalOkCb = null;
 let editMode = false, dragKey = null, pointerDrag = null, groupDrag = null, stopIndexMem = null, nearbyStopMem = null;
 let routeSearchSeq = 0, currentFound = [], currentPreviewItems = [], workers = [], workerStatus = [], workersDone = 0;
 let gpsInterval = null, previewInterval = null;
+let configModalMode = 'export';
 
 const selectedKeys = new Set();
 const suggestedRouteNearest = new Map();
 
 const IDB = {
     db: null,
-    init: function() {
+    init: async function() {
+        if (IDB.db) return;
         return new Promise((resolve, reject) => {
-            const req = indexedDB.open('hkTransitDB', 1);
-            req.onupgradeneeded = e => {
-                let db = e.target.result;
-                if(!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
-            };
-            req.onsuccess = e => { IDB.db = e.target.result; resolve(); };
-            req.onerror = e => reject(e);
+            try {
+                const req = indexedDB.open('hkTransitDB', 1);
+                req.onupgradeneeded = e => {
+                    let db = e.target.result;
+                    if(!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
+                };
+                req.onsuccess = e => {
+                    IDB.db = e.target.result;
+                    IDB.db.onclose = () => { IDB.db = null; };
+                    IDB.db.onversionchange = () => { IDB.db.close(); IDB.db = null; };
+                    resolve();
+                };
+                req.onerror = e => reject(e);
+            } catch(e) {
+                reject(e);
+            }
         });
     },
-    get: function(k) {
+    get: async function(k) {
+        if (!IDB.db) await IDB.init().catch(() => {});
         return new Promise(resolve => {
             if(!IDB.db) return resolve(null);
-            let tx = IDB.db.transaction('kv', 'readonly');
-            let req = tx.objectStore('kv').get(k);
-            req.onsuccess = () => resolve(req.result);
-            req.onerror = () => resolve(null);
+            try {
+                let tx = IDB.db.transaction('kv', 'readonly');
+                let req = tx.objectStore('kv').get(k);
+                req.onsuccess = () => resolve(req.result);
+                req.onerror = () => resolve(null);
+            } catch(e) {
+                IDB.db = null;
+                resolve(null);
+            }
         });
     },
-    set: function(k, v) {
+    set: async function(k, v) {
+        if (!IDB.db) await IDB.init().catch(() => {});
         return new Promise(resolve => {
             if(!IDB.db) return resolve();
-            let tx = IDB.db.transaction('kv', 'readwrite');
-            let req = tx.objectStore('kv').put(v, k);
-            req.onsuccess = () => resolve();
-            req.onerror = () => resolve();
+            try {
+                let tx = IDB.db.transaction('kv', 'readwrite');
+                let req = tx.objectStore('kv').put(v, k);
+                req.onsuccess = () => resolve();
+                req.onerror = () => resolve();
+            } catch(e) {
+                IDB.db = null;
+                resolve();
+            }
         });
     },
-    delete: function(k) {
+    delete: async function(k) {
+        if (!IDB.db) await IDB.init().catch(() => {});
         return new Promise(resolve => {
             if(!IDB.db) return resolve();
-            let tx = IDB.db.transaction('kv', 'readwrite');
-            let req = tx.objectStore('kv').delete(k);
-            req.onsuccess = () => resolve();
-            req.onerror = () => resolve();
+            try {
+                let tx = IDB.db.transaction('kv', 'readwrite');
+                let req = tx.objectStore('kv').delete(k);
+                req.onsuccess = () => resolve();
+                req.onerror = () => resolve();
+            } catch(e) {
+                IDB.db = null;
+                resolve();
+            }
         });
     },
-    clear: function() {
+    clear: async function() {
+        if (!IDB.db) await IDB.init().catch(() => {});
         return new Promise(resolve => {
             if(!IDB.db) return resolve();
-            let tx = IDB.db.transaction('kv', 'readwrite');
-            tx.objectStore('kv').clear().onsuccess = () => resolve();
+            try {
+                let tx = IDB.db.transaction('kv', 'readwrite');
+                tx.objectStore('kv').clear().onsuccess = () => resolve();
+                tx.onerror = () => resolve();
+            } catch(e) {
+                IDB.db = null;
+                resolve();
+            }
         });
     }
 };
@@ -504,6 +647,13 @@ function stopIdOf(v) {
 
 function status(s, c = '') {
     $('status').innerHTML = '<span class="' + c + '">' + esc(s) + '</span>';
+    if (c === 'err') {
+        console.error('[STATUS]', s);
+    } else if (c === 'ok') {
+        console.info('[STATUS]', s);
+    } else {
+        console.log('[STATUS]', s);
+    }
 }
 
 async function fetchJsonOnce(url) {
@@ -514,7 +664,10 @@ async function fetchJsonOnce(url) {
 
 async function json(url, ttl = 300000) {
     let n = Date.now(), c = await IDB.get('req_' + url); 
-    if(c && n - c.t < ttl) return c.v; 
+    if(c && n - c.t < ttl) {
+        return c.v; 
+    }
+    console.log(`[HTTP GET] ${url}`);
     let lastErr = null; 
     const urls = [url]; 
     if(url.includes('data.etagmb.gov.hk/eta/')) {
@@ -530,10 +683,12 @@ async function json(url, ttl = 300000) {
                 return v;
             } catch(e) {
                 lastErr = e;
+                console.warn(`[HTTP RETRY] Attempt failed for ${u}: ${e.message}`);
                 if(i < attempts - 1) await new Promise(r => setTimeout(r, 450));
             }
         }
     } 
+    console.error(`[HTTP FAIL] ${url}: ${lastErr?.message || 'Unknown error'}`);
     throw lastErr || new Error('Fetch failed');
 }
 
@@ -665,27 +820,31 @@ async function checkAndMigrateCacheV2() {
     let ver = localStorage.getItem(CACHE_VER_KEY);
     if (ver === '2') return;
     status('Upgrading cache to V2...');
-    if (IDB.db) {
-        await new Promise((resolve) => {
-            let tx = IDB.db.transaction('kv', 'readwrite');
-            let store = tx.objectStore('kv');
-            let req = store.openCursor();
-            req.onsuccess = e => {
-                let cursor = e.target.result;
-                if(cursor) {
-                    let k = cursor.key;
-                    if(k.startsWith('routeDetailCache_') || k.startsWith('lite_') || k.startsWith('previewStops_')) {
-                        cursor.delete();
+    try {
+        if (IDB.db) {
+            await new Promise((resolve) => {
+                let tx = IDB.db.transaction('kv', 'readwrite');
+                let store = tx.objectStore('kv');
+                let req = store.openCursor();
+                req.onsuccess = e => {
+                    let cursor = e.target.result;
+                    if(cursor) {
+                        let k = cursor.key;
+                        if(k.startsWith('routeDetailCache_') || k.startsWith('lite_') || k.startsWith('previewStops_')) {
+                            cursor.delete();
+                        }
+                        cursor.continue();
+                    } else {
+                        resolve();
                     }
-                    cursor.continue();
-                } else {
-                    resolve();
-                }
-            };
-            req.onerror = () => resolve();
-        });
+                };
+                req.onerror = () => resolve();
+            });
+        }
+        localStorage.setItem(CACHE_VER_KEY, '2');
+    } catch(e) {
+        localStorage.setItem(CACHE_VER_KEY, '2');
     }
-    localStorage.setItem(CACHE_VER_KEY, '2');
 }
 
 function wireEvents() {
@@ -730,10 +889,19 @@ function wireEvents() {
     $('deleteGroupBtn').onclick = deleteGroup;
     $('gpsBtn').onclick = () => gps(false);
     
+    $('configCancelBtn').onclick = closeConfigModal;
+    $('configActionBtn').onclick = confirmConfigModal;
+
+    const toggleCons = $('toggleConsoleBtn');
+    if (toggleCons) toggleCons.onclick = () => AppConsole.toggle();
+    const clearCons = $('clearConsoleBtn');
+    if (clearCons) clearCons.onclick = () => AppConsole.clear();
+    
     document.addEventListener('click', e => {
         if(!e.target.closest('#groupPicker') && !e.target.closest('#tabSave')) hideGroupPicker();
         if(e.target.id === 'saveModal') closeSaveModal();
         if(e.target.id === 'appModal') closeAppModal();
+        if(e.target.id === 'configModal') closeConfigModal();
         if(!e.target.closest('.savedMenu') && !e.target.closest('.savedMore')) closeSavedMenus();
     });
     
@@ -792,16 +960,28 @@ function addGmbFromHkbusDb(db) {
     });
 }
 
+function terminateWorkers() {
+    if (workers && workers.length) {
+        workers.forEach(w => w.terminate());
+        workers = [];
+        workerStatus = [];
+        workersDone = 0;
+    }
+}
+
 function setMode(m) {
     mode = m;
     $('busBtn').classList.toggle('on', m === 'BUS');
     $('gmbBtn').classList.toggle('on', m === 'GMB');
     active = m === 'BUS' ? busRoutes : gmbRoutes;
+    console.log(`Mode switched to ${m} (${active.length} routes active)`);
     filter();
 }
 
 function filter() {
+    terminateWorkers();
     let q = routeInput.value.trim().toUpperCase();
+    console.log(`[FILTER] Query "${q}" in mode ${mode}`);
     let data = active.filter(x => !q || String(x.route).toUpperCase().startsWith(q))
                      .sort((a, b) => String(a.route).localeCompare(String(b.route), undefined, {numeric: true, sensitivity: 'base'}));
                      
@@ -984,7 +1164,9 @@ function handleWorkerMessage(e) {
     } else if (e.data.type === 'DONE') {
         workerStatus[e.data.workerId] = true;
         workersDone++;
+        console.log(`Worker #${e.data.workerId} completed. Found ${e.data.count} nearby routes.`);
         if (workersDone === workers.length) {
+            console.info(`All workers finished. Total nearby routes found: ${currentFound.length}`);
             $('count').textContent = currentFound.length + ' routes near you';
             if (currentFound.length === 0) $('routes').innerHTML = '<div class="empty">No routes found nearby.</div>';
         }
@@ -2176,7 +2358,7 @@ function importConfigJsonFile() {
 }
 
 function openConfigModal(title, sub, text, mode) {
-    let configModalMode = mode;
+    configModalMode = mode;
     $('configModalTitle').textContent = title;
     $('configModalSub').textContent = sub || '';
     $('configTextArea').value = text || '';
@@ -2189,7 +2371,21 @@ function openConfigModal(title, sub, text, mode) {
 function closeConfigModal() { $('configModal').classList.remove('show'); }
 
 async function confirmConfigModal() {
-    // Note: Assuming a global or properly scoped variable here, it falls back locally normally but we'll bind it inline or let the existing event catch it.
+    if(configModalMode === 'export') {
+        try {
+            await navigator.clipboard.writeText($('configTextArea').value);
+            status('Config JSON copied.', 'ok');
+        } catch {
+            status('Copy blocked by browser. Please select and copy manually.', 'err');
+        }
+        return;
+    }
+    try {
+        applyConfig(deserializeConfig($('configTextArea').value));
+        closeConfigModal();
+    } catch(e) {
+        status('Import failed: ' + e.message, 'err');
+    }
 }
 
 function exportConfigText(onlyActiveGroup = false) { openConfigModal('Export Config Text', 'Copy this JSON text and share it. It contains saved ETA monitors, groups, order, names and ETA history. Import will combine with existing data.', serializeConfig(onlyActiveGroup), 'export'); }
@@ -2297,53 +2493,61 @@ async function renderOptions() {
     if(!IDB.db) { box.innerHTML = '<div class="empty">IndexedDB not ready.</div>'; return; }
     
     let stats = { req: {c: 0, b: 0}, detail: {c: 0, b: 0}, lite: {c: 0, b: 0}, idx: {c: 0, b: 0}, other: {c: 0, b: 0} };
-    let tx = IDB.db.transaction('kv', 'readonly'), cursorReq = tx.objectStore('kv').openCursor();
-    
-    cursorReq.onsuccess = e => {
-        let cursor = e.target.result;
-        if(cursor) {
-            let k = cursor.key, size = JSON.stringify(cursor.value).length;
-            if(k.startsWith('req_')) { stats.req.c++; stats.req.b += size; }
-            else if(k.startsWith('routeDetailCacheV2_') || k.startsWith('previewStopsV2_')) { stats.detail.c++; stats.detail.b += size; }
-            else if(k.startsWith('liteV2_')) { stats.lite.c++; stats.lite.b += size; }
-            else if(k === 'stopIndex') { stats.idx.c++; stats.idx.b += size; }
-            else { stats.other.c++; stats.other.b += size; }
-            cursor.continue();
-        } else {
-            let fmt = b => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : (b / 1024).toFixed(1) + ' KB';
-            box.innerHTML = `
-            <div class="cacheStatGrid">
-                <div class="cacheStat"><b>API Request Cache</b><span>${stats.req.c} items · ${fmt(stats.req.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('req_')">Delete</button></div>
-                <div class="cacheStat"><b>Route Details V2</b><span>${stats.detail.c} items · ${fmt(stats.detail.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('routeDetailCacheV2_');clearCachePrefix('previewStopsV2_');">Delete</button></div>
-                <div class="cacheStat"><b>Lite Match Data V2</b><span>${stats.lite.c} items · ${fmt(stats.lite.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('liteV2_')">Delete</button></div>
-                <div class="cacheStat"><b>Stop Location Index</b><span>${stats.idx.c} items · ${fmt(stats.idx.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('stopIndex')">Delete</button></div>
-            </div>`;
-        }
-    };
+    try {
+        let tx = IDB.db.transaction('kv', 'readonly'), cursorReq = tx.objectStore('kv').openCursor();
+        cursorReq.onsuccess = e => {
+            let cursor = e.target.result;
+            if(cursor) {
+                let k = cursor.key, size = JSON.stringify(cursor.value).length;
+                if(k.startsWith('req_')) { stats.req.c++; stats.req.b += size; }
+                else if(k.startsWith('routeDetailCacheV2_') || k.startsWith('previewStopsV2_')) { stats.detail.c++; stats.detail.b += size; }
+                else if(k.startsWith('liteV2_')) { stats.lite.c++; stats.lite.b += size; }
+                else if(k === 'stopIndex') { stats.idx.c++; stats.idx.b += size; }
+                else { stats.other.c++; stats.other.b += size; }
+                cursor.continue();
+            } else {
+                let fmt = b => b > 1048576 ? (b / 1048576).toFixed(1) + ' MB' : (b / 1024).toFixed(1) + ' KB';
+                box.innerHTML = `
+                <div class="cacheStatGrid">
+                    <div class="cacheStat"><b>API Request Cache</b><span>${stats.req.c} items · ${fmt(stats.req.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('req_')">Delete</button></div>
+                    <div class="cacheStat"><b>Route Details V2</b><span>${stats.detail.c} items · ${fmt(stats.detail.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('routeDetailCacheV2_');clearCachePrefix('previewStopsV2_');">Delete</button></div>
+                    <div class="cacheStat"><b>Lite Match Data V2</b><span>${stats.lite.c} items · ${fmt(stats.lite.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('liteV2_')">Delete</button></div>
+                    <div class="cacheStat"><b>Stop Location Index</b><span>${stats.idx.c} items · ${fmt(stats.idx.b)}</span><button class="miniBtn danger" onclick="clearCachePrefix('stopIndex')">Delete</button></div>
+                </div>`;
+            }
+        };
+    } catch(err) {
+        box.innerHTML = '<div class="empty">Cache error.</div>';
+    }
 }
 
 async function clearCachePrefix(prefix) {
     status('Clearing cache: ' + prefix + '...');
-    let tx = IDB.db.transaction('kv', 'readwrite'), store = tx.objectStore('kv'), req = store.openCursor();
-    req.onsuccess = e => {
-        let cursor = e.target.result;
-        if(cursor) { 
-            if(cursor.key.startsWith(prefix) || cursor.key === prefix) cursor.delete(); 
-            cursor.continue(); 
-        } else { 
-            status('Cache cleared: ' + (prefix === 'routeDetailCacheV2_' ? 'routeDetails' : prefix), 'ok'); 
-            renderOptions(); 
-        }
-    };
+    try {
+        let tx = IDB.db.transaction('kv', 'readwrite'), store = tx.objectStore('kv'), req = store.openCursor();
+        req.onsuccess = e => {
+            let cursor = e.target.result;
+            if(cursor) { 
+                if(cursor.key.startsWith(prefix) || cursor.key === prefix) cursor.delete(); 
+                cursor.continue(); 
+            } else { 
+                status('Cache cleared: ' + (prefix === 'routeDetailCacheV2_' ? 'routeDetails' : prefix), 'ok'); 
+                renderOptions(); 
+            }
+        };
+    } catch(e) {
+        status('Cache clear error.', 'err');
+    }
 }
 
 async function refetchRouteData() {
-    ['req_' + API.KMB + '/route/', 'req_' + API.CTB + '/route/CTB', 'req_' + API.CTB + '/route/ctb', 'req_' + API.HKBUS, 'req_' + API.NLB + '/route.php?action=list'].forEach(async u => await IDB.delete(u));
-    stopIndexMem = null;
-    nearbyStopMem = null;
-    suggestedRouteNearest.clear();
     status('Re-fetching route and stop data...');
     try {
+        let keys = ['req_' + API.KMB + '/route/', 'req_' + API.CTB + '/route/CTB', 'req_' + API.CTB + '/route/ctb', 'req_' + API.HKBUS, 'req_' + API.NLB + '/route.php?action=list'];
+        await Promise.all(keys.map(u => IDB.delete(u)));
+        stopIndexMem = null;
+        nearbyStopMem = null;
+        suggestedRouteNearest.clear();
         await loadRoutes();
         active = mode === 'BUS' ? busRoutes : gmbRoutes;
         filter();
@@ -2366,12 +2570,15 @@ function startAutoRefresh() {
 function gps(silent = false) {
     if(!navigator.geolocation) { if(!silent) status('GPS not supported.', 'err'); return; }
     if(!silent) status('Getting location...');
+    console.log('[GPS] Requesting current position...');
     navigator.geolocation.getCurrentPosition(p => {
         pos = {lat: p.coords.latitude, lon: p.coords.longitude, ts: Date.now()};
         writeLS(LS_LAST_POS, pos);
+        console.info(`[GPS] Location acquired: ${pos.lat.toFixed(5)}, ${pos.lon.toFixed(5)}`);
         if(!silent) status('GPS ready. Using Bounding Box and Worker to check nearby stops.', 'ok');
         if(routeInput.value.trim().length === 0) filter();
     }, e => { 
+        console.error(`[GPS] Location error code ${e.code}: ${e.message}`);
         if(!silent) status('GPS failed: ' + e.message, 'err'); 
     }, {enableHighAccuracy: true, timeout: 10000, maximumAge: 60000});
 }
